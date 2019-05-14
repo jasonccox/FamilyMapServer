@@ -33,5 +33,4 @@ public class AuthToken {
         return user;
     }
 
-    
 }
