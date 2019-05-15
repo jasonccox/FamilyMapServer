@@ -56,6 +56,15 @@ public class Database {
     }
 
     /**
+     * Removes all data from the database.
+     * 
+     * @throws DBException
+     */
+    public void clear() throws DBException {
+
+    }
+
+    /**
      * @return the connection to the database, or null if their is no open connection
      */
     protected Connection getSQLConnection() {
