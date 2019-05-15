@@ -5,48 +5,48 @@ package familymapserver.data.model;
  */
 public class User {
     
-    private String userName;
+    private String username;
     private String password;
     private String email;
     private String firstName;
     private String lastName;
-    private String gender;
-    private String personID;
+    private Gender gender;
+    private Person person;
 
     /**
      * Creates a new User.
      * 
-     * @param userName the user's username - a unique identifier
+     * @param username the user's username - a unique identifier
      * @param password the user's password for authenticating
      * @param email the user's email address
      * @param firstName the user's first name
      * @param lastName the user's last name
-     * @param gender the user's gender ({@link familymapserver.data.model.Person#MALE Person.MALE} or {@link familymapserver.data.model.Person#FEMALE Person.FEMALE})
-     * @param personID the id of the person representing this user in the family map
+     * @param gender the user's gender
+     * @param person the Person object representing this user in the family map
      */
-    public User(String userName, String password, String email, String firstName,
-                String lastName, String gender, String personID) {
-        setUserName(userName);
+    public User(String username, String password, String email, String firstName,
+                String lastName, Gender gender, Person person) {
+        setUsername(username);
         setPassword(password);
         setEmail(email);
         setFirstName(firstName);
         setLastName(lastName);
         setGender(gender);
-        setPersonID(personID);
+        setPerson(person);
     }
 
     /**
      * @return the user's username - a unique identifier
      */
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 
     /**
-     * @param userName the user's username - a unique identifier
+     * @param username the user's username - a unique identifier
      */
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     /**
@@ -106,31 +106,31 @@ public class User {
     }
 
     /**
-     * @return the user's gender ({@link familymapserver.data.model.Person#MALE Person.MALE} or {@link familymapserver.data.model.Person#FEMALE Person.FEMALE})
+     * @return the user's gender
      */
-    public String getGender() {
+    public Gender getGender() {
         return gender;
     }
 
     /**
-     * @param gender the user's gender ({@link familymapserver.data.model.Person#MALE Person.MALE} or {@link familymapserver.data.model.Person#FEMALE Person.FEMALE})
+     * @param gender the user's gender
      */
-    public void setGender(String gender) {
+    public void setGender(Gender gender) {
         this.gender = gender;
     }
 
     /**
-     * @return the id of the person representing this user in the family map
+     * @return the Person object representing this user in the family map
      */
-    public Person getPersonID() {
-        return personID;
+    public Person getPerson() {
+        return person;
     }
 
     /**
-     * @param personID the Person object representing this user in the family map
+     * @param person the Person object representing this user in the family map
      */
-    public void setPersonID(String personID) {
-        this.personID = personID;
+    public void setPerson(Person person) {
+        this.person = person;
     }
 
     

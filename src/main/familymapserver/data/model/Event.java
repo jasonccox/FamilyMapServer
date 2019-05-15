@@ -5,75 +5,75 @@ package familymapserver.data.model;
  */
 public class Event {
 
-    private final String eventID;
-    private String descendant;
-    private String personID;
+    private final String id;
+    private User descendant;
+    private Person person;
     private float latitude;
     private float longitude;
     private String country;
     private String city;
-    private String eventType;
+    private String type;
     private int year;
 
     /**
      * Creates a new Event.
      * 
-     * @param eventID a unique identifier for this event
-     * @param descendant the username of the user in whose family map this event is found
-     * @param personID the id of the person in whose life this event occurred
+     * @param id a unique identifier for this event
+     * @param descendant the User in whose family map this event is found
+     * @param person the Person in whose life this event occurred
      * @param latitude the latitude at which the event occurred
      * @param longitude the longitude at which the event occurred
      * @param country the country in which the event occurred
      * @param city the city in which the event occurred
-     * @param eventType the event's type (e.g., birth, baptism, marriage, etc.)
+     * @param type the event's type (e.g., birth, baptism, marriage, etc.)
      * @param year the year in which the event occurred
      */
-    public Event(String eventID, String descendant, String personID, float latitude, float longitude, 
-                 String country, String city, String eventType, int year) {
-        this.eventID = eventID;
+    public Event(String id, User descendant, Person person, float latitude, float longitude, 
+                 String country, String city, String type, int year) {
+        this.id = id;
         setDescendant(descendant);
-        setPersonID(personID);
+        setPerson(person);
         setLatitude(latitude);
         setLongitude(longitude);
         setCountry(country);
         setCity(city);
-        setEventType(eventType);
+        setType(type);
         setYear(year);
     }
 
     /**
      * @return a unique identifier for this event
      */
-    public String getEventID() {
-        return eventID;
+    public String getId() {
+        return id;
     }
 
     /**
-     * @return the username of the user in whose family map this event is found
+     * @return the User in whose family map this event is found
      */
-    public String getDescendant() {
+    public User getDescendant() {
         return descendant;
     }
 
     /**
-     * @param descendant the username of the user in whose family map this event is found
+     * @param descendant the User in whose family map this event is found
      */
-    public void setDescendant(String descendant) {
+    public void setDescendant(User descendant) {
         this.descendant = descendant;
     }
 
     /**
-     * @return the id of the person in whose life this event occurred
+     * @return the Person in whose life this event occurred
      */
-    public String getPersonID() {
-        return personID;
+    public Person getPerson() {
+        return person;
     }
 
     /**
-     * @param personID the id of the person in whose life this event occurred
+     * @param person the Person in whose life this event occurred
      */
-    public void setPersonID(String personID) {
-        this.personID = personID;
+    public void setPerson(Person person) {
+        this.person = person;
     }
 
     /**
@@ -133,17 +133,17 @@ public class Event {
     }
 
     /**
-     * @return the event's type (e.g., birth, baptism, marriage, etc.)
+     * @return the event's type
      */
-    public String getEventType() {
-        return eventType;
+    public String getType() {
+        return type;
     }
 
     /**
-     * @param eventType the event's type (e.g., birth, baptism, marriage, etc.)
+     * @param type the event's type 
      */
-    public void setEventType(String eventType) {
-        this.eventType = eventType;
+    public void setType(String type) {
+        this.type = type;
     }
 
     /**
