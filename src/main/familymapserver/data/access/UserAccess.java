@@ -21,7 +21,7 @@ public class UserAccess {
     }
 
     /**
-     * Finds a user in the database.
+     * Gets a user from the database.
      * 
      * @param username the username of the user to be found
      * @param db the database in which to find the user
@@ -29,7 +29,7 @@ public class UserAccess {
      * the given username
      * @throws DBException
      */
-    public static User find(String username, Database db) throws DBException {
+    public static User get(String username, Database db) throws DBException {
         return null;
     }
 
