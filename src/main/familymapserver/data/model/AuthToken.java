@@ -5,32 +5,32 @@ package familymapserver.data.model;
  */
 public class AuthToken {
 
-    private final String token;
-    private final User user;
+    private final String authToken;
+    private final String userName;
 
     /**
      * Creates a new AuthToken.
      * 
      * @param token the token used to prove a user's identity when making requests
-     * @param user the User to whom this token is assigned
+     * @param user the username of the user to whom this token is assigned
      */
-    public AuthToken(String token, User user) {
-        this.token = token;
-        this.user = user;
+    public AuthToken(String token, String userName) {
+        this.authToken = token;
+        this.userName = userName;
     }
 
     /**
      * @return the token used to prove a user's identity when making requests
      */
     public String getToken() {
-        return token;
+        return authToken;
     }
 
     /**
-     * @return the User to whom this token is assigned
+     * @return the username of the user to whom this token is assigned
      */
-    public User getUser() {
-        return user;
+    public String getUserName() {
+        return userName;
     }
 
 }

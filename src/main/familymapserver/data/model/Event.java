@@ -5,75 +5,75 @@ package familymapserver.data.model;
  */
 public class Event {
 
-    private final String id;
-    private User descendant;
-    private Person person;
+    private final String eventID;
+    private String descendant;
+    private String personID;
     private float latitude;
     private float longitude;
     private String country;
     private String city;
-    private String type;
+    private String eventType;
     private int year;
 
     /**
      * Creates a new Event.
      * 
-     * @param id a unique identifier for this event
-     * @param descendant the User in whose family map this event is found
-     * @param person the Person in whose life this event occurred
+     * @param eventID a unique identifier for this event
+     * @param descendant the username of the user in whose family map this event is found
+     * @param personID the id of the person in whose life this event occurred
      * @param latitude the latitude at which the event occurred
      * @param longitude the longitude at which the event occurred
      * @param country the country in which the event occurred
      * @param city the city in which the event occurred
-     * @param type the event's type (e.g., birth, baptism, marriage, etc.)
+     * @param eventType the event's type (e.g., birth, baptism, marriage, etc.)
      * @param year the year in which the event occurred
      */
-    public Event(String id, User descendant, Person person, float latitude, float longitude, 
-                 String country, String city, String type, int year) {
-        this.id = id;
+    public Event(String eventID, String descendant, String personID, float latitude, float longitude, 
+                 String country, String city, String eventType, int year) {
+        this.eventID = eventID;
         setDescendant(descendant);
-        setPerson(person);
+        setPersonID(personID);
         setLatitude(latitude);
         setLongitude(longitude);
         setCountry(country);
         setCity(city);
-        setType(type);
+        setEventType(eventType);
         setYear(year);
     }
 
     /**
      * @return a unique identifier for this event
      */
-    public String getId() {
-        return id;
+    public String getEventID() {
+        return eventID;
     }
 
     /**
-     * @return the User in whose family map this event is found
+     * @return the username of the user in whose family map this event is found
      */
-    public User getDescendant() {
+    public String getDescendant() {
         return descendant;
     }
 
     /**
-     * @param descendant the User in whose family map this event is found
+     * @param descendant the username of the user in whose family map this event is found
      */
-    public void setDescendant(User descendant) {
+    public void setDescendant(String descendant) {
         this.descendant = descendant;
     }
 
     /**
-     * @return the Person in whose life this event occurred
+     * @return the id of the person in whose life this event occurred
      */
-    public Person getPerson() {
-        return person;
+    public String getPersonID() {
+        return personID;
     }
 
     /**
-     * @param person the Person in whose life this event occurred
+     * @param personID the id of the person in whose life this event occurred
      */
-    public void setPerson(Person person) {
-        this.person = person;
+    public void setPersonID(String personID) {
+        this.personID = personID;
     }
 
     /**
@@ -133,17 +133,17 @@ public class Event {
     }
 
     /**
-     * @return the event's type
+     * @return the event's type (e.g., birth, baptism, marriage, etc.)
      */
-    public String getType() {
-        return type;
+    public String getEventType() {
+        return eventType;
     }
 
     /**
-     * @param type the event's type 
+     * @param eventType the event's type (e.g., birth, baptism, marriage, etc.)
      */
-    public void setType(String type) {
-        this.type = type;
+    public void setEventType(String eventType) {
+        this.eventType = eventType;
     }
 
     /**
