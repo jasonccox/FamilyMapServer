@@ -122,7 +122,7 @@ public class User {
     /**
      * @return the id of the person representing this user in the family map
      */
-    public String getPersonID() {
+    public Person getPersonID() {
         return personID;
     }
 
