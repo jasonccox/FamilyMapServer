@@ -6,7 +6,7 @@ package familymapserver.data.model;
 public class Person {
 
     private final String id;
-    private User descendant;
+    private String descendant;
     private String firstName;
     private String lastName;
     private Gender gender;
@@ -18,7 +18,7 @@ public class Person {
      * Creates a new Person.
      * 
      * @param id a unique identifier for this person
-     * @param descendant the User in whose family map this person is found
+     * @param descendant the username of the user in whose family map this person is found
      * @param firstName the person's first name
      * @param lastName the person's last name
      * @param gender the person's gender
@@ -26,7 +26,7 @@ public class Person {
      * @param mother the Person object representing this person's mother
      * @param spouse the Person object representing this person's spouse
      */
-    public Person(String id, User descendant, String firstName, String lastName,
+    public Person(String id, String descendant, String firstName, String lastName,
                   Gender gender, Person father, Person mother, Person spouse) {
         this.id = id;
         setDescendant(descendant);
@@ -46,16 +46,16 @@ public class Person {
     }
 
     /**
-     * @return the User in whose family map this person is found
+     * @return the username of the user in whose family map this person is found
      */
-    public User getDescendant() {
+    public String getDescendant() {
         return descendant;
     }
 
     /**
-     * @param descendant the User in whose family map this person is found
+     * @param descendant the username of the user in whose family map this person is found
      */
-    public void setDescendant(User descendant) {
+    public void setDescendant(String descendant) {
         this.descendant = descendant;
     }
 

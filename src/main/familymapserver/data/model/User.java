@@ -11,7 +11,7 @@ public class User {
     private String firstName;
     private String lastName;
     private Gender gender;
-    private Person person;
+    private String personId;
 
     /**
      * Creates a new User.
@@ -22,17 +22,17 @@ public class User {
      * @param firstName the user's first name
      * @param lastName the user's last name
      * @param gender the user's gender
-     * @param person the Person object representing this user in the family map
+     * @param personId the id of the person representing this user in the family map
      */
     public User(String username, String password, String email, String firstName,
-                String lastName, Gender gender, Person person) {
+                String lastName, Gender gender, String personId) {
         setUsername(username);
         setPassword(password);
         setEmail(email);
         setFirstName(firstName);
         setLastName(lastName);
         setGender(gender);
-        setPerson(person);
+        setPersonId(personId);
     }
 
     /**
@@ -120,17 +120,17 @@ public class User {
     }
 
     /**
-     * @return the Person object representing this user in the family map
+     * @return the id of the person representing this user in the family map
      */
-    public Person getPerson() {
-        return person;
+    public String getPersonId() {
+        return personId;
     }
 
     /**
-     * @param person the Person object representing this user in the family map
+     * @param personId the id of the person representing this user in the family map
      */
-    public void setPerson(Person person) {
-        this.person = person;
+    public void setPersonId(String personId) {
+        this.personId = personId;
     }
 
     

@@ -6,17 +6,17 @@ package familymapserver.data.model;
 public class AuthToken {
 
     private final String token;
-    private final User user;
+    private final String username;
 
     /**
      * Creates a new AuthToken.
      * 
      * @param token the token used to prove a user's identity when making requests
-     * @param user the User to whom this token is assigned
+     * @param username the username of the user to whom this token is assigned
      */
-    public AuthToken(String token, User user) {
+    public AuthToken(String token, String username) {
         this.token = token;
-        this.user = user;
+        this.username = username;
     }
 
     /**
@@ -29,8 +29,8 @@ public class AuthToken {
     /**
      * @return the User to whom this token is assigned
      */
-    public User getUser() {
-        return user;
+    public String getUser() {
+        return username;
     }
 
 }
