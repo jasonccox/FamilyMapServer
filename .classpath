@@ -9,6 +9,6 @@
 	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 	<classpathentry kind="lib" path="/usr/share/java/junit.jar"/>
-	<classpathentry kind="lib" path="/home/jason/.local/share/java/gson.jar">
-	<classpathentry kind="lib" path="/usr/share/java/sqlite-jdbc/sqlite-jdbc.jar">
+	<classpathentry kind="lib" path="/home/jason/.local/share/java/gson.jar"/>
+	<classpathentry kind="lib" path="/usr/share/java/sqlite-jdbc/sqlite-jdbc.jar"/>
 </classpath>
