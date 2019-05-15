@@ -45,5 +45,15 @@ public class EventAccess {
     public static Collection<Event> getAll(Database db) throws DBException {
         return null;
     }
+
+    /**
+     * Creates a new table to hold events.
+     * 
+     * @param db the database in which to create the table
+     * @throws DBException
+     */
+    protected static void createTable(Database db) throws DBException {
+
+    }
     
 }

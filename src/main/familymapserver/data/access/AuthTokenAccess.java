@@ -32,4 +32,14 @@ public class AuthTokenAccess {
     public static String getUsername(String token, Database db) throws DBException {
         return null;
     }
+
+    /**
+     * Creates a new table to hold authorization tokens.
+     * 
+     * @param db the database in which to create the table
+     * @throws DBException
+     */
+    protected static void createTable(Database db) throws DBException {
+
+    }
 }

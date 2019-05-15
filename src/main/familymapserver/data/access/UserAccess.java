@@ -33,4 +33,14 @@ public class UserAccess {
         return null;
     }
 
+    /**
+     * Creates a new table to hold users.
+     * 
+     * @param db the database in which to create the table
+     * @throws DBException
+     */
+    protected static void createTable(Database db) throws DBException {
+
+    }
+
 }

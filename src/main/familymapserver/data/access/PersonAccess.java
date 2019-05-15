@@ -45,4 +45,14 @@ public class PersonAccess {
     public static Collection<Person> getAll(Database db) throws DBException {
         return null;
     }
+
+    /**
+     * Creates a new table to hold persons.
+     * 
+     * @param db the database in which to create the table
+     * @throws DBException
+     */
+    protected static void createTable(Database db) throws DBException {
+
+    }
 }
