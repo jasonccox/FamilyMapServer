@@ -70,10 +70,10 @@ public class Event {
     }
 
     /**
-     * @param person the id of the person in whose life this event occurred
+     * @param personID the id of the person in whose life this event occurred
      */
-    public void setPersonId(String person) {
-        this.personId = person;
+    public void setPersonId(String personID) {
+        this.personId = personID;
     }
 
     /**
