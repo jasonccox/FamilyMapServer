@@ -5,12 +5,12 @@ package familymapserver.data.model;
  */
 public class User {
     
-    private String username;
+    private String userName;
     private String password;
     private String email;
     private String firstName;
     private String lastName;
-    private Gender gender;
+    private String gender;
     private String personId;
 
     /**
@@ -25,7 +25,7 @@ public class User {
      * @param personId the id of the person representing this user in the family map
      */
     public User(String username, String password, String email, String firstName,
-                String lastName, Gender gender, String personId) {
+                String lastName, String gender, String personId) {
         setUsername(username);
         setPassword(password);
         setEmail(email);
@@ -39,14 +39,14 @@ public class User {
      * @return the user's username - a unique identifier
      */
     public String getUsername() {
-        return username;
+        return userName;
     }
 
     /**
      * @param username the user's username - a unique identifier
      */
     public void setUsername(String username) {
-        this.username = username;
+        this.userName = username;
     }
 
     /**
@@ -108,14 +108,14 @@ public class User {
     /**
      * @return the user's gender
      */
-    public Gender getGender() {
+    public String getGender() {
         return gender;
     }
 
     /**
      * @param gender the user's gender
      */
-    public void setGender(Gender gender) {
+    public void setGender(String gender) {
         this.gender = gender;
     }
 

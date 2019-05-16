@@ -22,7 +22,8 @@ public class Database {
     /**
      * Opens the connection to the database.
      * 
-     * @throws DBException
+     * @throws DBException if the database is already open, or if another database error 
+     * occurs
      */
     public void open() throws DBException {
 
@@ -31,7 +32,8 @@ public class Database {
     /**
      * Closes the connection to the database. Any uncommitted changes are rolled back.
      * 
-     * @throws DBException
+     * @throws DBException if the database is already closed, or if another database error 
+     * occurs
      */
     public void close() throws DBException {
 
@@ -40,7 +42,8 @@ public class Database {
     /**
      * Commits all changes to the database since the last commit.
      * 
-     * @throws DBException
+     * @throws DBException if the database is not open, or if another database error 
+     * occurs
      */
     public void commit() throws DBException {
 
@@ -49,7 +52,8 @@ public class Database {
     /**
      * Rolls back all changes to the database since the last commit.
      * 
-     * @throws DBException
+     * @throws DBException if the database is not open, or if another database error 
+     * occurs
      */
     public void rollback() throws DBException {
 
@@ -58,7 +62,8 @@ public class Database {
     /**
      * Removes all data from the database.
      * 
-     * @throws DBException
+     * @throws DBException if the database is not open, or if another database error 
+     * occurs
      */
     public void clear() throws DBException {
 

@@ -16,7 +16,7 @@ public class PersonAccess {
      * @param db the database to which the person should be added
      * @return true if the person was added, false if a person with the same id
      * already existed, thus preventing this one from being added
-     * @throws DBException
+     * @throws DBException if the database is not open, or if another database error occurs
      */
     public static boolean add(Person person, Database db) throws DBException {
         return false;
@@ -29,20 +29,21 @@ public class PersonAccess {
      * @param db the database in which to find the person
      * @return an object containing the person's data, or null if no person was found with
      * the given id
-     * @throws DBException
+     * @throws DBException if the database is not open, or if another database error occurs
      */
     public static Person get(String personId, Database db) throws DBException {
         return null;
     }
 
     /**
-     * Gets all persons from the database.
+     * Gets all persons associated with a specific user from the database.
      * 
+     * @param username the username of the user whose persons should be retrieved
      * @param db the database in which to find the persons
      * @return objects containing the persons' data
-     * @throws DBException
+     * @throws DBException if the database is not open, or if another database error occurs
      */
-    public static Collection<Person> getAll(Database db) throws DBException {
+    public static Collection<Person> getAll(String username, Database db) throws DBException {
         return null;
     }
 
@@ -50,7 +51,8 @@ public class PersonAccess {
      * Creates a new table to hold persons.
      * 
      * @param db the database in which to create the table
-     * @throws DBException
+     * @throws DBException if the table already exists, if the database is not open, or if 
+     * another database error occurs
      */
     protected static void createTable(Database db) throws DBException {
 

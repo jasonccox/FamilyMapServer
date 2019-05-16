@@ -5,14 +5,14 @@ package familymapserver.data.model;
  */
 public class Event {
 
-    private final String id;
+    private final String eventID;
     private String descendant;
-    private String personId;
+    private String personID;
     private float latitude;
     private float longitude;
     private String country;
     private String city;
-    private String type;
+    private String eventType;
     private int year;
 
     /**
@@ -30,7 +30,7 @@ public class Event {
      */
     public Event(String id, String descendant, String personId, float latitude, float longitude, 
                  String country, String city, String type, int year) {
-        this.id = id;
+        this.eventID = id;
         setDescendant(descendant);
         setPersonId(personId);
         setLatitude(latitude);
@@ -45,7 +45,7 @@ public class Event {
      * @return a unique identifier for this event
      */
     public String getId() {
-        return id;
+        return eventID;
     }
 
     /**
@@ -66,14 +66,14 @@ public class Event {
      * @return the id of the person in whose life this event occurred
      */
     public String getPersonId() {
-        return personId;
+        return personID;
     }
 
     /**
      * @param personID the id of the person in whose life this event occurred
      */
     public void setPersonId(String personID) {
-        this.personId = personID;
+        this.personID = personID;
     }
 
     /**
@@ -136,14 +136,14 @@ public class Event {
      * @return the event's type
      */
     public String getType() {
-        return type;
+        return eventType;
     }
 
     /**
      * @param type the event's type 
      */
     public void setType(String type) {
-        this.type = type;
+        this.eventType = type;
     }
 
     /**

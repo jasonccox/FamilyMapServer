@@ -5,14 +5,14 @@ package familymapserver.data.model;
  */
 public class Person {
 
-    private final String id;
+    private final String personID;
     private String descendant;
     private String firstName;
     private String lastName;
-    private Gender gender;
-    private Person father;
-    private Person mother;
-    private Person spouse;
+    private String gender;
+    private String father;
+    private String mother;
+    private String spouse;
 
     /**
      * Creates a new Person.
@@ -22,13 +22,13 @@ public class Person {
      * @param firstName the person's first name
      * @param lastName the person's last name
      * @param gender the person's gender
-     * @param father the Person object representing this person's father
-     * @param mother the Person object representing this person's mother
-     * @param spouse the Person object representing this person's spouse
+     * @param father the id of the person representing this person's father
+     * @param mother the id of the person representing this person's mother
+     * @param spouse the id of the person representing this person's spouse
      */
     public Person(String id, String descendant, String firstName, String lastName,
-                  Gender gender, Person father, Person mother, Person spouse) {
-        this.id = id;
+                  String gender, String father, String mother, String spouse) {
+        this.personID = id;
         setDescendant(descendant);
         setFirstName(firstName);
         setLastName(lastName);
@@ -42,7 +42,7 @@ public class Person {
      * @return a unique identifier for this person
      */
     public String getId() {
-        return id;
+        return personID;
     }
 
     /**
@@ -90,56 +90,56 @@ public class Person {
     /**
      * @return the person's gender
      */
-    public Gender getGender() {
+    public String getGender() {
         return gender;
     }
 
     /**
      * @param gender the person's gender
      */
-    public void setGender(Gender gender) {
+    public void setGender(String gender) {
         this.gender = gender;
     }
 
     /**
-     * @return the Person object representing this person's father
+     * @return the Pid of the person representing this person's father
      */
-    public Person getFather() {
+    public String getFather() {
         return father;
     }
 
     /**
-     * @param father the Person object representing this person's father
+     * @param father the id of the person representing this person's father
      */
-    public void setFather(Person father) {
+    public void setFather(String father) {
         this.father = father;
     }
 
     /**
-     * @return the Person object representing this person's mother
+     * @return the id of the person representing this person's mother
      */
-    public Person getMother() {
+    public String getMother() {
         return mother;
     }
 
     /**
-     * @param mother the Person object representing this person's mother
+     * @param mother the id of the person representing this person's mother
      */
-    public void setMother(Person mother) {
+    public void setMother(String mother) {
         this.mother = mother;
     }
 
     /**
-     * @return the Person object representing this person's spouse
+     * @return the id of the person representing this person's spouse
      */
-    public Person getSpouse() {
+    public String getSpouse() {
         return spouse;
     }
 
     /**
-     * @param spouse the Person object representing this person's spouse
+     * @param spouse the id of the person representing this person's spouse
      */
-    public void setSpouse(Person spouse) {
+    public void setSpouse(String spouse) {
         this.spouse = spouse;
     }
 

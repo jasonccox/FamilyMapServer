@@ -1,9 +1,17 @@
 package familymapserver.data.model;
 
 /**
- * Represents the gender of a user or person in the family map.
+ * Provides constants representing options for a person's or user's gender.
  */
-public enum Gender {
-    MALE, 
-    FEMALE
+public class Gender {
+
+    /**
+     * A String used to indicate that a person or user is male.
+     */
+    public static final String MALE = "m";
+
+    /**
+     * A String used to indicate that a person or user is female.
+     */
+    public static final String FEMALE = "f";
 }

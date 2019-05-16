@@ -14,7 +14,7 @@ public class UserAccess {
      * @param db the database to which the user should be added
      * @return true if the user was added, false if a user with the same username
      * already existed, thus preventing this one from being added
-     * @throws DBException
+     * @throws DBException if the database is not open, or if another database error occurs
      */
     public static boolean add(User user, Database db) throws DBException {
         return false;
@@ -27,7 +27,7 @@ public class UserAccess {
      * @param db the database in which to find the user
      * @return an object containing the user's data, or null if no user was found with
      * the given username
-     * @throws DBException
+     * @throws DBException if the database is not open, or if another database error occurs
      */
     public static User get(String username, Database db) throws DBException {
         return null;
@@ -37,7 +37,7 @@ public class UserAccess {
      * Creates a new table to hold users.
      * 
      * @param db the database in which to create the table
-     * @throws DBException
+     * @throws DBException if the database is not open, or if another database error occurs
      */
     protected static void createTable(Database db) throws DBException {
 
