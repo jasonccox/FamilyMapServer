@@ -20,6 +20,16 @@ public class AuthToken {
     }
 
     /**
+     * Creates a new AuthToken with an auto-generated token value.
+     * 
+     * @param username the username of the user to whom this token is assigned
+     */
+    public AuthToken(String username) {
+        this.token = "PLACEHOLDER"; // TODO: change this!
+        this.username = username;
+    }
+
+    /**
      * @return the token used to prove a user's identity when making requests
      */
     public String getToken() {

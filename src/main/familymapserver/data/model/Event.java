@@ -42,6 +42,31 @@ public class Event {
     }
 
     /**
+     * Creates a new Event with an auto-generated id.
+     * 
+     * @param associatedUsername the username of the user in whose family map this event is found
+     * @param personId the id of the person in whose life this event occurred
+     * @param latitude the latitude at which the event occurred
+     * @param longitude the longitude at which the event occurred
+     * @param country the country in which the event occurred
+     * @param city the city in which the event occurred
+     * @param type the event's type (e.g., birth, baptism, marriage, etc.)
+     * @param year the year in which the event occurred
+     */
+    public Event(String associatedUsername, String personId, float latitude, float longitude, 
+                 String country, String city, String type, int year) {
+        this.eventID = "PLACEHOLDER"; // TODO: change this!
+        setAssociatedUsername(associatedUsername);
+        setPersonId(personId);
+        setLatitude(latitude);
+        setLongitude(longitude);
+        setCountry(country);
+        setCity(city);
+        setType(type);
+        setYear(year);
+    }
+
+    /**
      * @return a unique identifier for this event
      */
     public String getId() {

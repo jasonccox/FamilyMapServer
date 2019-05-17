@@ -39,6 +39,29 @@ public class Person {
     }
 
     /**
+     * Creates a new Person with an auto-generated id.
+     * 
+     * @param associatedUsername the username of the user in whose family map this person is found
+     * @param firstName the person's first name
+     * @param lastName the person's last name
+     * @param gender the person's gender
+     * @param father the id of the person representing this person's father
+     * @param mother the id of the person representing this person's mother
+     * @param spouse the id of the person representing this person's spouse
+     */
+    public Person(String associatedUsername, String firstName, String lastName,
+                  String gender, String father, String mother, String spouse) {
+        this.personID = "PLACEHOLDER"; // TODO: change this!
+        setAssociatedUsername(associatedUsername);
+        setFirstName(firstName);
+        setLastName(lastName);
+        setGender(gender);
+        setFather(father);
+        setMother(mother);
+        setSpouse(spouse);
+    }
+
+    /**
      * @return a unique identifier for this person
      */
     public String getId() {
