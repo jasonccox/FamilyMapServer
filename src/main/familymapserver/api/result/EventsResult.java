@@ -1,5 +1,6 @@
 package familymapserver.api.result;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import familymapserver.data.model.Event;
@@ -10,7 +11,7 @@ import familymapserver.data.model.Event;
  */
 public class EventsResult extends ApiResult {
 
-    private Collection<Event> data;
+    private Collection<EventResult> data;
 
     /**
      * Creates a new error EventsResult.
@@ -28,20 +29,23 @@ public class EventsResult extends ApiResult {
      */
     public EventsResult(Collection<Event> data) {
         super(null);
-        setData(data);
+        this.data = new ArrayList<>();
+        for (Event e : data) {
+            this.data.add(new EventResult(e));
+        }
     }
 
     /**
      * @return the retrieved events
      */
-    public Collection<Event> getData() {
+    public Collection<EventResult> getData() {
         return data;
     }
 
     /**
      * @param data the retrieved events
      */
-    public void setData(Collection<Event> data) {
+    public void setData(Collection<EventResult> data) {
         this.data = data;
     }
 

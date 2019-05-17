@@ -1,5 +1,6 @@
 package familymapserver.api.result;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import familymapserver.data.model.Person;
@@ -10,7 +11,7 @@ import familymapserver.data.model.Person;
  */
 public class PersonsResult extends ApiResult {
 
-    private Collection<Person> data;
+    private Collection<PersonResult> data;
 
     /**
      * Creates a new error PersonsResult.
@@ -28,20 +29,23 @@ public class PersonsResult extends ApiResult {
      */
     public PersonsResult(Collection<Person> data) {
         super(null);
-        setData(data);
+        this.data = new ArrayList<>();
+        for (Person p : data) {
+            this.data.add(new PersonResult(p));
+        }
     }
 
     /**
      * @return the retrieved persons
      */
-    public Collection<Person> getData() {
+    public Collection<PersonResult> getData() {
         return data;
     }
 
     /**
      * @param data the retrieved persons
      */
-    public void setData(Collection<Person> data) {
+    public void setData(Collection<PersonResult> data) {
         this.data = data;
     }
 
