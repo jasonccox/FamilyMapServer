@@ -6,7 +6,7 @@ package familymapserver.data.model;
 public class Event {
 
     private final String eventID;
-    private String descendant;
+    private String associatedUsername;
     private String personID;
     private float latitude;
     private float longitude;
@@ -19,7 +19,7 @@ public class Event {
      * Creates a new Event.
      * 
      * @param id a unique identifier for this event
-     * @param descendant the username of the user in whose family map this event is found
+     * @param associatedUsername the username of the user in whose family map this event is found
      * @param personId the id of the person in whose life this event occurred
      * @param latitude the latitude at which the event occurred
      * @param longitude the longitude at which the event occurred
@@ -28,10 +28,10 @@ public class Event {
      * @param type the event's type (e.g., birth, baptism, marriage, etc.)
      * @param year the year in which the event occurred
      */
-    public Event(String id, String descendant, String personId, float latitude, float longitude, 
+    public Event(String id, String associatedUsername, String personId, float latitude, float longitude, 
                  String country, String city, String type, int year) {
         this.eventID = id;
-        setDescendant(descendant);
+        setAssociatedUsername(associatedUsername);
         setPersonId(personId);
         setLatitude(latitude);
         setLongitude(longitude);
@@ -51,15 +51,15 @@ public class Event {
     /**
      * @return the username of the user in whose family map this event is found
      */
-    public String getDescendant() {
-        return descendant;
+    public String getAssociatedUsername() {
+        return associatedUsername;
     }
 
     /**
-     * @param descendant the username of the user in whose family map this event is found
+     * @param associatedUsername the username of the user in whose family map this event is found
      */
-    public void setDescendant(String descendant) {
-        this.descendant = descendant;
+    public void setAssociatedUsername(String associatedUsername) {
+        this.associatedUsername = associatedUsername;
     }
 
     /**

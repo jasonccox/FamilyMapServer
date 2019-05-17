@@ -6,7 +6,7 @@ package familymapserver.data.model;
 public class Person {
 
     private final String personID;
-    private String descendant;
+    private String associatedUsername;
     private String firstName;
     private String lastName;
     private String gender;
@@ -18,7 +18,7 @@ public class Person {
      * Creates a new Person.
      * 
      * @param id a unique identifier for this person
-     * @param descendant the username of the user in whose family map this person is found
+     * @param associatedUsername the username of the user in whose family map this person is found
      * @param firstName the person's first name
      * @param lastName the person's last name
      * @param gender the person's gender
@@ -26,10 +26,10 @@ public class Person {
      * @param mother the id of the person representing this person's mother
      * @param spouse the id of the person representing this person's spouse
      */
-    public Person(String id, String descendant, String firstName, String lastName,
+    public Person(String id, String associatedUsername, String firstName, String lastName,
                   String gender, String father, String mother, String spouse) {
         this.personID = id;
-        setDescendant(descendant);
+        setAssociatedUsername(associatedUsername);
         setFirstName(firstName);
         setLastName(lastName);
         setGender(gender);
@@ -48,15 +48,15 @@ public class Person {
     /**
      * @return the username of the user in whose family map this person is found
      */
-    public String getDescendant() {
-        return descendant;
+    public String getAssociatedUsername() {
+        return associatedUsername;
     }
 
     /**
-     * @param descendant the username of the user in whose family map this person is found
+     * @param associatedUsername the username of the user in whose family map this person is found
      */
-    public void setDescendant(String descendant) {
-        this.descendant = descendant;
+    public void setAssociatedUsername(String associatedUsername) {
+        this.associatedUsername = associatedUsername;
     }
 
     /**
