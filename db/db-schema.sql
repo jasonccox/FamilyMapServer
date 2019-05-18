@@ -20,7 +20,7 @@ CREATE TABLE auth_token (
 
 CREATE TABLE person (
     id              VARCHAR(255) NOT NULL PRIMARY KEY,
-    assocUsername   VARCHAR(255),
+    assoc_username   VARCHAR(255),
     first_name      VARCHAR(255) NOT NULL,
     last_name       VARCHAR(255) NOT NULL,
     gender          CHAR(1) NOT NULL,
@@ -28,7 +28,7 @@ CREATE TABLE person (
     mother          VARCHAR(255),
     spouse          VARCHAR(255),
     CHECK (gender IN ('f', 'm')),
-    FOREIGN KEY (assocUsername) REFERENCES user(username),
+    FOREIGN KEY (assoc_username) REFERENCES user(username),
     FOREIGN KEY (father) REFERENCES person(id),
     FOREIGN KEY (mother) REFERENCES person(id),
     FOREIGN KEY (spouse) REFERENCES person(id)
@@ -36,7 +36,7 @@ CREATE TABLE person (
 
 CREATE TABLE event (
     id              VARCHAR(255) NOT NULL PRIMARY KEY,
-    assocUsername   VARCHAR(255),
+    assoc_username   VARCHAR(255),
     person_id       VARCHAR(255) NOT NULL,
     latitude        FLOAT NOT NULL,
     longitude       FLOAT  NOT NULL,
@@ -44,6 +44,6 @@ CREATE TABLE event (
     city            VARCHAR(255) NOT NULL,
     type            VARCHAR(255) NOT NULL,
     year            INTEGER NOT NULL,
-    FOREIGN KEY (assocUsername) REFERENCES user(username),
+    FOREIGN KEY (assoc_username) REFERENCES user(username),
     FOREIGN KEY (person_id) REFERENCES person(id)
 );
