@@ -1,29 +1,13 @@
 /* These statements describe the tables in the FamilyMapServer database */
 
-CREATE TABLE person (
-    id          VARCHAR(255) NOT NULL PRIMARY KEY,
-    descendant  VARCHAR(255),
-    first_name  VARCHAR(255) NOT NULL,
-    last_name   VARCHAR(255) NOT NULL,
-    gender      CHAR(1) NOT NULL,
-    father      VARCHAR(255),
-    mother      VARCHAR(255),
-    spouse      VARCHAR(255),
-    CHECK (gender IN ('f', 'm')),
-    FOREIGN KEY (descendant) REFERENCES user(username),
-    FOREIGN KEY (father) REFERENCES person(id),
-    FOREIGN KEY (mother) REFERENCES person(id),
-    FOREIGN KEY (spouse) REFERENCES person(id)
-);
-
 CREATE TABLE user (
-    username    VARCHAR(255) NOT NULL PRIMARY KEY,
-    password    VARCHAR(255) NOT NULL,
-    email       VARCHAR(255) NOT NULL,
-    first_name  VARCHAR(255) NOT NULL,
-    last_name   VARCHAR(255) NOT NULL,
-    gender      CHAR(1) NOT NULL,
-    person_id   VARCHAR(255) NOT NULL,
+    username        VARCHAR(255) NOT NULL PRIMARY KEY,
+    password        VARCHAR(255) NOT NULL,
+    email           VARCHAR(255) NOT NULL,
+    first_name      VARCHAR(255) NOT NULL,
+    last_name       VARCHAR(255) NOT NULL,
+    gender          CHAR(1) NOT NULL,
+    person_id       VARCHAR(255) NOT NULL,
     CHECK (gender IN ('f', 'm')),
     FOREIGN KEY (person_id) REFERENCES person(id)
 );
@@ -34,16 +18,32 @@ CREATE TABLE auth_token (
     FOREIGN KEY (username) REFERENCES user(username)
 );
 
+CREATE TABLE person (
+    id              VARCHAR(255) NOT NULL PRIMARY KEY,
+    assocUsername   VARCHAR(255),
+    first_name      VARCHAR(255) NOT NULL,
+    last_name       VARCHAR(255) NOT NULL,
+    gender          CHAR(1) NOT NULL,
+    father          VARCHAR(255),
+    mother          VARCHAR(255),
+    spouse          VARCHAR(255),
+    CHECK (gender IN ('f', 'm')),
+    FOREIGN KEY (assocUsername) REFERENCES user(username),
+    FOREIGN KEY (father) REFERENCES person(id),
+    FOREIGN KEY (mother) REFERENCES person(id),
+    FOREIGN KEY (spouse) REFERENCES person(id)
+);
+
 CREATE TABLE event (
-    id          VARCHAR(255) NOT NULL PRIMARY KEY,
-    descendant  VARCHAR(255),
-    person_id   VARCHAR(255) NOT NULL,
-    latitude    FLOAT NOT NULL,
-    longitude   FLOAT  NOT NULL,
-    country     VARCHAR(255) NOT NULL,
-    city        VARCHAR(255) NOT NULL,
-    type        VARCHAR(255) NOT NULL,
-    year        INTEGER NOT NULL,
-    FOREIGN KEY (descendant) REFERENCES user(username),
+    id              VARCHAR(255) NOT NULL PRIMARY KEY,
+    assocUsername   VARCHAR(255),
+    person_id       VARCHAR(255) NOT NULL,
+    latitude        FLOAT NOT NULL,
+    longitude       FLOAT  NOT NULL,
+    country         VARCHAR(255) NOT NULL,
+    city            VARCHAR(255) NOT NULL,
+    type            VARCHAR(255) NOT NULL,
+    year            INTEGER NOT NULL,
+    FOREIGN KEY (assocUsername) REFERENCES user(username),
     FOREIGN KEY (person_id) REFERENCES person(id)
 );
