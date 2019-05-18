@@ -35,6 +35,16 @@ public class AuthTokenAccess {
     }
 
     /**
+     * Removes all authorization tokens from the database.
+     * 
+     * @param db the database from which to remove the authorization tokens
+     * @throws DBException if the database is not open, or if another database error occurs
+     */
+    public static void clear(Database db) throws DBException {
+
+    }
+
+    /**
      * Creates a new table to hold authorization tokens.
      * 
      * @param db the database in which to create the table

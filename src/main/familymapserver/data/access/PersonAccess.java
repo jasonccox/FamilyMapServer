@@ -48,6 +48,16 @@ public class PersonAccess {
     }
 
     /**
+     * Removes all persons from the database.
+     * 
+     * @param db the database from which to remove the persons
+     * @throws DBException if the database is not open, or if another database error occurs
+     */
+    public static void clear(Database db) throws DBException {
+
+    }
+
+    /**
      * Creates a new table to hold persons.
      * 
      * @param db the database in which to create the table
