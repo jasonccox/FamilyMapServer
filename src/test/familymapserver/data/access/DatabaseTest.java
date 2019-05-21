@@ -21,7 +21,7 @@ import familymapserver.data.model.User;
 
 public class DatabaseTest {
 
-    private static final String TEST_DB = "db/test.sqlite";
+    protected static final String TEST_DB = "db/test.sqlite";
 
     private Database d;
 
@@ -96,8 +96,9 @@ public class DatabaseTest {
         ps = c.prepareStatement("SELECT count(*) FROM sqlite_master WHERE type = 'table'");
         ResultSet rs = ps.executeQuery();
         assertEquals(0, rs.getInt(1));
-        rs.close();
 
+        rs.close();
+        ps.close();
         d.close();
     }
 
@@ -108,6 +109,7 @@ public class DatabaseTest {
         Connection c = d.getSQLConnection();
         PreparedStatement ps = c.prepareStatement("CREATE TABLE test (test_field INTEGER)");
         ps.executeUpdate();
+        ps.close();
 
         d.commit();
         d.close();
@@ -118,8 +120,9 @@ public class DatabaseTest {
         ps = c.prepareStatement("SELECT count(*) FROM sqlite_master WHERE type = 'table'");
         ResultSet rs = ps.executeQuery();
         assertEquals(1, rs.getInt(1));
-        rs.close();
 
+        rs.close();
+        ps.close();
         d.close();
     }
 
@@ -135,6 +138,7 @@ public class DatabaseTest {
         Connection c = d.getSQLConnection();
         PreparedStatement ps = c.prepareStatement("CREATE TABLE test (test_field INTEGER)");
         ps.executeUpdate();
+        ps.close();
 
         d.rollback();
         d.close();
@@ -145,8 +149,9 @@ public class DatabaseTest {
         ps = c.prepareStatement("SELECT count(*) FROM sqlite_master WHERE type = 'table'");
         ResultSet rs = ps.executeQuery();
         assertEquals(0, rs.getInt(1));
-        rs.close();
 
+        rs.close();
+        ps.close();
         d.close();
     }
 
@@ -178,22 +183,26 @@ public class DatabaseTest {
         ResultSet rs = ps.executeQuery();
         assertEquals(0, rs.getInt(1));
         rs.close();
+        ps.close();
 
         ps = c.prepareStatement("SELECT count() FROM auth_token");
         rs = ps.executeQuery();
         assertEquals(0, rs.getInt(1));
         rs.close();
+        ps.close();
 
         ps = c.prepareStatement("SELECT count() FROM person");
         rs = ps.executeQuery();
         assertEquals(0, rs.getInt(1));
         rs.close();
+        ps.close();
 
         ps = c.prepareStatement("SELECT count() FROM event");
         rs = ps.executeQuery();
         assertEquals(0, rs.getInt(1));
-        rs.close();   
-        
+        rs.close();
+        ps.close();
+
         d.close();
     }
 
