@@ -1,11 +1,28 @@
 package familymapserver.data.access;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import familymapserver.data.model.User;
 
 /**
  * Contains methods for accessing user data in the database.
  */
 public class UserAccess {
+
+    private static final String CREATE_STMT = "CREATE TABLE user (" + 
+                                                "username        VARCHAR(255) NOT NULL PRIMARY KEY, " +
+                                                "password        VARCHAR(255) NOT NULL, " +
+                                                "email           VARCHAR(255) NOT NULL, " +
+                                                "first_name      VARCHAR(255) NOT NULL, " +
+                                                "last_name       VARCHAR(255) NOT NULL, " +
+                                                "gender          CHAR(1) NOT NULL, " +
+                                                "person_id       VARCHAR(255) NOT NULL, " +
+                                                "CHECK (gender IN ('f', 'm')), " +
+                                                "FOREIGN KEY (person_id) REFERENCES person(id)" + 
+                                              ")";
 
     /**
      * Adds a new user to the database.
@@ -17,7 +34,31 @@ public class UserAccess {
      * @throws DBException if the database is not open, or if another database error occurs
      */
     public static boolean add(User user, Database db) throws DBException {
-        return false;
+        boolean added = false;
+
+        Connection c = getOpenConnection(db);
+
+        String sql = "INSERT INTO user (username, password, email, first_name, last_name, gender, person_id) " +
+                     "SELECT ?, ?, ?, ?, ?, ?, ? " +
+                     "WHERE NOT EXISTS (SELECT 1 FROM user WHERE username = ?)";
+
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, user.getUsername());
+            ps.setString(2, user.getPassword());
+            ps.setString(3, user.getEmail());
+            ps.setString(4, user.getFirstName());
+            ps.setString(5, user.getLastName());
+            ps.setString(6, user.getGender());
+            ps.setString(7, user.getPersonId());
+            ps.setString(8, user.getUsername());
+
+            added = (ps.executeUpdate() == 1);
+        } catch (SQLException e) {
+            throw new DBException(e);
+        } 
+
+
+        return added;
     }
 
     /**
@@ -30,7 +71,39 @@ public class UserAccess {
      * @throws DBException if the database is not open, or if another database error occurs
      */
     public static User get(String username, Database db) throws DBException {
-        return null;
+        User u = null;
+
+        Connection c = getOpenConnection(db);
+
+        String sql = "SELECT username, password, email, first_name, last_name, gender, person_id " +
+                     "FROM user " +
+                     "WHERE username = ?";
+
+        ResultSet rs = null;
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, username);
+
+            rs = ps.executeQuery();
+
+            if (!rs.next()) { // no results - user doesn't exist
+                return null;
+            }
+
+            u = new User(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4),
+                         rs.getString(5), rs.getString(6), rs.getString(7));
+        } catch (SQLException e) {
+            throw new DBException(e);
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    throw new DBException(e);
+                }
+            }
+        }
+
+        return u;
     }
 
     /**
@@ -40,7 +113,15 @@ public class UserAccess {
      * @throws DBException if the database is not open, or if another database error occurs
      */
     public static void clear(Database db) throws DBException {
+        Connection c = getOpenConnection(db);
 
+        String sql = "DELETE FROM user";
+        
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new DBException(e);
+        }
     }
 
     /**
@@ -50,7 +131,22 @@ public class UserAccess {
      * @throws DBException if the database is not open, or if another database error occurs
      */
     protected static void createTable(Database db) throws DBException {
+        Connection c = getOpenConnection(db);
 
+        try (PreparedStatement ps = c.prepareStatement(CREATE_STMT)){
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new DBException(e);
+        }
+    }
+
+    private static Connection getOpenConnection(Database db) throws DBException {
+        Connection c = db.getSQLConnection();
+        if (c == null) {
+            throw new DBException("The database is closed.");
+        }
+
+        return c;
     }
 
 }
