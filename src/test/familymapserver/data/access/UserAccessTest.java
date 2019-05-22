@@ -21,7 +21,7 @@ public class UserAccessTest {
 
     private Database db;
     private UserAccess userAccess;
-    private User u = new User("uname", "pw", "uname@email.com", "fname", "lname", "m", "pid");
+    private User user = new User("uname", "pw", "uname@email.com", "fname", "lname", "m", "pid");
 
     @Before
     public void setup() throws DBException {
@@ -47,7 +47,7 @@ public class UserAccessTest {
     public void addReturnsTrueAndAddsUserToDB() throws SQLException, DBException {
         userAccess.createTable();
 
-        assertTrue(userAccess.add(u));
+        assertTrue(userAccess.add(user));
 
         Connection c = db.getSQLConnection();
         PreparedStatement ps = c.prepareStatement("SELECT count() FROM user");
@@ -60,13 +60,13 @@ public class UserAccessTest {
         rs = ps.executeQuery();
 
         assertTrue(rs.next());
-        assertEquals(u.getUsername(), rs.getString(1));
-        assertEquals(u.getPassword(), rs.getString(2));
-        assertEquals(u.getEmail(), rs.getString(3));
-        assertEquals(u.getFirstName(), rs.getString(4));
-        assertEquals(u.getLastName(), rs.getString(5));
-        assertEquals(u.getGender(), rs.getString(6));
-        assertEquals(u.getPersonId(), rs.getString(7));
+        assertEquals(user.getUsername(), rs.getString(1));
+        assertEquals(user.getPassword(), rs.getString(2));
+        assertEquals(user.getEmail(), rs.getString(3));
+        assertEquals(user.getFirstName(), rs.getString(4));
+        assertEquals(user.getLastName(), rs.getString(5));
+        assertEquals(user.getGender(), rs.getString(6));
+        assertEquals(user.getPersonId(), rs.getString(7));
 
         rs.close();
         ps.close();
@@ -76,14 +76,14 @@ public class UserAccessTest {
     public void addReturnsFalseAndDoesNotAddUserIfUsernameTaken() throws DBException, SQLException {
         userAccess.createTable();
         
-        userAccess.add(u);
+        userAccess.add(user);
 
-        User u2 = new User(u.getUsername(), "pw2", "uname2@email.com", "fname2", "lname2", "f", "pid2");
+        User u2 = new User(user.getUsername(), "pw2", "uname2@email.com", "fname2", "lname2", "f", "pid2");
         assertFalse(userAccess.add(u2));
 
         Connection c = db.getSQLConnection();
         PreparedStatement ps = c.prepareStatement("SELECT count() FROM user WHERE username = ?");
-        ps.setString(1, u.getUsername());
+        ps.setString(1, user.getUsername());
         ResultSet rs = ps.executeQuery();
         assertEquals(1, rs.getInt(1));
         rs.close();
@@ -166,30 +166,30 @@ public class UserAccessTest {
     public void addThrowsExceptionIfDBClosed() throws DBException {
         db.close();
 
-        userAccess.add(u);
+        userAccess.add(user);
     }
 
     @Test
     public void getReturnsUserIfInDB() throws DBException {
         userAccess.createTable();
         
-        userAccess.add(u);
-        User result = userAccess.get(u.getUsername());
+        userAccess.add(user);
+        User result = userAccess.get(user.getUsername());
 
-        assertEquals(u.getUsername(), result.getUsername());
-        assertEquals(u.getPassword(), result.getPassword());
-        assertEquals(u.getFirstName(), result.getFirstName());
-        assertEquals(u.getLastName(), result.getLastName());
-        assertEquals(u.getEmail(), result.getEmail());
-        assertEquals(u.getGender(), result.getGender());
-        assertEquals(u.getPersonId(), result.getPersonId());
+        assertEquals(user.getUsername(), result.getUsername());
+        assertEquals(user.getPassword(), result.getPassword());
+        assertEquals(user.getFirstName(), result.getFirstName());
+        assertEquals(user.getLastName(), result.getLastName());
+        assertEquals(user.getEmail(), result.getEmail());
+        assertEquals(user.getGender(), result.getGender());
+        assertEquals(user.getPersonId(), result.getPersonId());
     }
 
     @Test
     public void getReturnsNullIfNotInDB() throws DBException {
         userAccess.createTable();
         
-        userAccess.add(u);
+        userAccess.add(user);
         assertNull(userAccess.get("doesntexist"));
     }
 
@@ -197,14 +197,14 @@ public class UserAccessTest {
     public void getThrowsExceptionIfDBClosed() throws DBException {
         db.close();
 
-        userAccess.get(u.getUsername());
+        userAccess.get(user.getUsername());
     }
 
     @Test
     public void clearRemovesAllUsers() throws DBException, SQLException {
         userAccess.createTable();
         
-        userAccess.add(u);
+        userAccess.add(user);
         userAccess.clear();
 
         Connection c = db.getSQLConnection();

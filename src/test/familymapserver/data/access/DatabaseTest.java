@@ -165,19 +165,21 @@ public class DatabaseTest {
         db.open(TEST_DB);
 
         UserAccess userAccess = new UserAccess(db);
+        AuthTokenAccess authTokenAccess = new AuthTokenAccess(db);
         PersonAccess personAccess = new PersonAccess(db);
+        EventAccess eventAccess = new EventAccess(db);
 
         userAccess.createTable();
         userAccess.add(new User("test", "pw", "a", "b", "c", "d", "e"));
 
-        AuthTokenAccess.createTable(db);
-        AuthTokenAccess.add(new AuthToken("a", "b"), db);
+        authTokenAccess.createTable();
+        authTokenAccess.add(new AuthToken("a", "b"));
 
         personAccess.createTable();
         personAccess.add(new Person("a", "b", "c", "d", "e", "f", "g", "h"));
 
-        EventAccess.createTable(db);
-        EventAccess.add(new Event("a", "b", "c", 0, 1, "d", "e", "f", 2), db);
+        eventAccess.createTable();
+        eventAccess.add(new Event("a", "b", "c", 0, 1, "d", "e", "f", 2));
 
         db.clear();
 

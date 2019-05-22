@@ -22,12 +22,12 @@ public abstract class Access {
      * @throws DBException if the database is not open
      */
     protected Connection getOpenConnection() throws DBException {
-        Connection c = db.getSQLConnection();
-        if (c == null) {
+        Connection conn = db.getSQLConnection();
+        if (conn == null) {
             throw new DBException("The database is closed.");
         }
 
-        return c;
+        return conn;
     }
 
     /**
@@ -37,9 +37,9 @@ public abstract class Access {
      * @throws DBException if the database is not open, or if another database error occurs
      */
     protected void executeUpdate(String sql) throws DBException {
-        Connection c = getOpenConnection();
+        Connection conn = getOpenConnection();
         
-        try (PreparedStatement ps = c.prepareStatement(sql)) {
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new DBException(e);

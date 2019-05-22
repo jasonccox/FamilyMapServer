@@ -50,13 +50,13 @@ public class PersonAccess extends Access {
     public boolean add(Person person) throws DBException {
         boolean added = false;
 
-        Connection c = getOpenConnection();
+        Connection conn = getOpenConnection();
 
         String sql = "INSERT INTO person (id, assoc_username, first_name, last_name, gender, father, mother, spouse) " +
                      "SELECT ?, ?, ?, ?, ?, ?, ?, ? " +
                      "WHERE NOT EXISTS (SELECT 1 FROM person WHERE id = ?)";
 
-        try (PreparedStatement ps = c.prepareStatement(sql)) {
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, person.getId());
             ps.setString(2, person.getAssociatedUsername());
             ps.setString(3, person.getFirstName());
@@ -85,16 +85,16 @@ public class PersonAccess extends Access {
      * @throws DBException if the database is not open, or if another database error occurs
      */
     public Person get(String personId) throws DBException {
-        Person p = null;
+        Person person = null;
 
-        Connection c = getOpenConnection();
+        Connection conn = getOpenConnection();
 
         String sql = "SELECT id, assoc_username, first_name, last_name, gender, father, mother, spouse " +
                      "FROM person " +
                      "WHERE id = ?";
 
         ResultSet rs = null;
-        try (PreparedStatement ps = c.prepareStatement(sql)) {
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, personId);
 
             rs = ps.executeQuery();
@@ -103,7 +103,7 @@ public class PersonAccess extends Access {
                 return null;
             }
 
-            p = new Person(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4),
+            person = new Person(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4),
                          rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8));
         } catch (SQLException e) {
             throw new DBException(e);
@@ -117,7 +117,7 @@ public class PersonAccess extends Access {
             }
         }
 
-        return p;
+        return person;
     }
 
     /**
@@ -128,23 +128,23 @@ public class PersonAccess extends Access {
      * @throws DBException if the database is not open, or if another database error occurs
      */
     public Collection<Person> getAll(String username) throws DBException {
-        ArrayList<Person> p = new ArrayList<>();
+        ArrayList<Person> persons = new ArrayList<>();
 
-        Connection c = getOpenConnection();
+        Connection conn = getOpenConnection();
 
         String sql = "SELECT id, assoc_username, first_name, last_name, gender, father, mother, spouse " +
                      "FROM person " +
                      "WHERE assoc_username = ?";
 
         ResultSet rs = null;
-        try (PreparedStatement ps = c.prepareStatement(sql)) {
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, username);
             
             rs = ps.executeQuery();
 
             while (rs.next()) {
-                p.add(new Person(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4),
-                      rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8)));
+                persons.add(new Person(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4),
+                                       rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8)));
             }
         } catch (SQLException e) {
             throw new DBException(e);
@@ -158,7 +158,7 @@ public class PersonAccess extends Access {
             }
         }
 
-        return p;
+        return persons;
     }
 
     /**

@@ -23,7 +23,7 @@ public class PersonAccessTest {
 
     private Database db;
     private PersonAccess personAccess;
-    private Person p = new Person("id", "uname", "fname", "lname", "m", "fid", "mid", "sid");
+    private Person person = new Person("id", "uname", "fname", "lname", "m", "fid", "mid", "sid");
 
     @Before
     public void setup() throws DBException {
@@ -49,7 +49,7 @@ public class PersonAccessTest {
     public void addReturnsTrueAndAddsPersonToDB() throws SQLException, DBException {
         personAccess.createTable();
 
-        assertTrue(personAccess.add(p));
+        assertTrue(personAccess.add(person));
 
         Connection c = db.getSQLConnection();
         PreparedStatement ps = c.prepareStatement("SELECT count() FROM person");
@@ -62,14 +62,14 @@ public class PersonAccessTest {
         rs = ps.executeQuery();
 
         assertTrue(rs.next());
-        assertEquals(p.getId(), rs.getString(1));
-        assertEquals(p.getAssociatedUsername(), rs.getString(2));
-        assertEquals(p.getFirstName(), rs.getString(3));
-        assertEquals(p.getLastName(), rs.getString(4));
-        assertEquals(p.getGender(), rs.getString(5));
-        assertEquals(p.getFather(), rs.getString(6));
-        assertEquals(p.getMother(), rs.getString(7));
-        assertEquals(p.getSpouse(), rs.getString(8));
+        assertEquals(person.getId(), rs.getString(1));
+        assertEquals(person.getAssociatedUsername(), rs.getString(2));
+        assertEquals(person.getFirstName(), rs.getString(3));
+        assertEquals(person.getLastName(), rs.getString(4));
+        assertEquals(person.getGender(), rs.getString(5));
+        assertEquals(person.getFather(), rs.getString(6));
+        assertEquals(person.getMother(), rs.getString(7));
+        assertEquals(person.getSpouse(), rs.getString(8));
 
         rs.close();
         ps.close();
@@ -79,14 +79,14 @@ public class PersonAccessTest {
     public void addReturnsFalseAndDoesNotAddPersonIfIdTaken() throws DBException, SQLException {
         personAccess.createTable();
         
-        personAccess.add(p);
+        personAccess.add(person);
 
-        Person p2 = new Person(p.getId(), "uname2", "fname2", "lname2", "f", "fid2", "mid2", "sid2");
+        Person p2 = new Person(person.getId(), "uname2", "fname2", "lname2", "f", "fid2", "mid2", "sid2");
         assertFalse(personAccess.add(p2));
 
         Connection c = db.getSQLConnection();
         PreparedStatement ps = c.prepareStatement("SELECT count() FROM person WHERE id = ?");
-        ps.setString(1, p.getId());
+        ps.setString(1, person.getId());
         ResultSet rs = ps.executeQuery();
         assertEquals(1, rs.getInt(1));
         rs.close();
@@ -178,31 +178,31 @@ public class PersonAccessTest {
     public void addThrowsExceptionIfDBClosed() throws DBException {
         db.close();
 
-        personAccess.add(p);
+        personAccess.add(person);
     }
 
     @Test
     public void getReturnsPersonIfInDB() throws DBException {
         personAccess.createTable();
         
-        personAccess.add(p);
-        Person result = personAccess.get(p.getId());
+        personAccess.add(person);
+        Person result = personAccess.get(person.getId());
 
-        assertEquals(p.getId(), result.getId());
-        assertEquals(p.getAssociatedUsername(), result.getAssociatedUsername());
-        assertEquals(p.getFirstName(), result.getFirstName());
-        assertEquals(p.getLastName(), result.getLastName());
-        assertEquals(p.getGender(), result.getGender());
-        assertEquals(p.getFather(), result.getFather());
-        assertEquals(p.getMother(), result.getMother());
-        assertEquals(p.getSpouse(), result.getSpouse());
+        assertEquals(person.getId(), result.getId());
+        assertEquals(person.getAssociatedUsername(), result.getAssociatedUsername());
+        assertEquals(person.getFirstName(), result.getFirstName());
+        assertEquals(person.getLastName(), result.getLastName());
+        assertEquals(person.getGender(), result.getGender());
+        assertEquals(person.getFather(), result.getFather());
+        assertEquals(person.getMother(), result.getMother());
+        assertEquals(person.getSpouse(), result.getSpouse());
     }
 
     @Test
     public void getReturnsNullIfNotInDB() throws DBException {
         personAccess.createTable();
         
-        personAccess.add(p);
+        personAccess.add(person);
         assertNull(personAccess.get("doesntexist"));
     }
 
@@ -210,7 +210,7 @@ public class PersonAccessTest {
     public void getThrowsExceptionIfDBClosed() throws DBException {
         db.close();
 
-        personAccess.get(p.getId());
+        personAccess.get(person.getId());
     }
 
     @Test
@@ -218,15 +218,15 @@ public class PersonAccessTest {
         personAccess.createTable();
 
         Person p2 = new Person("i", "u", "f", "l", "m", "f", "m", "s");
-        Person p3 = new Person("i2", p.getAssociatedUsername(), "f2", "l2", "f", "f2", "m2", "s2");
+        Person p3 = new Person("i2", person.getAssociatedUsername(), "f2", "l2", "f", "f2", "m2", "s2");
         Person p4 = new Person("i3", "u3", "f3", "l3", "m", "f3", "m3", "s3");
 
-        personAccess.add(p);
+        personAccess.add(person);
         personAccess.add(p2);
         personAccess.add(p3);
         personAccess.add(p4);
 
-        Collection<Person> result = personAccess.getAll(p.getAssociatedUsername());
+        Collection<Person> result = personAccess.getAll(person.getAssociatedUsername());
 
         assertEquals(2, result.size());
         
@@ -237,10 +237,10 @@ public class PersonAccessTest {
         System.out.println(r1.getId());
         System.out.println(r2.getId());
         
-        if (p.getId().equals(r1.getId())) {
+        if (person.getId().equals(r1.getId())) {
             assertEquals(p3.getId(), r2.getId());
         } else {
-            assertEquals(p.getId(), r2.getId());
+            assertEquals(person.getId(), r2.getId());
             assertEquals(p3.getId(), r1.getId());
         }
     }
@@ -250,10 +250,10 @@ public class PersonAccessTest {
         personAccess.createTable();
 
         Person p2 = new Person("i", "u", "f", "l", "m", "f", "m", "s");
-        Person p3 = new Person("i2", p.getAssociatedUsername(), "f2", "l2", "f", "f2", "m2", "s2");
+        Person p3 = new Person("i2", person.getAssociatedUsername(), "f2", "l2", "f", "f2", "m2", "s2");
         Person p4 = new Person("i3", "u3", "f3", "l3", "m", "f3", "m3", "s3");
 
-        personAccess.add(p);
+        personAccess.add(person);
         personAccess.add(p2);
         personAccess.add(p3);
         personAccess.add(p4);
@@ -274,7 +274,7 @@ public class PersonAccessTest {
     public void clearRemovesAllPersons() throws DBException, SQLException {
         personAccess.createTable();
         
-        personAccess.add(p);
+        personAccess.add(person);
         personAccess.clear();
 
         Connection c = db.getSQLConnection();

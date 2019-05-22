@@ -129,10 +129,10 @@ public class Database {
             throw new DBException("Cannot clear the database when it is closed.");
         }
 
-        /* UserAccess.clear(this);
-        AuthTokenAccess.clear(this);
-        PersonAccess.clear(this);
-        EventAccess.clear(this); */
+        (new UserAccess(this)).clear();
+        (new AuthTokenAccess(this)).clear();
+        (new PersonAccess(this)).clear();
+        (new EventAccess(this)).clear();
     }
 
     /**

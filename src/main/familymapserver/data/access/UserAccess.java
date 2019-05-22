@@ -44,13 +44,13 @@ public class UserAccess extends Access {
     public boolean add(User user) throws DBException {
         boolean added = false;
 
-        Connection c = getOpenConnection();
+        Connection conn = getOpenConnection();
 
         String sql = "INSERT INTO user (username, password, email, first_name, last_name, gender, person_id) " +
                      "SELECT ?, ?, ?, ?, ?, ?, ? " +
                      "WHERE NOT EXISTS (SELECT 1 FROM user WHERE username = ?)";
 
-        try (PreparedStatement ps = c.prepareStatement(sql)) {
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, user.getUsername());
             ps.setString(2, user.getPassword());
             ps.setString(3, user.getEmail());
@@ -78,16 +78,16 @@ public class UserAccess extends Access {
      * @throws DBException if the database is not open, or if another database error occurs
      */
     public User get(String username) throws DBException {
-        User u = null;
+        User user = null;
 
-        Connection c = getOpenConnection();
+        Connection conn = getOpenConnection();
 
         String sql = "SELECT username, password, email, first_name, last_name, gender, person_id " +
                      "FROM user " +
                      "WHERE username = ?";
 
         ResultSet rs = null;
-        try (PreparedStatement ps = c.prepareStatement(sql)) {
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, username);
 
             rs = ps.executeQuery();
@@ -96,7 +96,7 @@ public class UserAccess extends Access {
                 return null;
             }
 
-            u = new User(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4),
+            user = new User(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4),
                          rs.getString(5), rs.getString(6), rs.getString(7));
         } catch (SQLException e) {
             throw new DBException(e);
@@ -110,7 +110,7 @@ public class UserAccess extends Access {
             }
         }
 
-        return u;
+        return user;
     }
 
     /**
