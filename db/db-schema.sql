@@ -20,7 +20,7 @@ CREATE TABLE auth_token (
 
 CREATE TABLE person (
     id              VARCHAR(255) NOT NULL PRIMARY KEY,
-    assoc_username   VARCHAR(255),
+    assoc_username  VARCHAR(255) NOT NULL,
     first_name      VARCHAR(255) NOT NULL,
     last_name       VARCHAR(255) NOT NULL,
     gender          CHAR(1) NOT NULL,
@@ -36,10 +36,10 @@ CREATE TABLE person (
 
 CREATE TABLE event (
     id              VARCHAR(255) NOT NULL PRIMARY KEY,
-    assoc_username   VARCHAR(255),
+    assoc_username  VARCHAR(255) NOT NULL,
     person_id       VARCHAR(255) NOT NULL,
     latitude        FLOAT NOT NULL,
-    longitude       FLOAT  NOT NULL,
+    longitude       FLOAT NOT NULL,
     country         VARCHAR(255) NOT NULL,
     city            VARCHAR(255) NOT NULL,
     type            VARCHAR(255) NOT NULL,
