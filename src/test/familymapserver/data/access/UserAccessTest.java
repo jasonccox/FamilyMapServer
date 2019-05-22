@@ -19,7 +19,8 @@ import familymapserver.data.model.User;
 
 public class UserAccessTest {
 
-    private Database d;
+    private Database db;
+    private UserAccess userAccess;
     private User u = new User("uname", "pw", "uname@email.com", "fname", "lname", "m", "pid");
 
     @Before
@@ -29,24 +30,26 @@ public class UserAccessTest {
             testDB.delete();
         }
         
-        d = new Database();
-        d.open(DatabaseTest.TEST_DB);
+        db = new Database();
+        db.open(DatabaseTest.TEST_DB);
+
+        userAccess = new UserAccess(db);
     }
 
     @After
     public void cleanup() throws DBException, SQLException {
-        if (d.getSQLConnection() != null && !d.getSQLConnection().isClosed()) {
-            d.close();
+        if (db.getSQLConnection() != null && !db.getSQLConnection().isClosed()) {
+            db.close();
         }
     }
 
     @Test
     public void addReturnsTrueAndAddsUserToDB() throws SQLException, DBException {
-        UserAccess.createTable(d);
+        userAccess.createTable();
 
-        assertTrue(UserAccess.add(u, d));
+        assertTrue(userAccess.add(u));
 
-        Connection c = d.getSQLConnection();
+        Connection c = db.getSQLConnection();
         PreparedStatement ps = c.prepareStatement("SELECT count() FROM user");
         ResultSet rs = ps.executeQuery();
         assertEquals(1, rs.getInt(1));
@@ -71,14 +74,14 @@ public class UserAccessTest {
 
     @Test
     public void addReturnsFalseAndDoesNotAddUserIfUsernameTaken() throws DBException, SQLException {
-        UserAccess.createTable(d);
+        userAccess.createTable();
         
-        UserAccess.add(u, d);
+        userAccess.add(u);
 
         User u2 = new User(u.getUsername(), "pw2", "uname2@email.com", "fname2", "lname2", "f", "pid2");
-        assertFalse(UserAccess.add(u2, d));
+        assertFalse(userAccess.add(u2));
 
-        Connection c = d.getSQLConnection();
+        Connection c = db.getSQLConnection();
         PreparedStatement ps = c.prepareStatement("SELECT count() FROM user WHERE username = ?");
         ps.setString(1, u.getUsername());
         ResultSet rs = ps.executeQuery();
@@ -89,89 +92,89 @@ public class UserAccessTest {
 
     @Test (expected = DBException.class)
     public void addThrowsExceptionIfUsernameMissing() throws DBException {
-        UserAccess.createTable(d);
+        userAccess.createTable();
 
         User u2 = new User(null, "p", "e", "f", "l", "m", "p");
 
-        UserAccess.add(u2, d);
+        userAccess.add(u2);
     }
 
     @Test (expected = DBException.class)
     public void addThrowsExceptionIfPasswordMissing() throws DBException {
-        UserAccess.createTable(d);
+        userAccess.createTable();
 
         User u2 = new User("u", null, "e", "f", "l", "m", "p");
 
-        UserAccess.add(u2, d);
+        userAccess.add(u2);
     }
 
     @Test (expected = DBException.class)
     public void addThrowsExceptionIfEmailMissing() throws DBException {
-        UserAccess.createTable(d);
+        userAccess.createTable();
 
         User u2 = new User("u", "p", null, "f", "l", "m", "p");
 
-        UserAccess.add(u2, d);
+        userAccess.add(u2);
     }
 
     @Test (expected = DBException.class)
     public void addThrowsExceptionIfFirstNameMissing() throws DBException {
-        UserAccess.createTable(d);
+        userAccess.createTable();
 
         User u2 = new User("u", "p", "e", null, "l", "m", "p");
 
-        UserAccess.add(u2, d);
+        userAccess.add(u2);
     }
 
     @Test (expected = DBException.class)
     public void addThrowsExceptionIfLastNameMissing() throws DBException {
-        UserAccess.createTable(d);
+        userAccess.createTable();
 
         User u2 = new User("u", "p", "e", "f", null, "m", "p");
 
-        UserAccess.add(u2, d);
+        userAccess.add(u2);
     }
 
     @Test (expected = DBException.class)
     public void addThrowsExceptionIfGenderMissing() throws DBException {
-        UserAccess.createTable(d);
+        userAccess.createTable();
 
         User u2 = new User("u", "p", "e", "f", "l", null, "p");
 
-        UserAccess.add(u2, d);
+        userAccess.add(u2);
     }
 
     @Test (expected = DBException.class)
     public void addThrowsExceptionIfPersonIdMissing() throws DBException {
-        UserAccess.createTable(d);
+        userAccess.createTable();
 
         User u2 = new User("u", "p", "e", "f", "l", "m", null);
 
-        UserAccess.add(u2, d);
+        userAccess.add(u2);
     }
 
     @Test (expected = DBException.class)
     public void addThrowsExceptionIfGenderInvalid() throws DBException {
-        UserAccess.createTable(d);
+        userAccess.createTable();
 
         User u2 = new User("u", "p", "e", "f", "l", "g", "p");
 
-        UserAccess.add(u2, d);
+        userAccess.add(u2);
     }
 
     @Test (expected = DBException.class)
     public void addThrowsExceptionIfDBClosed() throws DBException {
-        d.close();
+        db.close();
 
-        UserAccess.add(u, d);
+        userAccess.add(u);
     }
 
     @Test
     public void getReturnsUserIfInDB() throws DBException {
-        UserAccess.createTable(d);
+        userAccess.createTable();
         
-        UserAccess.add(u, d);
-        User result = UserAccess.get(u.getUsername(), d);
+        userAccess.add(u);
+        User result = userAccess.get(u.getUsername());
 
         assertEquals(u.getUsername(), result.getUsername());
         assertEquals(u.getPassword(), result.getPassword());
@@ -184,27 +187,27 @@ public class UserAccessTest {
 
     @Test
     public void getReturnsNullIfNotInDB() throws DBException {
-        UserAccess.createTable(d);
+        userAccess.createTable();
         
-        UserAccess.add(u, d);
-        assertNull(UserAccess.get("doesntexist", d));
+        userAccess.add(u);
+        assertNull(userAccess.get("doesntexist"));
     }
 
     @Test (expected = DBException.class)
     public void getThrowsExceptionIfDBClosed() throws DBException {
-        d.close();
+        db.close();
 
-        UserAccess.get(u.getUsername(), d);
+        userAccess.get(u.getUsername());
     }
 
     @Test
     public void clearRemovesAllUsers() throws DBException, SQLException {
-        UserAccess.createTable(d);
+        userAccess.createTable();
         
-        UserAccess.add(u, d);
-        UserAccess.clear(d);
+        userAccess.add(u);
+        userAccess.clear();
 
-        Connection c = d.getSQLConnection();
+        Connection c = db.getSQLConnection();
         PreparedStatement ps = c.prepareStatement("SELECT count() FROM user");
         ResultSet rs = ps.executeQuery();
         assertEquals(0, rs.getInt(1));
@@ -214,25 +217,25 @@ public class UserAccessTest {
 
     @Test
     public void clearDoesntThrowExceptionIfNoUsers() throws DBException {
-        UserAccess.createTable(d);
+        userAccess.createTable();
         
-        UserAccess.clear(d);
+        userAccess.clear();
     }
 
     @Test (expected = DBException.class)
     public void clearThrowsExceptionIfDBClosed() throws DBException {
-        UserAccess.createTable(d);
+        userAccess.createTable();
         
-        d.close();
+        db.close();
 
-        UserAccess.clear(d);
+        userAccess.clear();
     }
 
     @Test
     public void createTableCreatesUserTable() throws DBException, SQLException {
-        UserAccess.createTable(d);
+        userAccess.createTable();
 
-        Connection c = d.getSQLConnection();
+        Connection c = db.getSQLConnection();
         PreparedStatement ps = c.prepareStatement("SELECT count(*) FROM sqlite_master WHERE type = 'table' AND name = 'user'");
         ResultSet rs = ps.executeQuery();
         assertEquals(1, rs.getInt(1));
@@ -243,14 +246,14 @@ public class UserAccessTest {
 
     @Test (expected = DBException.class)
     public void createTableThrowsExceptionIfTableExists() throws DBException {
-        UserAccess.createTable(d);
-        UserAccess.createTable(d);
+        userAccess.createTable();
+        userAccess.createTable();
     }
 
     @Test (expected = DBException.class)
     public void createTableThrowsExceptionIfDBClosed() throws DBException {
-        d.close();
+        db.close();
 
-        UserAccess.createTable(d);
+        userAccess.createTable();
     }
 }

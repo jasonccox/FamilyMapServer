@@ -25,18 +25,26 @@ public class UserAccess extends Access {
                                               ")";
 
     /**
+     * Creates a new UserAccess object.
+     * 
+     * @param db the database on which to operate
+     */
+    public UserAccess(Database db) {
+        super(db);
+    }
+    
+    /**
      * Adds a new user to the database.
      * 
      * @param user the user to be added to the database
-     * @param db the database to which the user should be added
      * @return true if the user was added, false if a user with the same username
      * already existed, thus preventing this one from being added
      * @throws DBException if the database is not open, or if another database error occurs
      */
-    public static boolean add(User user, Database db) throws DBException {
+    public boolean add(User user) throws DBException {
         boolean added = false;
 
-        Connection c = getOpenConnection(db);
+        Connection c = getOpenConnection();
 
         String sql = "INSERT INTO user (username, password, email, first_name, last_name, gender, person_id) " +
                      "SELECT ?, ?, ?, ?, ?, ?, ? " +
@@ -65,15 +73,14 @@ public class UserAccess extends Access {
      * Gets a user from the database.
      * 
      * @param username the username of the user to be found
-     * @param db the database in which to find the user
      * @return an object containing the user's data, or null if no user was found with
      * the given username
      * @throws DBException if the database is not open, or if another database error occurs
      */
-    public static User get(String username, Database db) throws DBException {
+    public User get(String username) throws DBException {
         User u = null;
 
-        Connection c = getOpenConnection(db);
+        Connection c = getOpenConnection();
 
         String sql = "SELECT username, password, email, first_name, last_name, gender, person_id " +
                      "FROM user " +
@@ -109,21 +116,19 @@ public class UserAccess extends Access {
     /**
      * Removes all users from the database.
      * 
-     * @param db the database from which to remove the users
      * @throws DBException if the database is not open, or if another database error occurs
      */
-    public static void clear(Database db) throws DBException {
-        executeUpdate(db, "DELETE FROM user");
+    public void clear() throws DBException {
+        executeUpdate("DELETE FROM user");
     }
 
     /**
      * Creates a new table to hold users.
      * 
-     * @param db the database in which to create the table
      * @throws DBException if the database is not open, or if another database error occurs
      */
-    protected static void createTable(Database db) throws DBException {
-        executeUpdate(db, CREATE_STMT);
+    protected void createTable() throws DBException {
+        executeUpdate(CREATE_STMT);
     }
 
 }

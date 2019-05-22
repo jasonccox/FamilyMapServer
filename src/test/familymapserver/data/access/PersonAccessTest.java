@@ -21,7 +21,8 @@ import familymapserver.data.model.Person;
 
 public class PersonAccessTest {
 
-    private Database d;
+    private Database db;
+    private PersonAccess personAccess;
     private Person p = new Person("id", "uname", "fname", "lname", "m", "fid", "mid", "sid");
 
     @Before
@@ -31,24 +32,26 @@ public class PersonAccessTest {
             testDB.delete();
         }
         
-        d = new Database();
-        d.open(DatabaseTest.TEST_DB);
+        db = new Database();
+        db.open(DatabaseTest.TEST_DB);
+
+        personAccess = new PersonAccess(db);
     }
 
     @After
     public void cleanup() throws DBException, SQLException {
-        if (d.getSQLConnection() != null && !d.getSQLConnection().isClosed()) {
-            d.close();
+        if (db.getSQLConnection() != null && !db.getSQLConnection().isClosed()) {
+            db.close();
         }
     }
 
     @Test
     public void addReturnsTrueAndAddsPersonToDB() throws SQLException, DBException {
-        PersonAccess.createTable(d);
+        personAccess.createTable();
 
-        assertTrue(PersonAccess.add(p, d));
+        assertTrue(personAccess.add(p));
 
-        Connection c = d.getSQLConnection();
+        Connection c = db.getSQLConnection();
         PreparedStatement ps = c.prepareStatement("SELECT count() FROM person");
         ResultSet rs = ps.executeQuery();
         assertEquals(1, rs.getInt(1));
@@ -74,14 +77,14 @@ public class PersonAccessTest {
 
     @Test
     public void addReturnsFalseAndDoesNotAddPersonIfIdTaken() throws DBException, SQLException {
-        PersonAccess.createTable(d);
+        personAccess.createTable();
         
-        PersonAccess.add(p, d);
+        personAccess.add(p);
 
         Person p2 = new Person(p.getId(), "uname2", "fname2", "lname2", "f", "fid2", "mid2", "sid2");
-        assertFalse(PersonAccess.add(p2, d));
+        assertFalse(personAccess.add(p2));
 
-        Connection c = d.getSQLConnection();
+        Connection c = db.getSQLConnection();
         PreparedStatement ps = c.prepareStatement("SELECT count() FROM person WHERE id = ?");
         ps.setString(1, p.getId());
         ResultSet rs = ps.executeQuery();
@@ -92,98 +95,98 @@ public class PersonAccessTest {
 
     @Test (expected = DBException.class)
     public void addThrowsExceptionIfIdMissing() throws DBException {
-        PersonAccess.createTable(d);
+        personAccess.createTable();
 
         Person p2 = new Person(null, "u", "f", "l", "m", "f", "m", "s");
 
-        PersonAccess.add(p2, d);
+        personAccess.add(p2);
     }
 
     @Test (expected = DBException.class)
     public void addThrowsExceptionIfAssocUsernameMissing() throws DBException {
-        PersonAccess.createTable(d);
+        personAccess.createTable();
 
         Person p2 = new Person("i", null, "f", "l", "m", "f", "m", "s");
 
-        PersonAccess.add(p2, d);
+        personAccess.add(p2);
     }
 
     @Test (expected = DBException.class)
     public void addThrowsExceptionIfFirstNameMissing() throws DBException {
-        PersonAccess.createTable(d);
+        personAccess.createTable();
 
         Person p2 = new Person("i", "u", null, "l", "m", "f", "m", "s");
 
-        PersonAccess.add(p2, d);
+        personAccess.add(p2);
     }
 
     @Test (expected = DBException.class)
     public void addThrowsExceptionIfLastNameMissing() throws DBException {
-        PersonAccess.createTable(d);
+        personAccess.createTable();
 
         Person p2 = new Person("i", "u", "f", null, "m", "f", "m", "s");
 
-        PersonAccess.add(p2, d);
+        personAccess.add(p2);
     }
 
     @Test (expected = DBException.class)
     public void addThrowsExceptionIfGenderMissing() throws DBException {
-        PersonAccess.createTable(d);
+        personAccess.createTable();
 
         Person p2 = new Person("i", "u", "f", "l", null, "f", "m", "s");
 
-        PersonAccess.add(p2, d);
+        personAccess.add(p2);
     }
 
     @Test (expected = DBException.class)
     public void addThrowsExceptionIfGenderInvalid() throws DBException {
-        PersonAccess.createTable(d);
+        personAccess.createTable();
 
         Person p2 = new Person("i", "u", "f", "l", "a", "f", "m", "s");
 
-        PersonAccess.add(p2, d);
+        personAccess.add(p2);
     }
 
     @Test
     public void addThrowsNoExceptionIfFatherMissing() throws DBException {
-        PersonAccess.createTable(d);
+        personAccess.createTable();
 
         Person p2 = new Person("i", "u", "f", "l", "m", null, "m", "s");
 
-        assertTrue(PersonAccess.add(p2, d));
+        assertTrue(personAccess.add(p2));
     }
 
     @Test
     public void addThrowsNoExceptionIfMotherMissing() throws DBException {
-        PersonAccess.createTable(d);
+        personAccess.createTable();
 
         Person p2 = new Person("i", "u", "f", "l", "m", "f", null, "s");
 
-        assertTrue(PersonAccess.add(p2, d));
+        assertTrue(personAccess.add(p2));
     }
 
     @Test
     public void addThrowsNoExceptionIfSpouseMissing() throws DBException {
-        PersonAccess.createTable(d);
+        personAccess.createTable();
 
         Person p2 = new Person("i", "u", "f", "l", "m", "f", "m", null);
 
-        assertTrue(PersonAccess.add(p2, d));
+        assertTrue(personAccess.add(p2));
     }
 
     @Test (expected = DBException.class)
     public void addThrowsExceptionIfDBClosed() throws DBException {
-        d.close();
+        db.close();
 
-        PersonAccess.add(p, d);
+        personAccess.add(p);
     }
 
     @Test
     public void getReturnsPersonIfInDB() throws DBException {
-        PersonAccess.createTable(d);
+        personAccess.createTable();
         
-        PersonAccess.add(p, d);
-        Person result = PersonAccess.get(p.getId(), d);
+        personAccess.add(p);
+        Person result = personAccess.get(p.getId());
 
         assertEquals(p.getId(), result.getId());
         assertEquals(p.getAssociatedUsername(), result.getAssociatedUsername());
@@ -197,33 +200,33 @@ public class PersonAccessTest {
 
     @Test
     public void getReturnsNullIfNotInDB() throws DBException {
-        PersonAccess.createTable(d);
+        personAccess.createTable();
         
-        PersonAccess.add(p, d);
-        assertNull(PersonAccess.get("doesntexist", d));
+        personAccess.add(p);
+        assertNull(personAccess.get("doesntexist"));
     }
 
     @Test (expected = DBException.class)
     public void getThrowsExceptionIfDBClosed() throws DBException {
-        d.close();
+        db.close();
 
-        PersonAccess.get(p.getId(), d);
+        personAccess.get(p.getId());
     }
 
     @Test
     public void getAllReturnsMatchingPersons() throws DBException {
-        PersonAccess.createTable(d);
+        personAccess.createTable();
 
         Person p2 = new Person("i", "u", "f", "l", "m", "f", "m", "s");
         Person p3 = new Person("i2", p.getAssociatedUsername(), "f2", "l2", "f", "f2", "m2", "s2");
         Person p4 = new Person("i3", "u3", "f3", "l3", "m", "f3", "m3", "s3");
 
-        PersonAccess.add(p, d);
-        PersonAccess.add(p2, d);
-        PersonAccess.add(p3, d);
-        PersonAccess.add(p4, d);
+        personAccess.add(p);
+        personAccess.add(p2);
+        personAccess.add(p3);
+        personAccess.add(p4);
 
-        Collection<Person> result = PersonAccess.getAll(p.getAssociatedUsername(), d);
+        Collection<Person> result = personAccess.getAll(p.getAssociatedUsername());
 
         assertEquals(2, result.size());
         
@@ -244,37 +247,37 @@ public class PersonAccessTest {
 
     @Test
     public void getAllReturnsEmptyCollectionIfNoMatchingPersons() throws DBException {
-        PersonAccess.createTable(d);
+        personAccess.createTable();
 
         Person p2 = new Person("i", "u", "f", "l", "m", "f", "m", "s");
         Person p3 = new Person("i2", p.getAssociatedUsername(), "f2", "l2", "f", "f2", "m2", "s2");
         Person p4 = new Person("i3", "u3", "f3", "l3", "m", "f3", "m3", "s3");
 
-        PersonAccess.add(p, d);
-        PersonAccess.add(p2, d);
-        PersonAccess.add(p3, d);
-        PersonAccess.add(p4, d);
+        personAccess.add(p);
+        personAccess.add(p2);
+        personAccess.add(p3);
+        personAccess.add(p4);
 
-        Collection<Person> result = PersonAccess.getAll("nomatch", d);
+        Collection<Person> result = personAccess.getAll("nomatch");
 
         assertEquals(0, result.size());
     }
 
     @Test (expected = DBException.class)
     public void getAllThrowsExceptionIfDBClosed() throws DBException {
-        d.close();
+        db.close();
 
-        PersonAccess.getAll("uname", d);
+        personAccess.getAll("uname");
     }
 
     @Test
     public void clearRemovesAllPersons() throws DBException, SQLException {
-        PersonAccess.createTable(d);
+        personAccess.createTable();
         
-        PersonAccess.add(p, d);
-        PersonAccess.clear(d);
+        personAccess.add(p);
+        personAccess.clear();
 
-        Connection c = d.getSQLConnection();
+        Connection c = db.getSQLConnection();
         PreparedStatement ps = c.prepareStatement("SELECT count() FROM person");
         ResultSet rs = ps.executeQuery();
         assertEquals(0, rs.getInt(1));
@@ -284,25 +287,25 @@ public class PersonAccessTest {
 
     @Test
     public void clearDoesntThrowExceptionIfNoPersons() throws DBException {
-        PersonAccess.createTable(d);
+        personAccess.createTable();
         
-        PersonAccess.clear(d);
+        personAccess.clear();
     }
 
     @Test (expected = DBException.class)
     public void clearThrowsExceptionIfDBClosed() throws DBException {
-        PersonAccess.createTable(d);
+        personAccess.createTable();
         
-        d.close();
+        db.close();
 
-        PersonAccess.clear(d);
+        personAccess.clear();
     }
 
     @Test
     public void createTableCreatesPersonTable() throws DBException, SQLException {
-        PersonAccess.createTable(d);
+        personAccess.createTable();
 
-        Connection c = d.getSQLConnection();
+        Connection c = db.getSQLConnection();
         PreparedStatement ps = c.prepareStatement("SELECT count(*) FROM sqlite_master WHERE type = 'table' AND name = 'person'");
         ResultSet rs = ps.executeQuery();
         assertEquals(1, rs.getInt(1));
@@ -313,15 +316,15 @@ public class PersonAccessTest {
 
     @Test (expected = DBException.class)
     public void createTableThrowsExceptionIfTableExists() throws DBException {
-        PersonAccess.createTable(d);
-        PersonAccess.createTable(d);
+        personAccess.createTable();
+        personAccess.createTable();
     }
 
     @Test (expected = DBException.class)
     public void createTableThrowsExceptionIfDBClosed() throws DBException {
-        d.close();
+        db.close();
 
-        PersonAccess.createTable(d);
+        personAccess.createTable();
     }
 
 

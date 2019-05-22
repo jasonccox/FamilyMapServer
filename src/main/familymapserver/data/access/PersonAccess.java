@@ -31,18 +31,26 @@ public class PersonAccess extends Access {
                                               ")";
 
     /**
+     * Creates a new PersonAccess object.
+     * 
+     * @param db the database on which to operate
+     */
+    public PersonAccess(Database db) {
+        super(db);
+    }
+
+    /**
      * Adds a new person to the database.
      * 
      * @param person the person to be added to the database
-     * @param db the database to which the person should be added
      * @return true if the person was added, false if a person with the same id
      * already existed, thus preventing this one from being added
      * @throws DBException if the database is not open, or if another database error occurs
      */
-    public static boolean add(Person person, Database db) throws DBException {
+    public boolean add(Person person) throws DBException {
         boolean added = false;
 
-        Connection c = getOpenConnection(db);
+        Connection c = getOpenConnection();
 
         String sql = "INSERT INTO person (id, assoc_username, first_name, last_name, gender, father, mother, spouse) " +
                      "SELECT ?, ?, ?, ?, ?, ?, ?, ? " +
@@ -72,15 +80,14 @@ public class PersonAccess extends Access {
      * Gets a person from the database.
      * 
      * @param personId the id of the person to be found
-     * @param db the database in which to find the person
      * @return an object containing the person's data, or null if no person was found with
      * the given id
      * @throws DBException if the database is not open, or if another database error occurs
      */
-    public static Person get(String personId, Database db) throws DBException {
+    public Person get(String personId) throws DBException {
         Person p = null;
 
-        Connection c = getOpenConnection(db);
+        Connection c = getOpenConnection();
 
         String sql = "SELECT id, assoc_username, first_name, last_name, gender, father, mother, spouse " +
                      "FROM person " +
@@ -117,14 +124,13 @@ public class PersonAccess extends Access {
      * Gets all persons associated with a specific user from the database.
      * 
      * @param username the username of the user whose persons should be retrieved
-     * @param db the database in which to find the persons
      * @return objects containing the persons' data
      * @throws DBException if the database is not open, or if another database error occurs
      */
-    public static Collection<Person> getAll(String username, Database db) throws DBException {
+    public Collection<Person> getAll(String username) throws DBException {
         ArrayList<Person> p = new ArrayList<>();
 
-        Connection c = getOpenConnection(db);
+        Connection c = getOpenConnection();
 
         String sql = "SELECT id, assoc_username, first_name, last_name, gender, father, mother, spouse " +
                      "FROM person " +
@@ -158,21 +164,19 @@ public class PersonAccess extends Access {
     /**
      * Removes all persons from the database.
      * 
-     * @param db the database from which to remove the persons
      * @throws DBException if the database is not open, or if another database error occurs
      */
-    public static void clear(Database db) throws DBException {
-        executeUpdate(db, "DELETE FROM person");
+    public void clear() throws DBException {
+        executeUpdate("DELETE FROM person");
     }
 
     /**
      * Creates a new table to hold persons.
      * 
-     * @param db the database in which to create the table
      * @throws DBException if the table already exists, if the database is not open, or if 
      * another database error occurs
      */
-    protected static void createTable(Database db) throws DBException {
-        executeUpdate(db, CREATE_STMT);
+    protected void createTable() throws DBException {
+        executeUpdate(CREATE_STMT);
     }
 }

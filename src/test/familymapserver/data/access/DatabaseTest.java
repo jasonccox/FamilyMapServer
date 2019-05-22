@@ -23,7 +23,7 @@ public class DatabaseTest {
 
     protected static final String TEST_DB = "db/test.sqlite";
 
-    private Database d;
+    private Database db;
 
     @Before
     public void setup() throws DBException {
@@ -32,22 +32,22 @@ public class DatabaseTest {
             dbFile.delete();
         }
 
-        d = new Database();
+        db = new Database();
     }
 
     @After
     public void cleanup() throws DBException, SQLException {
-        if (d == null) {
+        if (db == null) {
             return;
         }
 
-        Connection c = d.getSQLConnection();
+        Connection c = db.getSQLConnection();
 
         if (c != null && !c.isClosed()) {
-            d.close();
+            db.close();
         }
 
-        d = null;
+        db = null;
     }
 
     @Test
@@ -58,127 +58,130 @@ public class DatabaseTest {
 
     @Test
     public void openOpensConnection() throws DBException, SQLException {
-        d.open();
-        assertFalse(d.getSQLConnection().isClosed());
+        db.open();
+        assertFalse(db.getSQLConnection().isClosed());
     }
 
     @Test (expected = DBException.class)
     public void openThrowsExceptionIfOpen() throws DBException {
-        d.open();
-        d.open();
+        db.open();
+        db.open();
     }
 
     @Test
     public void closeClosesConnection() throws DBException, SQLException {
-        d.open();
-        d.close();
-        assertNull(d.getSQLConnection());
+        db.open();
+        db.close();
+        assertNull(db.getSQLConnection());
     }
 
     @Test (expected = DBException.class)
     public void closeThrowsExceptionIfClosed() throws DBException {
-        d.close();
+        db.close();
     }
 
     @Test
     public void closeRollsBackChanges() throws DBException, SQLException {
-        d.open(TEST_DB);
+        db.open(TEST_DB);
         
-        Connection c = d.getSQLConnection();
+        Connection c = db.getSQLConnection();
         PreparedStatement ps = c.prepareStatement("CREATE TABLE test (test_field INTEGER)");
         ps.executeUpdate();
 
-        d.close();
+        db.close();
 
-        d.open(TEST_DB);
+        db.open(TEST_DB);
 
-        c = d.getSQLConnection();
+        c = db.getSQLConnection();
         ps = c.prepareStatement("SELECT count(*) FROM sqlite_master WHERE type = 'table'");
         ResultSet rs = ps.executeQuery();
         assertEquals(0, rs.getInt(1));
 
         rs.close();
         ps.close();
-        d.close();
+        db.close();
     }
 
     @Test
     public void commitSavesChanges() throws DBException, SQLException {
-        d.open(TEST_DB);
+        db.open(TEST_DB);
 
-        Connection c = d.getSQLConnection();
+        Connection c = db.getSQLConnection();
         PreparedStatement ps = c.prepareStatement("CREATE TABLE test (test_field INTEGER)");
         ps.executeUpdate();
         ps.close();
 
-        d.commit();
-        d.close();
+        db.commit();
+        db.close();
 
-        d.open(TEST_DB);
+        db.open(TEST_DB);
 
-        c = d.getSQLConnection();
+        c = db.getSQLConnection();
         ps = c.prepareStatement("SELECT count(*) FROM sqlite_master WHERE type = 'table'");
         ResultSet rs = ps.executeQuery();
         assertEquals(1, rs.getInt(1));
 
         rs.close();
         ps.close();
-        d.close();
+        db.close();
     }
 
     @Test (expected = DBException.class)
     public void commitThrowsExceptionIfClosed() throws DBException {
-        d.commit();
+        db.commit();
     }
 
     @Test
     public void rollbackRollsBackChanges() throws DBException, SQLException {
-        d.open(TEST_DB);
+        db.open(TEST_DB);
 
-        Connection c = d.getSQLConnection();
+        Connection c = db.getSQLConnection();
         PreparedStatement ps = c.prepareStatement("CREATE TABLE test (test_field INTEGER)");
         ps.executeUpdate();
         ps.close();
 
-        d.rollback();
-        d.close();
+        db.rollback();
+        db.close();
 
-        d.open(TEST_DB);
+        db.open(TEST_DB);
 
-        c = d.getSQLConnection();
+        c = db.getSQLConnection();
         ps = c.prepareStatement("SELECT count(*) FROM sqlite_master WHERE type = 'table'");
         ResultSet rs = ps.executeQuery();
         assertEquals(0, rs.getInt(1));
 
         rs.close();
         ps.close();
-        d.close();
+        db.close();
     }
 
     @Test (expected = DBException.class)
     public void rollbackThrowsExceptionIfClosed() throws DBException {
-        d.rollback();
+        db.rollback();
     }
 
     @Test
     public void clearRemovesAllDataFromTables() throws DBException, SQLException {
-        d.open(TEST_DB);
+        db.open(TEST_DB);
 
-        UserAccess.createTable(d);
-        UserAccess.add(new User("test", "pw", "a", "b", "c", "d", "e"), d);
+        UserAccess userAccess = new UserAccess(db);
+        PersonAccess personAccess = new PersonAccess(db);
 
-        AuthTokenAccess.createTable(d);
-        AuthTokenAccess.add(new AuthToken("a", "b"), d);
+        userAccess.createTable();
+        userAccess.add(new User("test", "pw", "a", "b", "c", "d", "e"));
 
-        PersonAccess.createTable(d);
-        PersonAccess.add(new Person("a", "b", "c", "d", "e", "f", "g", "h"), d);
+        AuthTokenAccess.createTable(db);
+        AuthTokenAccess.add(new AuthToken("a", "b"), db);
 
-        EventAccess.createTable(d);
-        EventAccess.add(new Event("a", "b", "c", 0, 1, "d", "e", "f", 2), d);
+        personAccess.createTable();
+        personAccess.add(new Person("a", "b", "c", "d", "e", "f", "g", "h"));
 
-        d.clear();
+        EventAccess.createTable(db);
+        EventAccess.add(new Event("a", "b", "c", 0, 1, "d", "e", "f", 2), db);
 
-        Connection c = d.getSQLConnection();
+        db.clear();
+
+        Connection c = db.getSQLConnection();
         PreparedStatement ps = c.prepareStatement("SELECT count() FROM user");
         ResultSet rs = ps.executeQuery();
         assertEquals(0, rs.getInt(1));
@@ -203,12 +206,12 @@ public class DatabaseTest {
         rs.close();
         ps.close();
 
-        d.close();
+        db.close();
     }
 
     @Test (expected = DBException.class)
     public void clearThrowsExceptionIfClosed() throws DBException {
-        d.clear();
+        db.clear();
     }
 
 }

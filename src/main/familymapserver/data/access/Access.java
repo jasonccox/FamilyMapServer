@@ -9,14 +9,19 @@ import java.sql.SQLException;
  */
 public abstract class Access {
 
+    private Database db;
+
+    protected Access(Database db) {
+        this.db = db;
+    }
+
     /**
      * Gets an open connection from the database, if it has one.
      * 
-     * @param db the database from which to get the connection
      * @return an open connection to the database
      * @throws DBException if the database is not open
      */
-    protected static Connection getOpenConnection(Database db) throws DBException {
+    protected Connection getOpenConnection() throws DBException {
         Connection c = db.getSQLConnection();
         if (c == null) {
             throw new DBException("The database is closed.");
@@ -28,12 +33,11 @@ public abstract class Access {
     /**
      * Executes an update SQL statement on a database.
      * 
-     * @param db the database on which to execute the statement
      * @param sql the statement to be executed
      * @throws DBException if the database is not open, or if another database error occurs
      */
-    protected static void executeUpdate(Database db, String sql) throws DBException {
-        Connection c = getOpenConnection(db);
+    protected void executeUpdate(String sql) throws DBException {
+        Connection c = getOpenConnection();
         
         try (PreparedStatement ps = c.prepareStatement(sql)) {
             ps.executeUpdate();
