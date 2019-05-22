@@ -10,6 +10,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
+import java.util.Iterator;
 
 import org.junit.After;
 import org.junit.Before;
@@ -206,6 +208,63 @@ public class PersonAccessTest {
         d.close();
 
         PersonAccess.get(p.getId(), d);
+    }
+
+    @Test
+    public void getAllReturnsMatchingPersons() throws DBException {
+        PersonAccess.createTable(d);
+
+        Person p2 = new Person("i", "u", "f", "l", "m", "f", "m", "s");
+        Person p3 = new Person("i2", p.getAssociatedUsername(), "f2", "l2", "f", "f2", "m2", "s2");
+        Person p4 = new Person("i3", "u3", "f3", "l3", "m", "f3", "m3", "s3");
+
+        PersonAccess.add(p, d);
+        PersonAccess.add(p2, d);
+        PersonAccess.add(p3, d);
+        PersonAccess.add(p4, d);
+
+        Collection<Person> result = PersonAccess.getAll(p.getAssociatedUsername(), d);
+
+        assertEquals(2, result.size());
+        
+        Iterator<Person> i = result.iterator();
+        Person r1 = i.next();
+        Person r2 = i.next();
+
+        System.out.println(r1.getId());
+        System.out.println(r2.getId());
+        
+        if (p.getId().equals(r1.getId())) {
+            assertEquals(p3.getId(), r2.getId());
+        } else {
+            assertEquals(p.getId(), r2.getId());
+            assertEquals(p3.getId(), r1.getId());
+        }
+    }
+
+    @Test
+    public void getAllReturnsEmptyCollectionIfNoMatchingPersons() throws DBException {
+        PersonAccess.createTable(d);
+
+        Person p2 = new Person("i", "u", "f", "l", "m", "f", "m", "s");
+        Person p3 = new Person("i2", p.getAssociatedUsername(), "f2", "l2", "f", "f2", "m2", "s2");
+        Person p4 = new Person("i3", "u3", "f3", "l3", "m", "f3", "m3", "s3");
+
+        PersonAccess.add(p, d);
+        PersonAccess.add(p2, d);
+        PersonAccess.add(p3, d);
+        PersonAccess.add(p4, d);
+
+        Collection<Person> result = PersonAccess.getAll("nomatch", d);
+
+        assertEquals(0, result.size());
+    }
+
+    @Test (expected = DBException.class)
+    public void getAllThrowsExceptionIfDBClosed() throws DBException {
+        d.close();
+
+        PersonAccess.getAll("uname", d);
     }
 
     @Test

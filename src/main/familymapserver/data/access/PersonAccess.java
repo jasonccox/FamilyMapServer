@@ -127,10 +127,13 @@ public class PersonAccess extends Access {
         Connection c = getOpenConnection(db);
 
         String sql = "SELECT id, assoc_username, first_name, last_name, gender, father, mother, spouse " +
-                     "FROM person";
+                     "FROM person " +
+                     "WHERE assoc_username = ?";
 
         ResultSet rs = null;
         try (PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, username);
+            
             rs = ps.executeQuery();
 
             while (rs.next()) {
