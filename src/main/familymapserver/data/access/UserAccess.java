@@ -10,7 +10,7 @@ import familymapserver.data.model.User;
 /**
  * Contains methods for accessing user data in the database.
  */
-public class UserAccess {
+public class UserAccess extends Access {
 
     private static final String CREATE_STMT = "CREATE TABLE user (" + 
                                                 "username        VARCHAR(255) NOT NULL PRIMARY KEY, " +
@@ -113,15 +113,7 @@ public class UserAccess {
      * @throws DBException if the database is not open, or if another database error occurs
      */
     public static void clear(Database db) throws DBException {
-        Connection c = getOpenConnection(db);
-
-        String sql = "DELETE FROM user";
-        
-        try (PreparedStatement ps = c.prepareStatement(sql)) {
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            throw new DBException(e);
-        }
+        executeUpdate(db, "DELETE FROM user");
     }
 
     /**
@@ -131,22 +123,7 @@ public class UserAccess {
      * @throws DBException if the database is not open, or if another database error occurs
      */
     protected static void createTable(Database db) throws DBException {
-        Connection c = getOpenConnection(db);
-
-        try (PreparedStatement ps = c.prepareStatement(CREATE_STMT)){
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            throw new DBException(e);
-        }
-    }
-
-    private static Connection getOpenConnection(Database db) throws DBException {
-        Connection c = db.getSQLConnection();
-        if (c == null) {
-            throw new DBException("The database is closed.");
-        }
-
-        return c;
+        executeUpdate(db, CREATE_STMT);
     }
 
 }

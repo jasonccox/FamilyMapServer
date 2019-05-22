@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -23,6 +24,11 @@ public class UserAccessTest {
 
     @Before
     public void setup() throws DBException {
+        File testDB = new File(DatabaseTest.TEST_DB);
+        if (testDB.exists()) {
+            testDB.delete();
+        }
+        
         d = new Database();
         d.open(DatabaseTest.TEST_DB);
     }
