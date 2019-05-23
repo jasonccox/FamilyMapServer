@@ -1,0 +1,12 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Server on port 8080",
+            "request": "launch",
+            "mainClass": "familymapserver.Server",
+            "projectName": "FamilyMapServer",
+            "args": "8080"
+        }
+    ]
+}
