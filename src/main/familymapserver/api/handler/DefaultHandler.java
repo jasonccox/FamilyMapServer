@@ -12,7 +12,7 @@ import com.sun.net.httpserver.HttpExchange;
  */
 public class DefaultHandler extends ApiHandler {
 
-    private static final String NOT_FOUND_HTML = "web/HTML/404.html";
+    private static final String NOT_FOUND_HTML_PATH = "web/HTML/404.html";
     
     /**
      * Receives a request and returns a response
@@ -38,7 +38,7 @@ public class DefaultHandler extends ApiHandler {
 
         if (!file.exists()) {
             sendResponse(HttpURLConnection.HTTP_NOT_FOUND, 
-                         new FileInputStream(new File(NOT_FOUND_HTML)), exchange);
+                         new FileInputStream(new File(NOT_FOUND_HTML_PATH)), exchange);
             return;
         }
 
