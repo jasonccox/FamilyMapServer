@@ -6,9 +6,9 @@ import familymapserver.api.result.EventResult;
 import familymapserver.api.result.EventsResult;
 
 /**
- * Contains methods providing functionality of the <code>/event</code> API route. It
- * retrieves one event, or all events associated with a specific user, from the 
- * database.
+ * Contains methods providing functionality of the <code>/event</code> API route.
+ * It retrieves one event, or all events associated with a specific user, from 
+ * the database.
  */
 public class EventService {
 

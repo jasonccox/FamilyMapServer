@@ -18,21 +18,10 @@ public class User {
      * 
      * @param username the user's username - a unique identifier
      * @param password the user's password for authenticating
-     * @param email the user's email address
-     * @param firstName the user's first name
-     * @param lastName the user's last name
-     * @param gender the user's gender
-     * @param personId the id of the person representing this user in the family map
      */
-    public User(String username, String password, String email, String firstName,
-                String lastName, String gender, String personId) {
+    public User(String username, String password) {         
         setUsername(username);
         setPassword(password);
-        setEmail(email);
-        setFirstName(firstName);
-        setLastName(lastName);
-        setGender(gender);
-        setPersonId(personId);
     }
 
     /**
@@ -127,7 +116,8 @@ public class User {
     }
 
     /**
-     * @param personId the id of the person representing this user in the family map
+     * @param personId the id of the person representing this user in the family 
+     *                 map
      */
     public void setPersonId(String personId) {
         this.personId = personId;

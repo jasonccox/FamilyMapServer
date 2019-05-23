@@ -19,46 +19,21 @@ public class Person {
      * 
      * @param id a unique identifier for this person
      * @param associatedUsername the username of the user in whose family map this person is found
-     * @param firstName the person's first name
-     * @param lastName the person's last name
-     * @param gender the person's gender
-     * @param father the id of the person representing this person's father
-     * @param mother the id of the person representing this person's mother
-     * @param spouse the id of the person representing this person's spouse
      */
-    public Person(String id, String associatedUsername, String firstName, String lastName,
-                  String gender, String father, String mother, String spouse) {
+    public Person(String id, String associatedUsername) {
         this.personID = id;
         setAssociatedUsername(associatedUsername);
-        setFirstName(firstName);
-        setLastName(lastName);
-        setGender(gender);
-        setFather(father);
-        setMother(mother);
-        setSpouse(spouse);
     }
 
     /**
      * Creates a new Person with an auto-generated id.
      * 
-     * @param associatedUsername the username of the user in whose family map this person is found
-     * @param firstName the person's first name
-     * @param lastName the person's last name
-     * @param gender the person's gender
-     * @param father the id of the person representing this person's father
-     * @param mother the id of the person representing this person's mother
-     * @param spouse the id of the person representing this person's spouse
+     * @param associatedUsername the username of the user in whose family map 
+     *                           this person is found
      */
-    public Person(String associatedUsername, String firstName, String lastName,
-                  String gender, String father, String mother, String spouse) {
+    public Person(String associatedUsername) {
         this.personID = "PLACEHOLDER"; // TODO: change this!
         setAssociatedUsername(associatedUsername);
-        setFirstName(firstName);
-        setLastName(lastName);
-        setGender(gender);
-        setFather(father);
-        setMother(mother);
-        setSpouse(spouse);
     }
 
     /**
@@ -76,7 +51,8 @@ public class Person {
     }
 
     /**
-     * @param associatedUsername the username of the user in whose family map this person is found
+     * @param associatedUsername the username of the user in whose family map 
+     *                           this person is found
      */
     public void setAssociatedUsername(String associatedUsername) {
         this.associatedUsername = associatedUsername;

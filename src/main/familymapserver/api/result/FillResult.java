@@ -7,16 +7,20 @@ package familymapserver.api.result;
 public class FillResult extends ApiResult {
 
     /**
-     * The format (to be used with {@link java.lang.String#format(String, Object...) String.format()})
-     * of the message to be used if the request succeeds.
+     * The format (to be used with 
+     * {@link java.lang.String#format(String, Object...) String.format()}) of 
+     * the message to be used if the request succeeds.
      */
-    private static final String SUCCESS_MSG_FORMAT = "Successfully added %d persons and %d events to the database.";
+    private static final String SUCCESS_MSG_FORMAT = 
+        "Successfully added %d persons and %d events to the database.";
 
     /**
      * Creates a new success FillResult.
      * 
-     * @param personsCreated the number of persons created as a result of this fill request
-     * @param eventsCreated the number of events created as a result of this fill request
+     * @param personsCreated the number of persons created as a result of this 
+     *                       fill request
+     * @param eventsCreated the number of events created as a result of this 
+     *                      fill request
      */
     public FillResult(int personsCreated, int eventsCreated) {
         super(String.format(SUCCESS_MSG_FORMAT, personsCreated, eventsCreated));

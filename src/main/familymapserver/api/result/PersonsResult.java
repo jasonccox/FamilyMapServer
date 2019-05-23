@@ -6,8 +6,8 @@ import java.util.Collection;
 import familymapserver.data.model.Person;
 
 /**
- * The result of a request to the <code>/person</code> API route. It describes the 
- * outcome of an attempt to retrieve multiple persons from the database.
+ * The result of a request to the <code>/person</code> API route. It describes 
+ * the outcome of an attempt to retrieve multiple persons from the database.
  */
 public class PersonsResult extends ApiResult {
 

@@ -9,10 +9,11 @@ import familymapserver.data.model.Event;
 public class EventResult extends ApiResult {
 
     /**
-     * The error message used when the requested event doesn't belong to the user associated
-     * with the provided authorization token.
+     * The error message used when the requested event doesn't belong to the 
+     * user associated with the provided authorization token.
      */
-    public static final String NOT_USERS_EVENT_ERROR = "The requested event belongs to a different user";
+    public static final String NOT_USERS_EVENT_ERROR = 
+        "The requested event belongs to a different user";
 
     private String eventID;
     private String associatedUsername;
@@ -40,6 +41,11 @@ public class EventResult extends ApiResult {
      */
     public EventResult(Event event) {
         super(null);
+
+        if (event == null) {
+            return;
+        }
+
         setId(event.getId());
         setAssociatedUsername(event.getAssociatedUsername());
         setPersonId(event.getPersonId());
@@ -49,33 +55,6 @@ public class EventResult extends ApiResult {
         setCity(event.getCity());
         setType(event.getType());
         setYear(event.getYear());
-    }
-
-    /**
-     * Creates a new success EventResult.
-     * 
-     * @param id a unique identifier for this event
-     * @param associatedUsername the username of the user in whose family map this event is found
-     * @param personId the id of the person in whose life this event occurred
-     * @param latitude the latitude at which the event occurred
-     * @param longitude the longitude at which the event occurred
-     * @param country the country in which the event occurred
-     * @param city the city in which the event occurred
-     * @param type the event's type (e.g., birth, baptism, marriage, etc.)
-     * @param year the year in which the event occurred
-     */
-    public EventResult(String id, String associatedUsername, String personId, float latitude, float longitude, 
-                 String country, String city, String type, int year) {
-        super(null);
-        setId(id);
-        setAssociatedUsername(associatedUsername);
-        setPersonId(personId);
-        setLatitude(latitude);
-        setLongitude(longitude);
-        setCountry(country);
-        setCity(city);
-        setType(type);
-        setYear(year);
     }
 
     /**
@@ -100,7 +79,8 @@ public class EventResult extends ApiResult {
     }
 
     /**
-     * @param associatedUsername the username of the user in whose family map this event is found
+     * @param associatedUsername the username of the user in whose family map 
+     *                           this event is found
      */
     public void setAssociatedUsername(String associatedUsername) {
         this.associatedUsername = associatedUsername;

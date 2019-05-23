@@ -169,17 +169,41 @@ public class DatabaseTest {
         PersonAccess personAccess = new PersonAccess(db);
         EventAccess eventAccess = new EventAccess(db);
 
+        User user = new User("uname", "pw");
+        user.setEmail("email");
+        user.setFirstName("f");
+        user.setLastName("l");
+        user.setGender("m");
+        user.setPersonId("pid");
+
         userAccess.createTable();
-        userAccess.add(new User("test", "pw", "a", "b", "c", "d", "e"));
+        userAccess.add(user);
 
         authTokenAccess.createTable();
         authTokenAccess.add(new AuthToken("a", "b"));
 
+        Person person = new Person("id", "uname");
+        person.setFirstName("f");
+        person.setLastName("l");
+        person.setGender("m");
+        person.setFather("dad");
+        person.setMother("mom");
+        person.setSpouse("spouse");
+
         personAccess.createTable();
-        personAccess.add(new Person("a", "b", "c", "d", "e", "f", "g", "h"));
+        personAccess.add(person);
+
+        Event event = new Event("id", "uname");
+        event.setPersonId("pid");
+        event.setLatitude(1);
+        event.setLongitude(1);
+        event.setCountry("USA");
+        event.setCity("Provo");
+        event.setType("birth");
+        event.setYear(2000);
 
         eventAccess.createTable();
-        eventAccess.add(new Event("a", "b", "c", 0, 1, "d", "e", "f", 2));
+        eventAccess.add(event);
 
         db.clear();
 

@@ -12,6 +12,8 @@ public abstract class Access {
     private Database db;
 
     protected Access(Database db) {
+        assert db != null;
+
         this.db = db;
     }
 
@@ -34,9 +36,12 @@ public abstract class Access {
      * Executes an update SQL statement on a database.
      * 
      * @param sql the statement to be executed
-     * @throws DBException if the database is not open, or if another database error occurs
+     * @throws DBException if the database is not open, or if another database 
+     *                     error occurs
      */
     protected void executeUpdate(String sql) throws DBException {
+        assert sql != null;
+
         Connection conn = getOpenConnection();
         
         try (PreparedStatement ps = conn.prepareStatement(sql)) {

@@ -23,7 +23,7 @@ public class EventAccessTest {
 
     private Database db;
     private EventAccess eventAccess;
-    private Event event = new Event("id", "uname", "pid", 1, -2, "USA", "Chicago", "birth", 2000);
+    private Event event;
 
     @Before
     public void setup() throws DBException {
@@ -36,6 +36,15 @@ public class EventAccessTest {
         db.open(DatabaseTest.TEST_DB);
 
         eventAccess = new EventAccess(db);
+
+        event = new Event("id", "uname");
+        event.setPersonId("pid");
+        event.setLatitude(1);
+        event.setLongitude(1);
+        event.setCountry("USA");
+        event.setCity("Provo");
+        event.setType("birth");
+        event.setYear(2000);
     }
 
     @After
@@ -58,7 +67,8 @@ public class EventAccessTest {
         rs.close();
         ps.close();
         
-        ps = c.prepareStatement("SELECT id, assoc_username, person_id, latitude, longitude, country, city, type, year FROM event");
+        ps = c.prepareStatement("SELECT id, assoc_username, person_id, latitude, " +
+                                "longitude, country, city, type, year FROM event");
         rs = ps.executeQuery();
 
         assertTrue(rs.next());
@@ -82,11 +92,20 @@ public class EventAccessTest {
         
         eventAccess.add(event);
 
-        Event e2 = new Event(event.getId(), "uname2", "pid2", 2, -1, "Mexico", "Jalisco", "death", 2010);
+        Event e2 = new Event(event.getId(), "uname2");
+        e2.setPersonId("pid2");
+        e2.setLatitude(2);
+        e2.setLongitude(2);
+        e2.setCountry("Mexico");
+        e2.setCity("Mexico City");
+        e2.setType("death");
+        e2.setYear(2001);
+
         assertFalse(eventAccess.add(e2));
 
         Connection c = db.getSQLConnection();
-        PreparedStatement ps = c.prepareStatement("SELECT count() FROM event WHERE id = ?");
+        PreparedStatement ps = c.prepareStatement("SELECT count() FROM event " + 
+                                                  "WHERE id = ?");
         ps.setString(1, event.getId());
         ResultSet rs = ps.executeQuery();
         assertEquals(1, rs.getInt(1));
@@ -98,7 +117,14 @@ public class EventAccessTest {
     public void addThrowsExceptionIfIdMissing() throws DBException {
         eventAccess.createTable();
 
-        Event e2 = new Event(null, "u", "p", 1, 1, "c", "c", "t", 1);
+        Event e2 = new Event(null, "uname2");
+        e2.setPersonId("pid2");
+        e2.setLatitude(2);
+        e2.setLongitude(2);
+        e2.setCountry("Mexico");
+        e2.setCity("Mexico City");
+        e2.setType("death");
+        e2.setYear(2001);
 
         eventAccess.add(e2);
     }
@@ -107,7 +133,14 @@ public class EventAccessTest {
     public void addThrowsExceptionIfAssocUsernameMissing() throws DBException {
         eventAccess.createTable();
 
-        Event e2 = new Event("i", null, "p", 1, 1, "c", "c", "t", 1);
+        Event e2 = new Event("id2", null);
+        e2.setPersonId("pid2");
+        e2.setLatitude(2);
+        e2.setLongitude(2);
+        e2.setCountry("Mexico");
+        e2.setCity("Mexico City");
+        e2.setType("death");
+        e2.setYear(2001);
 
         eventAccess.add(e2);
     }
@@ -116,7 +149,13 @@ public class EventAccessTest {
     public void addThrowsExceptionIfPersonIdMissing() throws DBException {
         eventAccess.createTable();
 
-        Event e2 = new Event("i", "u", null, 1, 1, "c", "c", "t", 1);
+        Event e2 = new Event("id2", "uname2");
+        e2.setLatitude(2);
+        e2.setLongitude(2);
+        e2.setCountry("Mexico");
+        e2.setCity("Mexico City");
+        e2.setType("death");
+        e2.setYear(2001);
 
         eventAccess.add(e2);
     }
@@ -125,7 +164,13 @@ public class EventAccessTest {
     public void addThrowsExceptionIfCountryMissing() throws DBException {
         eventAccess.createTable();
 
-        Event e2 = new Event("i", "u", "p", 1, 1, null, "c", "t", 1);
+        Event e2 = new Event("id2", "uname2");
+        e2.setPersonId("pid2");
+        e2.setLatitude(2);
+        e2.setLongitude(2);
+        e2.setCity("Mexico City");
+        e2.setType("death");
+        e2.setYear(2001);
 
         eventAccess.add(e2);
     }
@@ -134,7 +179,13 @@ public class EventAccessTest {
     public void addThrowsExceptionIfCityMissing() throws DBException {
         eventAccess.createTable();
 
-        Event e2 = new Event("i", "u", "p", 1, 1, "c", null, "t", 1);
+        Event e2 = new Event("id2", "uname2");
+        e2.setPersonId("pid2");
+        e2.setLatitude(2);
+        e2.setLongitude(2);
+        e2.setCountry("Mexico");
+        e2.setType("death");
+        e2.setYear(2001);
 
         eventAccess.add(e2);
     }
@@ -143,7 +194,13 @@ public class EventAccessTest {
     public void addThrowsExceptionIfTypeMissing() throws DBException {
         eventAccess.createTable();
 
-        Event e2 = new Event("i", "u", "p", 1, 1, "c", "c", null, 1);
+        Event e2 = new Event("id2", "uname2");
+        e2.setPersonId("pid2");
+        e2.setLatitude(2);
+        e2.setLongitude(2);
+        e2.setCountry("Mexico");
+        e2.setCity("Mexico City");
+        e2.setYear(2001);
 
         eventAccess.add(e2);
     }
@@ -192,9 +249,32 @@ public class EventAccessTest {
     public void getAllReturnsMatchingEvents() throws DBException {
         eventAccess.createTable();
 
-        Event e2 = new Event("i2", "u2", "p2", 2, 2, "c2", "c2", "t2", 2);
-        Event e3 = new Event("i3", event.getAssociatedUsername(), "p3", 3, 3, "c3", "c3", "t3", 3);
-        Event e4 = new Event("i4", "u4", "p4", 4, 4, "c4", "c4", "t4", 4);
+        Event e2 = new Event("id2", "uname2");
+        e2.setPersonId("pid2");
+        e2.setLatitude(2);
+        e2.setLongitude(2);
+        e2.setCountry("Mexico");
+        e2.setCity("Mexico City");
+        e2.setType("death");
+        e2.setYear(2001);
+
+        Event e3 = new Event("id3", event.getAssociatedUsername());
+        e3.setPersonId("pid3");
+        e3.setLatitude(3);
+        e3.setLongitude(3);
+        e3.setCountry("Mexico");
+        e3.setCity("Mexico City");
+        e3.setType("death");
+        e3.setYear(2001);
+
+        Event e4 = new Event("id4", "uname4");
+        e4.setPersonId("pid4");
+        e4.setLatitude(4);
+        e4.setLongitude(4);
+        e4.setCountry("Mexico");
+        e4.setCity("Mexico City");
+        e4.setType("death");
+        e4.setYear(2001);
 
         eventAccess.add(event);
         eventAccess.add(e2);
@@ -224,9 +304,32 @@ public class EventAccessTest {
     public void getAllReturnsEmptyCollectionIfNoMatchingEvents() throws DBException {
         eventAccess.createTable();
 
-        Event e2 = new Event("i2", "u2", "p2", 2, 2, "c2", "c2", "t2", 2);
-        Event e3 = new Event("i3", event.getAssociatedUsername(), "p3", 3, 3, "c3", "c3", "t3", 3);
-        Event e4 = new Event("i4", "u4", "p4", 4, 4, "c4", "c4", "t4", 4);
+        Event e2 = new Event("id2", "uname2");
+        e2.setPersonId("pid2");
+        e2.setLatitude(2);
+        e2.setLongitude(2);
+        e2.setCountry("Mexico");
+        e2.setCity("Mexico City");
+        e2.setType("death");
+        e2.setYear(2001);
+
+        Event e3 = new Event("id3", event.getAssociatedUsername());
+        e3.setPersonId("pid3");
+        e3.setLatitude(3);
+        e3.setLongitude(3);
+        e3.setCountry("Mexico");
+        e3.setCity("Mexico City");
+        e3.setType("death");
+        e3.setYear(2001);
+
+        Event e4 = new Event("id4", "uname4");
+        e4.setPersonId("pid4");
+        e4.setLatitude(4);
+        e4.setLongitude(4);
+        e4.setCountry("Mexico");
+        e4.setCity("Mexico City");
+        e4.setType("death");
+        e4.setYear(2001);
 
         eventAccess.add(event);
         eventAccess.add(e2);
@@ -281,7 +384,8 @@ public class EventAccessTest {
         eventAccess.createTable();
 
         Connection c = db.getSQLConnection();
-        PreparedStatement ps = c.prepareStatement("SELECT count(*) FROM sqlite_master WHERE type = 'table' AND name = 'event'");
+        PreparedStatement ps = c.prepareStatement("SELECT count(*) FROM sqlite_master " +
+                                                  "WHERE type = 'table' AND name = 'event'");
         ResultSet rs = ps.executeQuery();
         assertEquals(1, rs.getInt(1));
 

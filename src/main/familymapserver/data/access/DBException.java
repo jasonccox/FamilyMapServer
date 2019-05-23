@@ -15,7 +15,7 @@ public class DBException extends Exception {
      * @param message a brief explanation of why the exception occurred
      */
     public DBException(String message) {
-
+        super(message);
     }
 
     /**

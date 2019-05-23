@@ -13,7 +13,8 @@ public class RegisterRequest extends ApiRequest {
     /**
      * Creates a new RegisterRequest.
      * 
-     * @param user the user to be added - note that the personId field will be blank
+     * @param user the user to be added - note that the personId field will be 
+     *             blank
      */
     public RegisterRequest(User user) {
         super();

@@ -11,7 +11,7 @@ public class AuthToken {
     /**
      * Creates a new AuthToken.
      * 
-     * @param token the token used to prove a user's identity when making requests
+     * @param token the token used to prove a user's identity
      * @param username the username of the user to whom this token is assigned
      */
     public AuthToken(String token, String username) {
@@ -30,16 +30,16 @@ public class AuthToken {
     }
 
     /**
-     * @return the token used to prove a user's identity when making requests
+     * @return the token used to prove a user's identity
      */
     public String getToken() {
         return token;
     }
 
     /**
-     * @return the User to whom this token is assigned
+     * @return the username of the user to whom this token is assigned
      */
-    public String getUser() {
+    public String getUsername() {
         return username;
     }
 

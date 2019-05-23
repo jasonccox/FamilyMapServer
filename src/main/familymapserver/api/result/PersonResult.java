@@ -3,16 +3,17 @@ package familymapserver.api.result;
 import familymapserver.data.model.Person;
 
 /**
- * The result of a request to the <code>/person/[personID]</code> API route. It describes the 
- * outcome of an attempt to retrieve one person from the database.
+ * The result of a request to the <code>/person/[personID]</code> API route. It 
+ * describes the outcome of an attempt to retrieve one person from the database.
  */
 public class PersonResult extends ApiResult {
 
     /**
-     * The error message used when the requested person doesn't belong to the user associated
-     * with the provided authorization token.
+     * The error message used when the requested person doesn't belong to the 
+     * user associated with the provided authorization token.
      */
-    public static final String NOT_USERS_PERSON_ERROR = "The requested person belongs to a different user";
+    public static final String NOT_USERS_PERSON_ERROR = 
+        "The requested person belongs to a different user";
 
     private String personID;
     private String associatedUsername;
@@ -50,31 +51,6 @@ public class PersonResult extends ApiResult {
     }
 
     /**
-     * Creates a new success PersonResult.
-     * 
-     * @param id a unique identifier for this person
-     * @param associatedUsername the username of the user in whose family map this person is found
-     * @param firstName the person's first name
-     * @param lastName the person's last name
-     * @param gender the person's gender
-     * @param father the id of the person representing this person's father
-     * @param mother the id of the person representing this person's mother
-     * @param spouse the id of the person representing this person's spouse
-     */
-    public PersonResult(String id, String associatedUsername, String firstName, String lastName,
-                  String gender, String father, String mother, String spouse) {
-        super(null);
-        setId(id);
-        setAssociatedUsername(associatedUsername);
-        setFirstName(firstName);
-        setLastName(lastName);
-        setGender(gender);
-        setFather(father);
-        setMother(mother);
-        setSpouse(spouse);
-    }
-
-    /**
      * @return a unique identifier for this person
      */
     public String getId() {
@@ -96,7 +72,8 @@ public class PersonResult extends ApiResult {
     }
 
     /**
-     * @param associatedUsername the username of the user in whose family map this person is found
+     * @param associatedUsername the username of the user in whose family map 
+     *                           this person is found
      */
     public void setAssociatedUsername(String associatedUsername) {
         this.associatedUsername = associatedUsername;

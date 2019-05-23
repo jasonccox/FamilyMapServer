@@ -24,7 +24,8 @@ public class LoadRequest extends ApiRequest {
      * @param persons the persons to load into the database
      * @param events the events to load into the database
      */
-    public LoadRequest(Collection<User> users, Collection<Person> persons, Collection<Event> events) {
+    public LoadRequest(Collection<User> users, Collection<Person> persons, 
+                       Collection<Event> events) {
         super();
     }
 

@@ -3,9 +3,9 @@ package familymapserver.api.service;
 import familymapserver.api.result.ClearResult;
 
 /**
- * Contains methods providing functionality of the <code>/clear</code> API route. It
- * deletes all data from the database, including user accounts, authorization tokens,
- * persons, and events.
+ * Contains methods providing functionality of the <code>/clear</code> API route. 
+ * It deletes all data from the database, including user accounts, authorization 
+ * tokens, persons, and events.
  */
 public class ClearService {
 

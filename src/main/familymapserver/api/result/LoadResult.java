@@ -7,20 +7,26 @@ package familymapserver.api.result;
 public class LoadResult extends ApiResult {
 
     /**
-     * The format (to be used with {@link java.lang.String#format(String, Object...) String.format()})
-     * of the message to be used if the request succeeds.
+     * The format (to be used with 
+     * {@link java.lang.String#format(String, Object...) String.format()}) of
+     * the message to be used if the request succeeds.
      */
-    private static final String SUCCESS_MSG_FORMAT = "Successfully added %d users, %d persons, and %d events to the database.";
+    private static final String SUCCESS_MSG_FORMAT = 
+        "Successfully added %d users, %d persons, and %d events to the database.";
 
     /**
      * Creates a new success LoadResult.
      * 
-     * @param usersCreated the number of users created as a result of the load request
-     * @param personsCreated the number of persons created as a result of the load request
-     * @param eventsCreated the number of events created as a result of the load request
+     * @param usersCreated the number of users created as a result of the load 
+     *                     request
+     * @param personsCreated the number of persons created as a result of the 
+     *                       load request
+     * @param eventsCreated the number of events created as a result of the load 
+     *                      request
      */
     public LoadResult(int usersCreated, int personsCreated, int eventsCreated) {
-        super(String.format(SUCCESS_MSG_FORMAT, usersCreated, personsCreated, eventsCreated));
+        super(String.format(SUCCESS_MSG_FORMAT, usersCreated, personsCreated, 
+                            eventsCreated));
     }
 
     /**

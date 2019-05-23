@@ -6,9 +6,9 @@ import familymapserver.api.result.PersonResult;
 import familymapserver.api.result.PersonsResult;
 
 /**
- * Contains methods providing functionality of the <code>/person</code> API route. It
- * retrieves one person, or all persons associated with a specific user, from the
- * database.
+ * Contains methods providing functionality of the <code>/person</code> API route.
+ * It retrieves one person, or all persons associated with a specific user, from
+ * the database.
  */
 public class PersonService {
 

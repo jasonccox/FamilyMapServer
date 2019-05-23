@@ -4,8 +4,8 @@ import familymapserver.api.request.FillRequest;
 import familymapserver.api.result.FillResult;
 
 /**
- * Contains methods providing functionality of the <code>/fill</code> API route. It
- * populates the database with generated data for a specific user.
+ * Contains methods providing functionality of the <code>/fill</code> API route.
+ * It populates the database with generated data for a specific user.
  */
 public class FillService {
 

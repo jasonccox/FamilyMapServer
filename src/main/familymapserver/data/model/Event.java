@@ -19,51 +19,23 @@ public class Event {
      * Creates a new Event.
      * 
      * @param id a unique identifier for this event
-     * @param associatedUsername the username of the user in whose family map this event is found
-     * @param personId the id of the person in whose life this event occurred
-     * @param latitude the latitude at which the event occurred
-     * @param longitude the longitude at which the event occurred
-     * @param country the country in which the event occurred
-     * @param city the city in which the event occurred
-     * @param type the event's type (e.g., birth, baptism, marriage, etc.)
-     * @param year the year in which the event occurred
+     * @param associatedUsername the username of the user in whose family map 
+     *                           this event is found
      */
-    public Event(String id, String associatedUsername, String personId, float latitude, float longitude, 
-                 String country, String city, String type, int year) {
+    public Event(String id, String associatedUsername) {
         this.eventID = id;
         setAssociatedUsername(associatedUsername);
-        setPersonId(personId);
-        setLatitude(latitude);
-        setLongitude(longitude);
-        setCountry(country);
-        setCity(city);
-        setType(type);
-        setYear(year);
     }
 
     /**
      * Creates a new Event with an auto-generated id.
      * 
-     * @param associatedUsername the username of the user in whose family map this event is found
-     * @param personId the id of the person in whose life this event occurred
-     * @param latitude the latitude at which the event occurred
-     * @param longitude the longitude at which the event occurred
-     * @param country the country in which the event occurred
-     * @param city the city in which the event occurred
-     * @param type the event's type (e.g., birth, baptism, marriage, etc.)
-     * @param year the year in which the event occurred
+     * @param associatedUsername the username of the user in whose family map 
+     *                           this event is found
      */
-    public Event(String associatedUsername, String personId, float latitude, float longitude, 
-                 String country, String city, String type, int year) {
+    public Event(String associatedUsername) {
         this.eventID = "PLACEHOLDER"; // TODO: change this!
         setAssociatedUsername(associatedUsername);
-        setPersonId(personId);
-        setLatitude(latitude);
-        setLongitude(longitude);
-        setCountry(country);
-        setCity(city);
-        setType(type);
-        setYear(year);
     }
 
     /**
@@ -81,7 +53,8 @@ public class Event {
     }
 
     /**
-     * @param associatedUsername the username of the user in whose family map this event is found
+     * @param associatedUsername the username of the user in whose family map 
+     *                           this event is found
      */
     public void setAssociatedUsername(String associatedUsername) {
         this.associatedUsername = associatedUsername;
@@ -185,5 +158,4 @@ public class Event {
         this.year = year;
     }
 
-    
 }

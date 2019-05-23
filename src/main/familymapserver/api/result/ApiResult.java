@@ -14,7 +14,8 @@ public abstract class ApiResult {
      * The error message used when required data is not included with the request 
      * or is invalid.
      */
-    public static final String INVALID_REQUEST_DATA_ERROR = "Request contains invalid/incomplete data";
+    public static final String INVALID_REQUEST_DATA_ERROR = 
+        "Request contains invalid/incomplete data";
     
     /**
      * The error message used when the server has an error.

@@ -21,7 +21,7 @@ public class UserAccessTest {
 
     private Database db;
     private UserAccess userAccess;
-    private User user = new User("uname", "pw", "uname@email.com", "fname", "lname", "m", "pid");
+    private User user;
 
     @Before
     public void setup() throws DBException {
@@ -34,6 +34,13 @@ public class UserAccessTest {
         db.open(DatabaseTest.TEST_DB);
 
         userAccess = new UserAccess(db);
+
+        user = new User("uname", "pw");
+        user.setEmail("email");
+        user.setFirstName("f");
+        user.setLastName("l");
+        user.setGender("m");
+        user.setPersonId("pid");
     }
 
     @After
@@ -56,7 +63,8 @@ public class UserAccessTest {
         rs.close();
         ps.close();
         
-        ps = c.prepareStatement("SELECT username, password, email, first_name, last_name, gender, person_id FROM user");
+        ps = c.prepareStatement("SELECT username, password, email, first_name, " +
+                                "last_name, gender, person_id FROM user");
         rs = ps.executeQuery();
 
         assertTrue(rs.next());
@@ -78,14 +86,22 @@ public class UserAccessTest {
         
         userAccess.add(user);
 
-        User u2 = new User(user.getUsername(), "pw2", "uname2@email.com", "fname2", "lname2", "f", "pid2");
+        User u2 = new User(user.getUsername(), "pw2");
+        user.setEmail("email2");
+        user.setFirstName("f2");
+        user.setLastName("l2");
+        user.setGender("f");
+        user.setPersonId("pid2");
+
         assertFalse(userAccess.add(u2));
 
         Connection c = db.getSQLConnection();
-        PreparedStatement ps = c.prepareStatement("SELECT count() FROM user WHERE username = ?");
+        PreparedStatement ps = c.prepareStatement("SELECT count() FROM user " +
+                                                  "WHERE username = ?");
         ps.setString(1, user.getUsername());
         ResultSet rs = ps.executeQuery();
         assertEquals(1, rs.getInt(1));
+
         rs.close();
         ps.close();
     }
@@ -94,7 +110,12 @@ public class UserAccessTest {
     public void addThrowsExceptionIfUsernameMissing() throws DBException {
         userAccess.createTable();
 
-        User u2 = new User(null, "p", "e", "f", "l", "m", "p");
+        User u2 = new User(null, "pw2");
+        user.setEmail("email2");
+        user.setFirstName("f2");
+        user.setLastName("l2");
+        user.setGender("f");
+        user.setPersonId("pid2");
 
         userAccess.add(u2);
     }
@@ -103,7 +124,12 @@ public class UserAccessTest {
     public void addThrowsExceptionIfPasswordMissing() throws DBException {
         userAccess.createTable();
 
-        User u2 = new User("u", null, "e", "f", "l", "m", "p");
+        User u2 = new User("uname2", null);
+        user.setEmail("email2");
+        user.setFirstName("f2");
+        user.setLastName("l2");
+        user.setGender("f");
+        user.setPersonId("pid2");
 
         userAccess.add(u2);
     }
@@ -112,7 +138,11 @@ public class UserAccessTest {
     public void addThrowsExceptionIfEmailMissing() throws DBException {
         userAccess.createTable();
 
-        User u2 = new User("u", "p", null, "f", "l", "m", "p");
+        User u2 = new User("uname2", "pw2");
+        user.setFirstName("f2");
+        user.setLastName("l2");
+        user.setGender("f");
+        user.setPersonId("pid2");
 
         userAccess.add(u2);
     }
@@ -121,7 +151,11 @@ public class UserAccessTest {
     public void addThrowsExceptionIfFirstNameMissing() throws DBException {
         userAccess.createTable();
 
-        User u2 = new User("u", "p", "e", null, "l", "m", "p");
+        User u2 = new User("uname2", "pw2");
+        user.setEmail("email2");
+        user.setLastName("l2");
+        user.setGender("f");
+        user.setPersonId("pid2");
 
         userAccess.add(u2);
     }
@@ -130,7 +164,11 @@ public class UserAccessTest {
     public void addThrowsExceptionIfLastNameMissing() throws DBException {
         userAccess.createTable();
 
-        User u2 = new User("u", "p", "e", "f", null, "m", "p");
+        User u2 = new User("uname2", "pw2");
+        user.setEmail("email2");
+        user.setFirstName("f2");
+        user.setGender("f");
+        user.setPersonId("pid2");
 
         userAccess.add(u2);
     }
@@ -139,7 +177,11 @@ public class UserAccessTest {
     public void addThrowsExceptionIfGenderMissing() throws DBException {
         userAccess.createTable();
 
-        User u2 = new User("u", "p", "e", "f", "l", null, "p");
+        User u2 = new User("uname2", "pw2");
+        user.setEmail("email2");
+        user.setFirstName("f2");
+        user.setLastName("l2");
+        user.setPersonId("pid2");
 
         userAccess.add(u2);
     }
@@ -148,7 +190,11 @@ public class UserAccessTest {
     public void addThrowsExceptionIfPersonIdMissing() throws DBException {
         userAccess.createTable();
 
-        User u2 = new User("u", "p", "e", "f", "l", "m", null);
+        User u2 = new User("uname2", "pw2");
+        user.setEmail("email2");
+        user.setFirstName("f2");
+        user.setLastName("l2");
+        user.setGender("f");
 
         userAccess.add(u2);
     }
@@ -157,7 +203,12 @@ public class UserAccessTest {
     public void addThrowsExceptionIfGenderInvalid() throws DBException {
         userAccess.createTable();
 
-        User u2 = new User("u", "p", "e", "f", "l", "g", "p");
+        User u2 = new User("uname2", "pw2");
+        user.setEmail("email2");
+        user.setFirstName("f2");
+        user.setLastName("l2");
+        user.setGender("a");
+        user.setPersonId("pid2");
 
         userAccess.add(u2);
     }
@@ -236,7 +287,8 @@ public class UserAccessTest {
         userAccess.createTable();
 
         Connection c = db.getSQLConnection();
-        PreparedStatement ps = c.prepareStatement("SELECT count(*) FROM sqlite_master WHERE type = 'table' AND name = 'user'");
+        PreparedStatement ps = c.prepareStatement("SELECT count(*) FROM sqlite_master " +
+                                                  "WHERE type = 'table' AND name = 'user'");
         ResultSet rs = ps.executeQuery();
         assertEquals(1, rs.getInt(1));
 

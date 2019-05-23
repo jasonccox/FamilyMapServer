@@ -4,8 +4,8 @@ import familymapserver.api.request.LoadRequest;
 import familymapserver.api.result.LoadResult;
 
 /**
- * Contains methods providing functionality of the <code>/load</code> API route. It
- * replaces all data with user-specified data.
+ * Contains methods providing functionality of the <code>/load</code> API route.
+ * It replaces all data with user-specified data.
  */
 public class LoadService {
 

@@ -23,7 +23,7 @@ public class PersonAccessTest {
 
     private Database db;
     private PersonAccess personAccess;
-    private Person person = new Person("id", "uname", "fname", "lname", "m", "fid", "mid", "sid");
+    private Person person;
 
     @Before
     public void setup() throws DBException {
@@ -36,6 +36,14 @@ public class PersonAccessTest {
         db.open(DatabaseTest.TEST_DB);
 
         personAccess = new PersonAccess(db);
+
+        person = new Person("id", "uname");
+        person.setFirstName("f");
+        person.setLastName("l");
+        person.setGender("m");
+        person.setFather("dad");
+        person.setMother("mom");
+        person.setSpouse("spouse");
     }
 
     @After
@@ -58,7 +66,8 @@ public class PersonAccessTest {
         rs.close();
         ps.close();
         
-        ps = c.prepareStatement("SELECT id, assoc_username, first_name, last_name, gender, father, mother, spouse FROM person");
+        ps = c.prepareStatement("SELECT id, assoc_username, first_name, last_name, " +
+                                "gender, father, mother, spouse FROM person");
         rs = ps.executeQuery();
 
         assertTrue(rs.next());
@@ -81,11 +90,19 @@ public class PersonAccessTest {
         
         personAccess.add(person);
 
-        Person p2 = new Person(person.getId(), "uname2", "fname2", "lname2", "f", "fid2", "mid2", "sid2");
+        Person p2 = new Person(person.getId(), "uname2");
+        p2.setFirstName("f2");
+        p2.setLastName("l2");
+        p2.setGender("f");
+        p2.setFather("dad2");
+        p2.setMother("mom2");
+        p2.setSpouse("spouse2");
+
         assertFalse(personAccess.add(p2));
 
         Connection c = db.getSQLConnection();
-        PreparedStatement ps = c.prepareStatement("SELECT count() FROM person WHERE id = ?");
+        PreparedStatement ps = c.prepareStatement("SELECT count() FROM person " +
+                                                  "WHERE id = ?");
         ps.setString(1, person.getId());
         ResultSet rs = ps.executeQuery();
         assertEquals(1, rs.getInt(1));
@@ -97,7 +114,13 @@ public class PersonAccessTest {
     public void addThrowsExceptionIfIdMissing() throws DBException {
         personAccess.createTable();
 
-        Person p2 = new Person(null, "u", "f", "l", "m", "f", "m", "s");
+        Person p2 = new Person(null, "uname2");
+        p2.setFirstName("f2");
+        p2.setLastName("l2");
+        p2.setGender("f");
+        p2.setFather("dad2");
+        p2.setMother("mom2");
+        p2.setSpouse("spouse2");
 
         personAccess.add(p2);
     }
@@ -106,7 +129,13 @@ public class PersonAccessTest {
     public void addThrowsExceptionIfAssocUsernameMissing() throws DBException {
         personAccess.createTable();
 
-        Person p2 = new Person("i", null, "f", "l", "m", "f", "m", "s");
+        Person p2 = new Person("id2", null);
+        p2.setFirstName("f2");
+        p2.setLastName("l2");
+        p2.setGender("f");
+        p2.setFather("dad2");
+        p2.setMother("mom2");
+        p2.setSpouse("spouse2");
 
         personAccess.add(p2);
     }
@@ -115,7 +144,12 @@ public class PersonAccessTest {
     public void addThrowsExceptionIfFirstNameMissing() throws DBException {
         personAccess.createTable();
 
-        Person p2 = new Person("i", "u", null, "l", "m", "f", "m", "s");
+        Person p2 = new Person("id2", "uname2");
+        p2.setLastName("l2");
+        p2.setGender("f");
+        p2.setFather("dad2");
+        p2.setMother("mom2");
+        p2.setSpouse("spouse2");
 
         personAccess.add(p2);
     }
@@ -124,7 +158,12 @@ public class PersonAccessTest {
     public void addThrowsExceptionIfLastNameMissing() throws DBException {
         personAccess.createTable();
 
-        Person p2 = new Person("i", "u", "f", null, "m", "f", "m", "s");
+        Person p2 = new Person("id2", "uname2");
+        p2.setFirstName("f2");
+        p2.setGender("f");
+        p2.setFather("dad2");
+        p2.setMother("mom2");
+        p2.setSpouse("spouse2");
 
         personAccess.add(p2);
     }
@@ -133,7 +172,12 @@ public class PersonAccessTest {
     public void addThrowsExceptionIfGenderMissing() throws DBException {
         personAccess.createTable();
 
-        Person p2 = new Person("i", "u", "f", "l", null, "f", "m", "s");
+        Person p2 = new Person("id2", "uname2");
+        p2.setFirstName("f2");
+        p2.setLastName("l2");
+        p2.setFather("dad2");
+        p2.setMother("mom2");
+        p2.setSpouse("spouse2");
 
         personAccess.add(p2);
     }
@@ -142,7 +186,13 @@ public class PersonAccessTest {
     public void addThrowsExceptionIfGenderInvalid() throws DBException {
         personAccess.createTable();
 
-        Person p2 = new Person("i", "u", "f", "l", "a", "f", "m", "s");
+        Person p2 = new Person("id2", "uname2");
+        p2.setFirstName("f2");
+        p2.setLastName("l2");
+        p2.setGender("z");
+        p2.setFather("dad2");
+        p2.setMother("mom2");
+        p2.setSpouse("spouse2");
 
         personAccess.add(p2);
     }
@@ -151,7 +201,12 @@ public class PersonAccessTest {
     public void addThrowsNoExceptionIfFatherMissing() throws DBException {
         personAccess.createTable();
 
-        Person p2 = new Person("i", "u", "f", "l", "m", null, "m", "s");
+        Person p2 = new Person("id2", "uname2");
+        p2.setFirstName("f2");
+        p2.setLastName("l2");
+        p2.setGender("f");
+        p2.setMother("mom2");
+        p2.setSpouse("spouse2");
 
         assertTrue(personAccess.add(p2));
     }
@@ -160,7 +215,12 @@ public class PersonAccessTest {
     public void addThrowsNoExceptionIfMotherMissing() throws DBException {
         personAccess.createTable();
 
-        Person p2 = new Person("i", "u", "f", "l", "m", "f", null, "s");
+        Person p2 = new Person("id2", "uname2");
+        p2.setFirstName("f2");
+        p2.setLastName("l2");
+        p2.setGender("f");
+        p2.setFather("dad2");
+        p2.setSpouse("spouse2");
 
         assertTrue(personAccess.add(p2));
     }
@@ -169,7 +229,12 @@ public class PersonAccessTest {
     public void addThrowsNoExceptionIfSpouseMissing() throws DBException {
         personAccess.createTable();
 
-        Person p2 = new Person("i", "u", "f", "l", "m", "f", "m", null);
+        Person p2 = new Person("id2", "uname2");
+        p2.setFirstName("f2");
+        p2.setLastName("l2");
+        p2.setGender("f");
+        p2.setFather("dad2");
+        p2.setMother("mom2");
 
         assertTrue(personAccess.add(p2));
     }
@@ -217,9 +282,20 @@ public class PersonAccessTest {
     public void getAllReturnsMatchingPersons() throws DBException {
         personAccess.createTable();
 
-        Person p2 = new Person("i", "u", "f", "l", "m", "f", "m", "s");
-        Person p3 = new Person("i2", person.getAssociatedUsername(), "f2", "l2", "f", "f2", "m2", "s2");
-        Person p4 = new Person("i3", "u3", "f3", "l3", "m", "f3", "m3", "s3");
+        Person p2 = new Person("id2", "uname2");
+        p2.setFirstName("f2");
+        p2.setLastName("l2");
+        p2.setGender("f");
+
+        Person p3 = new Person("id3", person.getAssociatedUsername());
+        p3.setFirstName("f3");
+        p3.setLastName("l3");
+        p3.setGender("m");
+
+        Person p4 = new Person("id4", "uname4");
+        p4.setFirstName("f4");
+        p4.setLastName("l4");
+        p4.setGender("f");
 
         personAccess.add(person);
         personAccess.add(p2);
@@ -249,9 +325,20 @@ public class PersonAccessTest {
     public void getAllReturnsEmptyCollectionIfNoMatchingPersons() throws DBException {
         personAccess.createTable();
 
-        Person p2 = new Person("i", "u", "f", "l", "m", "f", "m", "s");
-        Person p3 = new Person("i2", person.getAssociatedUsername(), "f2", "l2", "f", "f2", "m2", "s2");
-        Person p4 = new Person("i3", "u3", "f3", "l3", "m", "f3", "m3", "s3");
+        Person p2 = new Person("id2", "uname2");
+        p2.setFirstName("f2");
+        p2.setLastName("l2");
+        p2.setGender("f");
+
+        Person p3 = new Person("id3", person.getAssociatedUsername());
+        p3.setFirstName("f3");
+        p3.setLastName("l3");
+        p3.setGender("m");
+
+        Person p4 = new Person("id4", "uname4");
+        p4.setFirstName("f4");
+        p4.setLastName("l4");
+        p4.setGender("f");
 
         personAccess.add(person);
         personAccess.add(p2);
@@ -306,7 +393,8 @@ public class PersonAccessTest {
         personAccess.createTable();
 
         Connection c = db.getSQLConnection();
-        PreparedStatement ps = c.prepareStatement("SELECT count(*) FROM sqlite_master WHERE type = 'table' AND name = 'person'");
+        PreparedStatement ps = c.prepareStatement("SELECT count(*) FROM sqlite_master " +
+                                                  "WHERE type = 'table' AND name = 'person'");
         ResultSet rs = ps.executeQuery();
         assertEquals(1, rs.getInt(1));
 
