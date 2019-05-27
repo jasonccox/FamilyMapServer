@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
-import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,6 +23,12 @@ public abstract class ApiHandler implements HttpHandler {
 
     private static final Logger LOG = Logger.getLogger("fms");
 
+    /**
+     * Creates a string representing an HTTP request
+     * 
+     * @param exchange the HttpExchange containing the request
+     * @return a string representung the request
+     */
     private static String requestToString(HttpExchange exchange) {
         StringBuilder sb = new StringBuilder();
 
@@ -139,13 +144,6 @@ public abstract class ApiHandler implements HttpHandler {
         OutputStreamWriter writer = new OutputStreamWriter(stream);
         writer.write(string);
         writer.flush();
-    }
-
-    protected String streamToString(InputStream stream) {
-        try (Scanner scanner = new Scanner(stream)) {
-            scanner.useDelimiter("\\A");
-            return scanner.next();
-        }
     }
     
 }
