@@ -25,8 +25,8 @@ public class LoadResult extends ApiResult {
      *                      request
      */
     public LoadResult(int usersCreated, int personsCreated, int eventsCreated) {
-        super(String.format(SUCCESS_MSG_FORMAT, usersCreated, personsCreated, 
-                            eventsCreated));
+        super(true, String.format(SUCCESS_MSG_FORMAT, usersCreated, personsCreated, 
+                                  eventsCreated));
     }
 
     /**
@@ -35,15 +35,7 @@ public class LoadResult extends ApiResult {
      * @param error the error message
      */
     public LoadResult(String error) {
-        super(error);
-    }
-
-    /**
-     * @return whether the request was successfully fulfilled
-     */
-    @Override
-    public boolean isSuccess() {
-        return false;
+        super(false, error);
     }
 
 }

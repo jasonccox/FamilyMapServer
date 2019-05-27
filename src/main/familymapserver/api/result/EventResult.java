@@ -31,7 +31,7 @@ public class EventResult extends ApiResult {
      * @param message a description of the error
      */
     public EventResult(String message) {
-        super(message);
+        super(false, message);
     }
 
     /**
@@ -40,7 +40,7 @@ public class EventResult extends ApiResult {
      * @param event the retrieved Event
      */
     public EventResult(Event event) {
-        super(null);
+        super(true, null);
 
         if (event == null) {
             return;

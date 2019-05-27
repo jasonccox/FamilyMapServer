@@ -3,7 +3,7 @@ package familymapserver.api.result;
 /**
  * A generic result of an API request.
  */
-public abstract class ApiResult {
+public class ApiResult {
 
     /**
      * The error message used when the provided authorization token is invalid.
@@ -24,12 +24,16 @@ public abstract class ApiResult {
 
     private String message;
 
+    private transient boolean success;
+
     /**
      * Creates a new ApiResult.
      * 
      * @param message a message describing the result of the request
+     * @param success whether the request was successfully fulfilled
      */
-    public ApiResult(String message) {
+    public ApiResult(boolean success, String message) {
+        setSuccess(success);
         setMessage(message);
     }
 
@@ -50,6 +54,15 @@ public abstract class ApiResult {
     /**
      * @return whether the request was successfully fulfilled
      */
-    public abstract boolean isSuccess();
+    public boolean isSuccess() {
+        return success;
+    }
+
+    /**
+     * @param success whether the request was successfully fulfilled
+     */
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
     
 }

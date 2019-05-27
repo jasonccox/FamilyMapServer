@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Logger;
 
 import familymapserver.data.model.User;
 
@@ -12,8 +13,10 @@ import familymapserver.data.model.User;
  */
 public class UserAccess extends Access {
 
+    private static final Logger LOG = Logger.getLogger("fms");
+
     private static final String CREATE_STMT = 
-        "CREATE TABLE user (" + 
+        "CREATE TABLE IF NOT EXISTS user (" + 
             "username        VARCHAR(255) NOT NULL PRIMARY KEY, " +
             "password        VARCHAR(255) NOT NULL, " +
             "email           VARCHAR(255) NOT NULL, " +
@@ -38,13 +41,11 @@ public class UserAccess extends Access {
      * Adds a new user to the database.
      * 
      * @param user the user to be added to the database
-     * @return true if the user was added, false if a user with the same username
-     * already existed, thus preventing this one from being added
-     * @throws DBException if the database is not open, or if another database 
-     *                     error occurs
+     * @throws DBException if a field is missing or invalid, if the database is 
+     *                     not open, or if another database error occurs
      */
-    public boolean add(User user) throws DBException {
-        boolean added = false;
+    public void add(User user) throws DBException {
+        int numAdded = 0;
 
         Connection conn = getOpenConnection();
 
@@ -63,13 +64,19 @@ public class UserAccess extends Access {
             ps.setString(7, user.getPersonId());
             ps.setString(8, user.getUsername());
 
-            added = (ps.executeUpdate() == 1);
-        } catch (SQLException e) {
-            throw new DBException(e);
+            numAdded = ps.executeUpdate();
+        } catch (SQLException sqle) {
+            DBException dbe = new DBException(sqle);
+            LOG.throwing("UserAccess", "add", dbe);
+            throw dbe;
         } 
 
-
-        return added;
+        if (numAdded < 1) {
+            DBException dbe = new DBException("The username '" + user.getUsername() + 
+                                              "' is already in use.");
+            LOG.throwing("UserAccess", "add", dbe);
+            throw dbe;
+        }
     }
 
     /**
@@ -111,8 +118,10 @@ public class UserAccess extends Access {
                 user.setPersonId(rs.getString(7));
             }
 
-        } catch (SQLException e) {
-            throw new DBException(e);
+        } catch (SQLException sqle) {
+            DBException dbe = new DBException(sqle);
+            LOG.throwing("UserAccess", "get", dbe);
+            throw dbe;
         }
 
         return user;
@@ -129,12 +138,13 @@ public class UserAccess extends Access {
     }
 
     /**
-     * Creates a new table to hold users.
+     * Creates a new table to hold users if it doesn't already exist in the 
+     * database.
      * 
      * @throws DBException if the database is not open, or if another database 
      *                     error occurs
      */
-    protected void createTable() throws DBException {
+    protected void createTableIfMissing() throws DBException {
         executeUpdate(CREATE_STMT);
     }
 

@@ -1,11 +1,12 @@
 package familymapserver.data.access;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 /**
  * An exception caused by database operations.
  */
-public class DBException extends Exception {
+public class DBException extends IOException {
 
     private static final long serialVersionUID = 1L;
 
@@ -24,6 +25,6 @@ public class DBException extends Exception {
      * @param e the SQLException that was thrown
      */
     protected DBException(SQLException e) {
-        this("A database error occurred: \n" + e.getMessage());
+        this("A database error occurred. " + e.getMessage());
     }
 }

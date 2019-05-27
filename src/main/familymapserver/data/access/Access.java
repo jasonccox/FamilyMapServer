@@ -3,11 +3,14 @@ package familymapserver.data.access;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.logging.Logger;
 
 /**
  * Contains generic methods for accessing data in the database.
  */
 public abstract class Access {
+
+    private static final Logger LOG = Logger.getLogger("fms");
 
     private Database db;
 
@@ -26,7 +29,9 @@ public abstract class Access {
     protected Connection getOpenConnection() throws DBException {
         Connection conn = db.getSQLConnection();
         if (conn == null) {
-            throw new DBException("The database is closed.");
+            DBException e = new DBException("The database is closed.");
+            LOG.throwing("Access", "getOpenConnection", e);
+            throw e;
         }
 
         return conn;
@@ -46,8 +51,10 @@ public abstract class Access {
         
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.executeUpdate();
-        } catch (SQLException e) {
-            throw new DBException(e);
+        } catch (SQLException sqle) {
+            DBException dbe = new DBException(sqle);
+            LOG.throwing("Access", "executeUpdate", dbe);
+            throw dbe;
         }
     }
 

@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.logging.Logger;
 
 import familymapserver.data.model.Event;
 
@@ -14,8 +15,10 @@ import familymapserver.data.model.Event;
  */
 public class EventAccess extends Access {
 
+    private static final Logger LOG = Logger.getLogger("fms");
+
     private static final String CREATE_STMT = 
-        "CREATE TABLE event (" + 
+        "CREATE TABLE IF NOT EXISTS event (" + 
             "id              VARCHAR(255) NOT NULL PRIMARY KEY, " +
             "assoc_username  VARCHAR(255) NOT NULL, " +
             "person_id       VARCHAR(255) NOT NULL, " +
@@ -42,13 +45,11 @@ public class EventAccess extends Access {
      * Adds a new event to the database.
      * 
      * @param event the event to be added to the database
-     * @return true if the event was added, false if an event with the same id
-     * already existed, thus preventing this one from being added
-     * @throws DBException if the database is not open, or if another database 
-     *                     error occurs
+     * @throws DBException if a field is missing or invalid, if the database is 
+     *                     not open, or if another database error occurs
      */
-    public boolean add(Event event) throws DBException {
-        boolean added = false;
+    public void add(Event event) throws DBException {
+        int numAdded = 0;
 
         Connection conn = getOpenConnection();
 
@@ -69,13 +70,19 @@ public class EventAccess extends Access {
             ps.setInt(9, event.getYear());
             ps.setString(10, event.getId());
 
-            added = (ps.executeUpdate() == 1);
-        } catch (SQLException e) {
-            throw new DBException(e);
+            numAdded = ps.executeUpdate();
+        } catch (SQLException sqle) {
+            DBException dbe = new DBException(sqle);
+            LOG.throwing("EventAccess", "add", dbe);
+            throw dbe;
         } 
 
-
-        return added;
+        if (numAdded < 1) {
+            DBException dbe = new DBException("The event id '" + event.getId() + 
+                                              "' is already in use.");
+            LOG.throwing("EventAccess", "add", dbe);
+            throw dbe;
+        }
     }
 
      /**
@@ -119,8 +126,10 @@ public class EventAccess extends Access {
                 event.setYear(rs.getInt(9));
             }
 
-        } catch (SQLException e) {
-            throw new DBException(e);
+        } catch (SQLException sqle) {
+            DBException dbe = new DBException(sqle);
+            LOG.throwing("EventAccess", "get", dbe);
+            throw dbe;
         }
 
         return event;
@@ -166,8 +175,10 @@ public class EventAccess extends Access {
                 }
             }
 
-        } catch (SQLException e) {
-            throw new DBException(e);
+        } catch (SQLException sqle) {
+            DBException dbe = new DBException(sqle);
+            LOG.throwing("EventAccess", "getAll", dbe);
+            throw dbe;
         }
 
         return events;
@@ -184,12 +195,13 @@ public class EventAccess extends Access {
     }
 
     /**
-     * Creates a new table to hold events.
+     * Creates a new table to hold events if it doesn't already exist in the 
+     * database.
      * 
      * @throws DBException if the database is not open, or if another database 
      *                     error occurs
      */
-    protected void createTable() throws DBException {
+    protected void createTableIfMissing() throws DBException {
         executeUpdate(CREATE_STMT);
     }
     

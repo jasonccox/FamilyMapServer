@@ -1,7 +1,6 @@
 package familymapserver.data.access;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -30,8 +29,7 @@ public class AuthTokenAccessTest {
             testDB.delete();
         }
         
-        db = new Database();
-        db.open(DatabaseTest.TEST_DB);
+        db = new Database(DatabaseTest.TEST_DB);
 
         authTokenAccess = new AuthTokenAccess(db);
     }
@@ -44,10 +42,10 @@ public class AuthTokenAccessTest {
     }
 
     @Test
-    public void addReturnsTrueAndAddsAuthTokenToDB() throws SQLException, DBException {
-        authTokenAccess.createTable();
+    public void addAddsAuthTokenToDB() throws SQLException, DBException {
+        authTokenAccess.createTableIfMissing();
 
-        assertTrue(authTokenAccess.add(authToken));
+        authTokenAccess.add(authToken);
 
         Connection c = db.getSQLConnection();
         PreparedStatement ps = c.prepareStatement("SELECT count() FROM auth_token");
@@ -67,28 +65,19 @@ public class AuthTokenAccessTest {
         ps.close();
     }
 
-    @Test
-    public void addReturnsFalseAndDoesNotAddAuthTokenIfTokenTaken() throws DBException, SQLException {
-        authTokenAccess.createTable();
+    @Test (expected = DBException.class)
+    public void addThrowsExceptionIfTokenTaken() throws DBException, SQLException {
+        authTokenAccess.createTableIfMissing();
         
         authTokenAccess.add(authToken);
 
         AuthToken at2 = new AuthToken(authToken.getToken(), "uname2");
-        assertFalse(authTokenAccess.add(at2));
-
-        Connection c = db.getSQLConnection();
-        PreparedStatement ps = c.prepareStatement("SELECT count() FROM auth_token " +
-                                                  "WHERE token = ?");
-        ps.setString(1, authToken.getToken());
-        ResultSet rs = ps.executeQuery();
-        assertEquals(1, rs.getInt(1));
-        rs.close();
-        ps.close();
+        authTokenAccess.add(at2);
     }
 
     @Test (expected = DBException.class)
     public void addThrowsExceptionIfTokenMissing() throws DBException {
-        authTokenAccess.createTable();
+        authTokenAccess.createTableIfMissing();
 
         AuthToken at2 = new AuthToken(null, "uname2");
 
@@ -97,7 +86,7 @@ public class AuthTokenAccessTest {
 
     @Test (expected = DBException.class)
     public void addThrowsExceptionIfUsernameMissing() throws DBException {
-        authTokenAccess.createTable();
+        authTokenAccess.createTableIfMissing();
 
         AuthToken at2 = new AuthToken("token", null);
 
@@ -113,7 +102,7 @@ public class AuthTokenAccessTest {
 
     @Test
     public void getUsernameReturnsUsernameIfTokenInDB() throws DBException {
-        authTokenAccess.createTable();
+        authTokenAccess.createTableIfMissing();
         
         authTokenAccess.add(authToken);
         assertEquals(authToken.getUsername(), authTokenAccess.getUsername(authToken.getToken()));
@@ -121,7 +110,7 @@ public class AuthTokenAccessTest {
 
     @Test
     public void getUsernameReturnsNullIfTokenNotInDB() throws DBException {
-        authTokenAccess.createTable();
+        authTokenAccess.createTableIfMissing();
         
         authTokenAccess.add(authToken);
         assertNull(authTokenAccess.getUsername("doesntexist"));
@@ -136,7 +125,7 @@ public class AuthTokenAccessTest {
 
     @Test
     public void clearRemovesAllAuthTokens() throws DBException, SQLException {
-        authTokenAccess.createTable();
+        authTokenAccess.createTableIfMissing();
         
         authTokenAccess.add(authToken);
         authTokenAccess.clear();
@@ -151,14 +140,14 @@ public class AuthTokenAccessTest {
 
     @Test
     public void clearDoesntThrowExceptionIfNoAuthTokens() throws DBException {
-        authTokenAccess.createTable();
+        authTokenAccess.createTableIfMissing();
         
         authTokenAccess.clear();
     }
 
     @Test (expected = DBException.class)
     public void clearThrowsExceptionIfDBClosed() throws DBException {
-        authTokenAccess.createTable();
+        authTokenAccess.createTableIfMissing();
         
         db.close();
 
@@ -167,7 +156,7 @@ public class AuthTokenAccessTest {
 
     @Test
     public void createTableCreatesAuthTokenTable() throws DBException, SQLException {
-        authTokenAccess.createTable();
+        authTokenAccess.createTableIfMissing();
 
         Connection c = db.getSQLConnection();
         PreparedStatement ps = c.prepareStatement("SELECT count(*) FROM sqlite_master " +
@@ -179,16 +168,16 @@ public class AuthTokenAccessTest {
         ps.close();
     }
 
-    @Test (expected = DBException.class)
-    public void createTableThrowsExceptionIfTableExists() throws DBException {
-        authTokenAccess.createTable();
-        authTokenAccess.createTable();
+    @Test
+    public void createTableThrowsNoExceptionIfTableExists() throws DBException {
+        authTokenAccess.createTableIfMissing();
+        authTokenAccess.createTableIfMissing();
     }
 
     @Test (expected = DBException.class)
     public void createTableThrowsExceptionIfDBClosed() throws DBException {
         db.close();
 
-        authTokenAccess.createTable();
+        authTokenAccess.createTableIfMissing();
     }
 }

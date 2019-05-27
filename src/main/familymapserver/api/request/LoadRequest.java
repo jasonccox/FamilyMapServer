@@ -27,6 +27,9 @@ public class LoadRequest extends ApiRequest {
     public LoadRequest(Collection<User> users, Collection<Person> persons, 
                        Collection<Event> events) {
         super();
+        setUsers(users);
+        setPersons(persons);
+        setEvents(events);
     }
 
     /**

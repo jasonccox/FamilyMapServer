@@ -11,7 +11,7 @@ public class User {
     private String firstName;
     private String lastName;
     private String gender;
-    private String personId;
+    private String personID;
 
     /**
      * Creates a new User.
@@ -112,7 +112,7 @@ public class User {
      * @return the id of the person representing this user in the family map
      */
     public String getPersonId() {
-        return personId;
+        return personID;
     }
 
     /**
@@ -120,7 +120,7 @@ public class User {
      *                 map
      */
     public void setPersonId(String personId) {
-        this.personId = personId;
+        this.personID = personId;
     }
 
     

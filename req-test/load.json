@@ -1,0 +1,104 @@
+{
+    "users": [
+        {
+            "userName": "user1",
+            "password": "password",
+            "email": "email@email.com",
+            "firstName": "User",
+            "lastName": "One",
+            "gender": "m",
+            "personID": "p1"
+        },
+        {
+            "userName": "user2",
+            "password": "password",
+            "email": "email@email.com",
+            "firstName": "User",
+            "lastName": "Two",
+            "gender": "f",
+            "personID": "p2"
+        },
+        {
+            "userName": "user3",
+            "password": "password",
+            "email": "email@email.com",
+            "firstName": "User",
+            "lastName": "Three",
+            "gender": "m",
+            "personID": "p3"
+        }
+    ],
+    "persons": [
+        {
+            "associatedUsername": "user1",
+            "personID": "p1",
+            "firstName": "User",
+            "lastName": "One",
+            "gender": "m",
+            "father": "p3",
+            "mother": "p2"
+        },
+        {
+            "associatedUsername": "user2",
+            "personID": "p2",
+            "firstName": "User",
+            "lastName": "Two",
+            "gender": "f",
+            "spouse": "p3"
+        },
+        {
+            "associatedUsername": "user3",
+            "personID": "p3",
+            "firstName": "User",
+            "lastName": "Three",
+            "gender": "m",
+            "spouse": "p2"
+        }
+    ],
+    "events": [
+        {
+            "associatedUsername": "user1",
+            "eventID": "e1",
+            "personID": "pid",
+            "latitude": 65.6833,
+            "longitude": -17.9,
+            "country": "Iceland",
+            "city": "Akureyri",
+            "eventType": "birth",
+            "year": 2000
+        },
+        {
+            "associatedUsername": "user2",
+            "eventID": "e2",
+            "personID": "pid",
+            "latitude": 65.6833,
+            "longitude": -17.9,
+            "country": "Iceland",
+            "city": "Akureyri",
+            "eventType": "marriage",
+            "year": 1995
+        },
+        {
+            "associatedUsername": "user3",
+            "eventID": "e3",
+            "personID": "pid",
+            "latitude": 65.6833,
+            "longitude": -17.9,
+            "country": "Iceland",
+            "city": "Akureyri",
+            "eventType": "marriage",
+            "year": 1995
+        },
+        {
+            "associatedUsername": "user3",
+            "eventID": "e4",
+            "personID": "pid",
+            "latitude": 65.6833,
+            "longitude": -17.9,
+            "country": "Iceland",
+            "city": "Akureyri",
+            "eventType": "death",
+            "year": 2010
+        }
+    ]
+}

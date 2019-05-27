@@ -15,7 +15,7 @@ public class DefaultHandler extends ApiHandler {
     private static final String NOT_FOUND_HTML_PATH = "web/HTML/404.html";
     
     /**
-     * Receives a request and returns a response
+     * Receives a GET request and returns the desired file in the response
      * 
      * @param exchange the HttpExchange object for the request
      * @throws IOException if an I/O error occurs

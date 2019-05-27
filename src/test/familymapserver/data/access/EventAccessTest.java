@@ -1,7 +1,6 @@
 package familymapserver.data.access;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -32,8 +31,7 @@ public class EventAccessTest {
             testDB.delete();
         }
         
-        db = new Database();
-        db.open(DatabaseTest.TEST_DB);
+        db = new Database(DatabaseTest.TEST_DB);
 
         eventAccess = new EventAccess(db);
 
@@ -55,10 +53,10 @@ public class EventAccessTest {
     }
 
     @Test
-    public void addReturnsTrueAndAddsEventToDB() throws SQLException, DBException {
-        eventAccess.createTable();
+    public void addAddsEventToDB() throws SQLException, DBException {
+        eventAccess.createTableIfMissing();
 
-        assertTrue(eventAccess.add(event));
+        eventAccess.add(event);
 
         Connection c = db.getSQLConnection();
         PreparedStatement ps = c.prepareStatement("SELECT count() FROM event");
@@ -86,9 +84,9 @@ public class EventAccessTest {
         ps.close();
     }
 
-    @Test
-    public void addReturnsFalseAndDoesNotAddEventIfIdTaken() throws DBException, SQLException {
-        eventAccess.createTable();
+    @Test (expected = DBException.class)
+    public void addThrowsExceptionIfIdTaken() throws DBException, SQLException {
+        eventAccess.createTableIfMissing();
         
         eventAccess.add(event);
 
@@ -101,21 +99,12 @@ public class EventAccessTest {
         e2.setType("death");
         e2.setYear(2001);
 
-        assertFalse(eventAccess.add(e2));
-
-        Connection c = db.getSQLConnection();
-        PreparedStatement ps = c.prepareStatement("SELECT count() FROM event " + 
-                                                  "WHERE id = ?");
-        ps.setString(1, event.getId());
-        ResultSet rs = ps.executeQuery();
-        assertEquals(1, rs.getInt(1));
-        rs.close();
-        ps.close();
+        eventAccess.add(e2);
     }
 
     @Test (expected = DBException.class)
     public void addThrowsExceptionIfIdMissing() throws DBException {
-        eventAccess.createTable();
+        eventAccess.createTableIfMissing();
 
         Event e2 = new Event(null, "uname2");
         e2.setPersonId("pid2");
@@ -131,7 +120,7 @@ public class EventAccessTest {
 
     @Test (expected = DBException.class)
     public void addThrowsExceptionIfAssocUsernameMissing() throws DBException {
-        eventAccess.createTable();
+        eventAccess.createTableIfMissing();
 
         Event e2 = new Event("id2", null);
         e2.setPersonId("pid2");
@@ -147,7 +136,7 @@ public class EventAccessTest {
 
     @Test (expected = DBException.class)
     public void addThrowsExceptionIfPersonIdMissing() throws DBException {
-        eventAccess.createTable();
+        eventAccess.createTableIfMissing();
 
         Event e2 = new Event("id2", "uname2");
         e2.setLatitude(2);
@@ -162,7 +151,7 @@ public class EventAccessTest {
 
     @Test (expected = DBException.class)
     public void addThrowsExceptionIfCountryMissing() throws DBException {
-        eventAccess.createTable();
+        eventAccess.createTableIfMissing();
 
         Event e2 = new Event("id2", "uname2");
         e2.setPersonId("pid2");
@@ -177,7 +166,7 @@ public class EventAccessTest {
 
     @Test (expected = DBException.class)
     public void addThrowsExceptionIfCityMissing() throws DBException {
-        eventAccess.createTable();
+        eventAccess.createTableIfMissing();
 
         Event e2 = new Event("id2", "uname2");
         e2.setPersonId("pid2");
@@ -192,7 +181,7 @@ public class EventAccessTest {
 
     @Test (expected = DBException.class)
     public void addThrowsExceptionIfTypeMissing() throws DBException {
-        eventAccess.createTable();
+        eventAccess.createTableIfMissing();
 
         Event e2 = new Event("id2", "uname2");
         e2.setPersonId("pid2");
@@ -214,7 +203,7 @@ public class EventAccessTest {
 
     @Test
     public void getReturnsEventIfInDB() throws DBException {
-        eventAccess.createTable();
+        eventAccess.createTableIfMissing();
         
         eventAccess.add(event);
         Event result = eventAccess.get(event.getId());
@@ -232,7 +221,7 @@ public class EventAccessTest {
 
     @Test
     public void getReturnsNullIfNotInDB() throws DBException {
-        eventAccess.createTable();
+        eventAccess.createTableIfMissing();
         
         eventAccess.add(event);
         assertNull(eventAccess.get("doesntexist"));
@@ -247,7 +236,7 @@ public class EventAccessTest {
 
     @Test
     public void getAllReturnsMatchingEvents() throws DBException {
-        eventAccess.createTable();
+        eventAccess.createTableIfMissing();
 
         Event e2 = new Event("id2", "uname2");
         e2.setPersonId("pid2");
@@ -302,7 +291,7 @@ public class EventAccessTest {
 
     @Test
     public void getAllReturnsEmptyCollectionIfNoMatchingEvents() throws DBException {
-        eventAccess.createTable();
+        eventAccess.createTableIfMissing();
 
         Event e2 = new Event("id2", "uname2");
         e2.setPersonId("pid2");
@@ -350,7 +339,7 @@ public class EventAccessTest {
 
     @Test
     public void clearRemovesAllEvents() throws DBException, SQLException {
-        eventAccess.createTable();
+        eventAccess.createTableIfMissing();
         
         eventAccess.add(event);
         eventAccess.clear();
@@ -365,14 +354,14 @@ public class EventAccessTest {
 
     @Test
     public void clearDoesntThrowExceptionIfNoEvents() throws DBException {
-        eventAccess.createTable();
+        eventAccess.createTableIfMissing();
         
         eventAccess.clear();
     }
 
     @Test (expected = DBException.class)
     public void clearThrowsExceptionIfDBClosed() throws DBException {
-        eventAccess.createTable();
+        eventAccess.createTableIfMissing();
         
         db.close();
 
@@ -381,7 +370,7 @@ public class EventAccessTest {
 
     @Test
     public void createTableCreatesEventTable() throws DBException, SQLException {
-        eventAccess.createTable();
+        eventAccess.createTableIfMissing();
 
         Connection c = db.getSQLConnection();
         PreparedStatement ps = c.prepareStatement("SELECT count(*) FROM sqlite_master " +
@@ -393,17 +382,17 @@ public class EventAccessTest {
         ps.close();
     }
 
-    @Test (expected = DBException.class)
-    public void createTableThrowsExceptionIfTableExists() throws DBException {
-        eventAccess.createTable();
-        eventAccess.createTable();
+    @Test
+    public void createTableThrowsNoExceptionIfTableExists() throws DBException {
+        eventAccess.createTableIfMissing();
+        eventAccess.createTableIfMissing();
     }
 
     @Test (expected = DBException.class)
     public void createTableThrowsExceptionIfDBClosed() throws DBException {
         db.close();
 
-        eventAccess.createTable();
+        eventAccess.createTableIfMissing();
     }
 
 }

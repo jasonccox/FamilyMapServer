@@ -5,17 +5,38 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import com.google.gson.JsonParseException;
+import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+
+import familymapserver.api.result.ApiResult;
+import familymapserver.util.ObjectEncoder;
 
 /**
  * A default handler for web API requests.
  */
 public abstract class ApiHandler implements HttpHandler {
 
-    protected enum RequestMethod {
-        GET, POST
+    private static final Logger LOG = Logger.getLogger("fms");
+
+    private static String requestToString(HttpExchange exchange) {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(exchange.getRequestMethod() + " ");
+        sb.append(exchange.getRequestURI() + "\n");
+
+        Headers headers = exchange.getRequestHeaders();
+        for (String header : headers.keySet()) {
+            sb.append("\t" + header + ": ");
+            sb.append(headers.get(header).toString() + "\n");
+        }
+
+        return sb.toString();
     }
 
     /**
@@ -27,11 +48,17 @@ public abstract class ApiHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         try {
-            System.out.printf("\n%s %s\n", exchange.getRequestMethod(), 
-                               exchange.getRequestURI());
+            LOG.info(ApiHandler.requestToString(exchange));
             handleRequest(exchange);
         } catch (IOException e) {
+            LOG.log(Level.SEVERE, "Failed to handle request.", e);
             sendResponse(HttpURLConnection.HTTP_INTERNAL_ERROR, exchange);
+        } catch (JsonParseException e) {
+            ApiResult result = new ApiResult(false, "Incorrectly formatted request body: " + 
+                                                    e.getMessage());
+
+            sendResponse(HttpURLConnection.HTTP_BAD_REQUEST, 
+                         ObjectEncoder.serialize(result), exchange);
         }
     }   
 
@@ -40,7 +67,8 @@ public abstract class ApiHandler implements HttpHandler {
      * @param exchange the HttpExchange object for the request
      * @throws IOException if an I/O error occurs
      */
-    public abstract void handleRequest(HttpExchange exchange) throws IOException;
+    public abstract void handleRequest(HttpExchange exchange) 
+        throws IOException, JsonParseException;
 
     /**
      * Sends a response.
@@ -53,9 +81,13 @@ public abstract class ApiHandler implements HttpHandler {
     protected void sendResponse(int status, InputStream body, HttpExchange exchange) 
         throws IOException {
 
+        LOG.info("Sending response: " + String.valueOf(status));
+        
         exchange.sendResponseHeaders(status, 0);
 
         body.transferTo(exchange.getResponseBody());
+        body.close();
+
         exchange.getResponseBody().close();
     }
 
@@ -69,6 +101,8 @@ public abstract class ApiHandler implements HttpHandler {
      */
     protected void sendResponse(int status, String body, HttpExchange exchange) 
         throws IOException {
+
+        LOG.info("Sending response: " + String.valueOf(status));
 
         exchange.sendResponseHeaders(status, 0);
 
@@ -85,6 +119,8 @@ public abstract class ApiHandler implements HttpHandler {
      */
     protected void sendResponse(int status, HttpExchange exchange) 
         throws IOException {
+
+        LOG.info("Sending response: " + String.valueOf(status));
 
         exchange.sendResponseHeaders(status, 0);
         exchange.getResponseBody().close();
@@ -103,6 +139,13 @@ public abstract class ApiHandler implements HttpHandler {
         OutputStreamWriter writer = new OutputStreamWriter(stream);
         writer.write(string);
         writer.flush();
+    }
+
+    protected String streamToString(InputStream stream) {
+        try (Scanner scanner = new Scanner(stream)) {
+            scanner.useDelimiter("\\A");
+            return scanner.next();
+        }
     }
     
 }

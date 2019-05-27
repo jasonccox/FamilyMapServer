@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Logger;
 
 import familymapserver.data.model.AuthToken;
 
@@ -11,6 +12,8 @@ import familymapserver.data.model.AuthToken;
  * Contains methods for accessing authorization token data in the database.
  */
 public class AuthTokenAccess extends Access {
+
+    private static final Logger LOG = Logger.getLogger("fms");
 
     private static final String CREATE_STMT = 
         "CREATE TABLE auth_token (" +
@@ -32,14 +35,11 @@ public class AuthTokenAccess extends Access {
      * Adds a new authorization token to the database.
      * 
      * @param authToken the authorization token to be added to the database
-     * @return true if the authorization token was added, false if an 
-     *         authorization token with the same token value already existed, 
-     *         thus preventing this one from being added
-     * @throws DBException if the database is not open, or if another database 
-     *                     error occurs
+     * @throws DBException if a field is missing or invalid, if the database is 
+     *                     not open, or if another database error occurs
      */
-    public boolean add(AuthToken authToken) throws DBException {
-        boolean added = false;
+    public void add(AuthToken authToken) throws DBException {
+        int numAdded = 0;
 
         Connection conn = getOpenConnection();
 
@@ -52,13 +52,19 @@ public class AuthTokenAccess extends Access {
             ps.setString(2, authToken.getUsername());
             ps.setString(3, authToken.getToken());
 
-            added = (ps.executeUpdate() == 1);
-        } catch (SQLException e) {
-            throw new DBException(e);
+            numAdded = ps.executeUpdate();
+        } catch (SQLException sqle) {
+            DBException dbe = new DBException(sqle);
+            LOG.throwing("AuthTokenAccess", "add", dbe);
+            throw dbe;
         } 
 
-
-        return added;
+        if (numAdded < 1) {
+            DBException dbe = new DBException("The token '" + authToken.getToken() + 
+                                              "' is already in use.");
+            LOG.throwing("AuthTokenAccess", "add", dbe);
+            throw dbe;
+        }
     }
 
     /**
@@ -91,8 +97,10 @@ public class AuthTokenAccess extends Access {
                 return rs.getString(1);
             } 
 
-        } catch (SQLException e) {
-            throw new DBException(e);
+        } catch (SQLException sqle) {
+            DBException dbe = new DBException(sqle);
+            LOG.throwing("AuthTokenAccess", "getUsername", dbe);
+            throw dbe;
         }
     }
 
@@ -107,12 +115,13 @@ public class AuthTokenAccess extends Access {
     }
 
     /**
-     * Creates a new table to hold authorization tokens.
+     * Creates a new table to hold authorization tokens if it doesn't already
+     * exist in the database.
      * 
      * @throws DBException if the database is not open, or if another database 
      *                     error occurs
      */
-    protected void createTable() throws DBException {
+    protected void createTableIfMissing() throws DBException {
         executeUpdate(CREATE_STMT);
     }
 }

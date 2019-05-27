@@ -12,19 +12,19 @@ public class ClearResult extends ApiResult {
     private static final String SUCCESS_MSG = "Clear succeeded.";
 
     /**
-     * Creates a new success ClearResult.
-     */
-    public ClearResult(){
-        super(SUCCESS_MSG);
-    }
-
-    /**
      * Creates a new error ClearResult.
      * 
      * @param error a description of the error
      */
     public ClearResult(String error) {
-        super(error);
+        super(false, error);
+    }
+
+    /**
+     * Creates a new success ClearResult.
+     */
+    public ClearResult(){
+        super(true, SUCCESS_MSG);
     }
 
     /**

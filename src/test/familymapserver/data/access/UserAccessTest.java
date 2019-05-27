@@ -1,7 +1,6 @@
 package familymapserver.data.access;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -30,8 +29,7 @@ public class UserAccessTest {
             testDB.delete();
         }
         
-        db = new Database();
-        db.open(DatabaseTest.TEST_DB);
+        db = new Database(DatabaseTest.TEST_DB);
 
         userAccess = new UserAccess(db);
 
@@ -51,10 +49,10 @@ public class UserAccessTest {
     }
 
     @Test
-    public void addReturnsTrueAndAddsUserToDB() throws SQLException, DBException {
-        userAccess.createTable();
+    public void addAddsUserToDB() throws SQLException, DBException {
+        userAccess.createTableIfMissing();
 
-        assertTrue(userAccess.add(user));
+        userAccess.add(user);
 
         Connection c = db.getSQLConnection();
         PreparedStatement ps = c.prepareStatement("SELECT count() FROM user");
@@ -80,9 +78,9 @@ public class UserAccessTest {
         ps.close();
     }
 
-    @Test
-    public void addReturnsFalseAndDoesNotAddUserIfUsernameTaken() throws DBException, SQLException {
-        userAccess.createTable();
+    @Test (expected = DBException.class)
+    public void addThrowsExceptionIfUsernameTaken() throws DBException, SQLException {
+        userAccess.createTableIfMissing();
         
         userAccess.add(user);
 
@@ -93,22 +91,12 @@ public class UserAccessTest {
         user.setGender("f");
         user.setPersonId("pid2");
 
-        assertFalse(userAccess.add(u2));
-
-        Connection c = db.getSQLConnection();
-        PreparedStatement ps = c.prepareStatement("SELECT count() FROM user " +
-                                                  "WHERE username = ?");
-        ps.setString(1, user.getUsername());
-        ResultSet rs = ps.executeQuery();
-        assertEquals(1, rs.getInt(1));
-
-        rs.close();
-        ps.close();
+        userAccess.add(u2);
     }
 
     @Test (expected = DBException.class)
     public void addThrowsExceptionIfUsernameMissing() throws DBException {
-        userAccess.createTable();
+        userAccess.createTableIfMissing();
 
         User u2 = new User(null, "pw2");
         user.setEmail("email2");
@@ -122,7 +110,7 @@ public class UserAccessTest {
 
     @Test (expected = DBException.class)
     public void addThrowsExceptionIfPasswordMissing() throws DBException {
-        userAccess.createTable();
+        userAccess.createTableIfMissing();
 
         User u2 = new User("uname2", null);
         user.setEmail("email2");
@@ -136,7 +124,7 @@ public class UserAccessTest {
 
     @Test (expected = DBException.class)
     public void addThrowsExceptionIfEmailMissing() throws DBException {
-        userAccess.createTable();
+        userAccess.createTableIfMissing();
 
         User u2 = new User("uname2", "pw2");
         user.setFirstName("f2");
@@ -149,7 +137,7 @@ public class UserAccessTest {
 
     @Test (expected = DBException.class)
     public void addThrowsExceptionIfFirstNameMissing() throws DBException {
-        userAccess.createTable();
+        userAccess.createTableIfMissing();
 
         User u2 = new User("uname2", "pw2");
         user.setEmail("email2");
@@ -162,7 +150,7 @@ public class UserAccessTest {
 
     @Test (expected = DBException.class)
     public void addThrowsExceptionIfLastNameMissing() throws DBException {
-        userAccess.createTable();
+        userAccess.createTableIfMissing();
 
         User u2 = new User("uname2", "pw2");
         user.setEmail("email2");
@@ -175,7 +163,7 @@ public class UserAccessTest {
 
     @Test (expected = DBException.class)
     public void addThrowsExceptionIfGenderMissing() throws DBException {
-        userAccess.createTable();
+        userAccess.createTableIfMissing();
 
         User u2 = new User("uname2", "pw2");
         user.setEmail("email2");
@@ -188,7 +176,7 @@ public class UserAccessTest {
 
     @Test (expected = DBException.class)
     public void addThrowsExceptionIfPersonIdMissing() throws DBException {
-        userAccess.createTable();
+        userAccess.createTableIfMissing();
 
         User u2 = new User("uname2", "pw2");
         user.setEmail("email2");
@@ -201,7 +189,7 @@ public class UserAccessTest {
 
     @Test (expected = DBException.class)
     public void addThrowsExceptionIfGenderInvalid() throws DBException {
-        userAccess.createTable();
+        userAccess.createTableIfMissing();
 
         User u2 = new User("uname2", "pw2");
         user.setEmail("email2");
@@ -222,7 +210,7 @@ public class UserAccessTest {
 
     @Test
     public void getReturnsUserIfInDB() throws DBException {
-        userAccess.createTable();
+        userAccess.createTableIfMissing();
         
         userAccess.add(user);
         User result = userAccess.get(user.getUsername());
@@ -238,7 +226,7 @@ public class UserAccessTest {
 
     @Test
     public void getReturnsNullIfNotInDB() throws DBException {
-        userAccess.createTable();
+        userAccess.createTableIfMissing();
         
         userAccess.add(user);
         assertNull(userAccess.get("doesntexist"));
@@ -253,7 +241,7 @@ public class UserAccessTest {
 
     @Test
     public void clearRemovesAllUsers() throws DBException, SQLException {
-        userAccess.createTable();
+        userAccess.createTableIfMissing();
         
         userAccess.add(user);
         userAccess.clear();
@@ -268,14 +256,14 @@ public class UserAccessTest {
 
     @Test
     public void clearDoesntThrowExceptionIfNoUsers() throws DBException {
-        userAccess.createTable();
+        userAccess.createTableIfMissing();
         
         userAccess.clear();
     }
 
     @Test (expected = DBException.class)
     public void clearThrowsExceptionIfDBClosed() throws DBException {
-        userAccess.createTable();
+        userAccess.createTableIfMissing();
         
         db.close();
 
@@ -284,7 +272,7 @@ public class UserAccessTest {
 
     @Test
     public void createTableCreatesUserTable() throws DBException, SQLException {
-        userAccess.createTable();
+        userAccess.createTableIfMissing();
 
         Connection c = db.getSQLConnection();
         PreparedStatement ps = c.prepareStatement("SELECT count(*) FROM sqlite_master " +
@@ -296,16 +284,16 @@ public class UserAccessTest {
         ps.close();
     }
 
-    @Test (expected = DBException.class)
-    public void createTableThrowsExceptionIfTableExists() throws DBException {
-        userAccess.createTable();
-        userAccess.createTable();
+    @Test
+    public void createTableThrowsNoExceptionIfTableExists() throws DBException {
+        userAccess.createTableIfMissing();
+        userAccess.createTableIfMissing();
     }
 
     @Test (expected = DBException.class)
     public void createTableThrowsExceptionIfDBClosed() throws DBException {
         db.close();
 
-        userAccess.createTable();
+        userAccess.createTableIfMissing();
     }
 }

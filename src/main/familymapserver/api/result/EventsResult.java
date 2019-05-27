@@ -19,7 +19,7 @@ public class EventsResult extends ApiResult {
      * @param message a description of the error
      */
     public EventsResult(String message) {
-        super(message);
+        super(false, message);
     }
 
     /**
@@ -28,7 +28,7 @@ public class EventsResult extends ApiResult {
      * @param data the retrieved events
      */
     public EventsResult(Collection<Event> data) {
-        super(null);
+        super(true, null);
         this.data = new ArrayList<>();
         for (Event e : data) {
             this.data.add(new EventResult(e));

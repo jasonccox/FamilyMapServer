@@ -23,7 +23,7 @@ public class FillResult extends ApiResult {
      *                      fill request
      */
     public FillResult(int personsCreated, int eventsCreated) {
-        super(String.format(SUCCESS_MSG_FORMAT, personsCreated, eventsCreated));
+        super(true, String.format(SUCCESS_MSG_FORMAT, personsCreated, eventsCreated));
     }
 
     /**
@@ -32,7 +32,7 @@ public class FillResult extends ApiResult {
      * @param error the error message
      */
     public FillResult(String error) {
-        super(error);
+        super(false, error);
     }
 
     /**

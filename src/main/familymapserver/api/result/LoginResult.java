@@ -24,7 +24,7 @@ public class LoginResult extends ApiResult {
      * @param error the error message
      */
     public LoginResult(String error) {
-        super(error);
+        super(false, error);
     }
 
     /**
@@ -36,7 +36,7 @@ public class LoginResult extends ApiResult {
      *                 the family map
      */
     public LoginResult(String authToken, String userName, String personID) {
-        super(null);
+        super(true, null);
         setAuthToken(authToken);
         setUserName(userName);
         setPersonID(personID);

@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.logging.Logger;
 
 import familymapserver.data.model.Person;
 
@@ -14,8 +15,10 @@ import familymapserver.data.model.Person;
  */
 public class PersonAccess extends Access {
 
+    private static final Logger LOG = Logger.getLogger("fms");
+
     private static final String CREATE_STMT = 
-        "CREATE TABLE person (" + 
+        "CREATE TABLE IF NOT EXISTS person (" + 
             "id              VARCHAR(255) NOT NULL PRIMARY KEY, " +
             "assoc_username  VARCHAR(255) NOT NULL, " +
             "first_name      VARCHAR(255) NOT NULL, " +
@@ -44,13 +47,11 @@ public class PersonAccess extends Access {
      * Adds a new person to the database.
      * 
      * @param person the person to be added to the database
-     * @return true if the person was added, false if a person with the same id
-     * already existed, thus preventing this one from being added
-     * @throws DBException if the database is not open, or if another database 
-     *                     error occurs
+     * @throws DBException if a field is missing or invalid, if the database is 
+     *                     not open, or if another database error occurs
      */
-    public boolean add(Person person) throws DBException {
-        boolean added = false;
+    public void add(Person person) throws DBException {
+        int numAdded = 0;
 
         Connection conn = getOpenConnection();
 
@@ -70,13 +71,19 @@ public class PersonAccess extends Access {
             ps.setString(8, person.getSpouse());
             ps.setString(9, person.getId());
 
-            added = (ps.executeUpdate() == 1);
-        } catch (SQLException e) {
-            throw new DBException(e);
+            numAdded = ps.executeUpdate();
+        } catch (SQLException sqle) {
+            DBException dbe = new DBException(sqle);
+            LOG.throwing("PersonAccess", "add", dbe);
+            throw dbe;
         } 
 
-
-        return added;
+        if (numAdded < 1) {
+            DBException dbe = new DBException("The person id '" + person.getId() + 
+                                              "' is already in use.");
+            LOG.throwing("PersonAccess", "add", dbe);
+            throw dbe;
+        }
     }
 
      /**
@@ -118,8 +125,10 @@ public class PersonAccess extends Access {
                 person.setSpouse(rs.getString(8));
             }
 
-        } catch (SQLException e) {
-            throw new DBException(e);
+        } catch (SQLException sqle) {
+            DBException dbe = new DBException(sqle);
+            LOG.throwing("PersonAccess", "get", dbe);
+            throw dbe;
         }
 
         return person;
@@ -164,8 +173,10 @@ public class PersonAccess extends Access {
                 }
             }
 
-        } catch (SQLException e) {
-            throw new DBException(e);
+        } catch (SQLException sqle) {
+            DBException dbe = new DBException(sqle);
+            LOG.throwing("PersonAccess", "getAll", dbe);
+            throw dbe;
         }
 
         return persons;
@@ -182,12 +193,13 @@ public class PersonAccess extends Access {
     }
 
     /**
-     * Creates a new table to hold persons.
+     * Creates a new table to hold persons if it doesn't already exist in the 
+     * database.
      * 
-     * @throws DBException if the table already exists, if the database is not 
-     *                     open, or if another database error occurs
+     * @throws DBException if the database is not open, or if another database 
+     *                     error occurs
      */
-    protected void createTable() throws DBException {
+    protected void createTableIfMissing() throws DBException {
         executeUpdate(CREATE_STMT);
     }
 }

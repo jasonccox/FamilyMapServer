@@ -19,7 +19,7 @@ public class PersonsResult extends ApiResult {
      * @param message a description of the error
      */
     public PersonsResult(String message) {
-        super(message);
+        super(false, message);
     }
 
     /**
@@ -28,7 +28,7 @@ public class PersonsResult extends ApiResult {
      * @param data the retrieved persons
      */
     public PersonsResult(Collection<Person> data) {
-        super(null);
+        super(true, null);
         this.data = new ArrayList<>();
         for (Person p : data) {
             this.data.add(new PersonResult(p));

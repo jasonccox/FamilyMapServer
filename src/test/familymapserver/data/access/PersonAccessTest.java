@@ -1,7 +1,6 @@
 package familymapserver.data.access;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -32,8 +31,7 @@ public class PersonAccessTest {
             testDB.delete();
         }
         
-        db = new Database();
-        db.open(DatabaseTest.TEST_DB);
+        db = new Database(DatabaseTest.TEST_DB);
 
         personAccess = new PersonAccess(db);
 
@@ -54,10 +52,10 @@ public class PersonAccessTest {
     }
 
     @Test
-    public void addReturnsTrueAndAddsPersonToDB() throws SQLException, DBException {
-        personAccess.createTable();
+    public void addAddsPersonToDB() throws SQLException, DBException {
+        personAccess.createTableIfMissing();
 
-        assertTrue(personAccess.add(person));
+        personAccess.add(person);
 
         Connection c = db.getSQLConnection();
         PreparedStatement ps = c.prepareStatement("SELECT count() FROM person");
@@ -84,9 +82,9 @@ public class PersonAccessTest {
         ps.close();
     }
 
-    @Test
-    public void addReturnsFalseAndDoesNotAddPersonIfIdTaken() throws DBException, SQLException {
-        personAccess.createTable();
+    @Test (expected = DBException.class)
+    public void addThrowsExceptionIfIdTaken() throws DBException, SQLException {
+        personAccess.createTableIfMissing();
         
         personAccess.add(person);
 
@@ -98,21 +96,12 @@ public class PersonAccessTest {
         p2.setMother("mom2");
         p2.setSpouse("spouse2");
 
-        assertFalse(personAccess.add(p2));
-
-        Connection c = db.getSQLConnection();
-        PreparedStatement ps = c.prepareStatement("SELECT count() FROM person " +
-                                                  "WHERE id = ?");
-        ps.setString(1, person.getId());
-        ResultSet rs = ps.executeQuery();
-        assertEquals(1, rs.getInt(1));
-        rs.close();
-        ps.close();
+        personAccess.add(p2);
     }
 
     @Test (expected = DBException.class)
     public void addThrowsExceptionIfIdMissing() throws DBException {
-        personAccess.createTable();
+        personAccess.createTableIfMissing();
 
         Person p2 = new Person(null, "uname2");
         p2.setFirstName("f2");
@@ -127,7 +116,7 @@ public class PersonAccessTest {
 
     @Test (expected = DBException.class)
     public void addThrowsExceptionIfAssocUsernameMissing() throws DBException {
-        personAccess.createTable();
+        personAccess.createTableIfMissing();
 
         Person p2 = new Person("id2", null);
         p2.setFirstName("f2");
@@ -142,7 +131,7 @@ public class PersonAccessTest {
 
     @Test (expected = DBException.class)
     public void addThrowsExceptionIfFirstNameMissing() throws DBException {
-        personAccess.createTable();
+        personAccess.createTableIfMissing();
 
         Person p2 = new Person("id2", "uname2");
         p2.setLastName("l2");
@@ -156,7 +145,7 @@ public class PersonAccessTest {
 
     @Test (expected = DBException.class)
     public void addThrowsExceptionIfLastNameMissing() throws DBException {
-        personAccess.createTable();
+        personAccess.createTableIfMissing();
 
         Person p2 = new Person("id2", "uname2");
         p2.setFirstName("f2");
@@ -170,7 +159,7 @@ public class PersonAccessTest {
 
     @Test (expected = DBException.class)
     public void addThrowsExceptionIfGenderMissing() throws DBException {
-        personAccess.createTable();
+        personAccess.createTableIfMissing();
 
         Person p2 = new Person("id2", "uname2");
         p2.setFirstName("f2");
@@ -184,7 +173,7 @@ public class PersonAccessTest {
 
     @Test (expected = DBException.class)
     public void addThrowsExceptionIfGenderInvalid() throws DBException {
-        personAccess.createTable();
+        personAccess.createTableIfMissing();
 
         Person p2 = new Person("id2", "uname2");
         p2.setFirstName("f2");
@@ -199,7 +188,7 @@ public class PersonAccessTest {
 
     @Test
     public void addThrowsNoExceptionIfFatherMissing() throws DBException {
-        personAccess.createTable();
+        personAccess.createTableIfMissing();
 
         Person p2 = new Person("id2", "uname2");
         p2.setFirstName("f2");
@@ -208,12 +197,12 @@ public class PersonAccessTest {
         p2.setMother("mom2");
         p2.setSpouse("spouse2");
 
-        assertTrue(personAccess.add(p2));
+        personAccess.add(p2);
     }
 
     @Test
     public void addThrowsNoExceptionIfMotherMissing() throws DBException {
-        personAccess.createTable();
+        personAccess.createTableIfMissing();
 
         Person p2 = new Person("id2", "uname2");
         p2.setFirstName("f2");
@@ -222,12 +211,12 @@ public class PersonAccessTest {
         p2.setFather("dad2");
         p2.setSpouse("spouse2");
 
-        assertTrue(personAccess.add(p2));
+        personAccess.add(p2);
     }
 
     @Test
     public void addThrowsNoExceptionIfSpouseMissing() throws DBException {
-        personAccess.createTable();
+        personAccess.createTableIfMissing();
 
         Person p2 = new Person("id2", "uname2");
         p2.setFirstName("f2");
@@ -236,7 +225,7 @@ public class PersonAccessTest {
         p2.setFather("dad2");
         p2.setMother("mom2");
 
-        assertTrue(personAccess.add(p2));
+        personAccess.add(p2);
     }
 
     @Test (expected = DBException.class)
@@ -248,7 +237,7 @@ public class PersonAccessTest {
 
     @Test
     public void getReturnsPersonIfInDB() throws DBException {
-        personAccess.createTable();
+        personAccess.createTableIfMissing();
         
         personAccess.add(person);
         Person result = personAccess.get(person.getId());
@@ -265,7 +254,7 @@ public class PersonAccessTest {
 
     @Test
     public void getReturnsNullIfNotInDB() throws DBException {
-        personAccess.createTable();
+        personAccess.createTableIfMissing();
         
         personAccess.add(person);
         assertNull(personAccess.get("doesntexist"));
@@ -280,7 +269,7 @@ public class PersonAccessTest {
 
     @Test
     public void getAllReturnsMatchingPersons() throws DBException {
-        personAccess.createTable();
+        personAccess.createTableIfMissing();
 
         Person p2 = new Person("id2", "uname2");
         p2.setFirstName("f2");
@@ -323,7 +312,7 @@ public class PersonAccessTest {
 
     @Test
     public void getAllReturnsEmptyCollectionIfNoMatchingPersons() throws DBException {
-        personAccess.createTable();
+        personAccess.createTableIfMissing();
 
         Person p2 = new Person("id2", "uname2");
         p2.setFirstName("f2");
@@ -359,7 +348,7 @@ public class PersonAccessTest {
 
     @Test
     public void clearRemovesAllPersons() throws DBException, SQLException {
-        personAccess.createTable();
+        personAccess.createTableIfMissing();
         
         personAccess.add(person);
         personAccess.clear();
@@ -374,14 +363,14 @@ public class PersonAccessTest {
 
     @Test
     public void clearDoesntThrowExceptionIfNoPersons() throws DBException {
-        personAccess.createTable();
+        personAccess.createTableIfMissing();
         
         personAccess.clear();
     }
 
     @Test (expected = DBException.class)
     public void clearThrowsExceptionIfDBClosed() throws DBException {
-        personAccess.createTable();
+        personAccess.createTableIfMissing();
         
         db.close();
 
@@ -390,7 +379,7 @@ public class PersonAccessTest {
 
     @Test
     public void createTableCreatesPersonTable() throws DBException, SQLException {
-        personAccess.createTable();
+        personAccess.createTableIfMissing();
 
         Connection c = db.getSQLConnection();
         PreparedStatement ps = c.prepareStatement("SELECT count(*) FROM sqlite_master " +
@@ -402,17 +391,17 @@ public class PersonAccessTest {
         ps.close();
     }
 
-    @Test (expected = DBException.class)
-    public void createTableThrowsExceptionIfTableExists() throws DBException {
-        personAccess.createTable();
-        personAccess.createTable();
+    @Test
+    public void createTableThrowsNoExceptionIfTableExists() throws DBException {
+        personAccess.createTableIfMissing();
+        personAccess.createTableIfMissing();
     }
 
     @Test (expected = DBException.class)
     public void createTableThrowsExceptionIfDBClosed() throws DBException {
         db.close();
 
-        personAccess.createTable();
+        personAccess.createTableIfMissing();
     }
 
 

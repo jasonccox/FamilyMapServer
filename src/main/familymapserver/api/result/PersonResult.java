@@ -30,7 +30,7 @@ public class PersonResult extends ApiResult {
      * @param message a description of the error
      */
     public PersonResult(String message) {
-        super(message);
+        super(false, message);
     }
 
     /**
@@ -39,7 +39,7 @@ public class PersonResult extends ApiResult {
      * @param person the retrieved person
      */
     public PersonResult(Person person) {
-        super(null);
+        super(true, null);
         setId(person.getId());
         setAssociatedUsername(person.getAssociatedUsername());
         setFirstName(person.getFirstName());
