@@ -29,7 +29,8 @@ public class UserAccessTest {
             testDB.delete();
         }
         
-        db = new Database(DatabaseTest.TEST_DB);
+        Database.testDBPath = DatabaseTest.TEST_DB;
+        db = new Database();
 
         userAccess = new UserAccess(db);
 

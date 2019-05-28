@@ -29,7 +29,8 @@ public class AuthTokenAccessTest {
             testDB.delete();
         }
         
-        db = new Database(DatabaseTest.TEST_DB);
+        Database.testDBPath = DatabaseTest.TEST_DB;
+        db = new Database();
 
         authTokenAccess = new AuthTokenAccess(db);
     }

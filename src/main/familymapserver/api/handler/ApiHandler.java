@@ -55,14 +55,17 @@ public abstract class ApiHandler implements HttpHandler {
         try {
             LOG.info(ApiHandler.requestToString(exchange));
             handleRequest(exchange);
-        } catch (IOException e) {
-            LOG.log(Level.SEVERE, "Failed to handle request.", e);
-            sendResponse(HttpURLConnection.HTTP_INTERNAL_ERROR, exchange);
         } catch (JsonParseException e) {
             ApiResult result = new ApiResult(false, "Incorrectly formatted request body: " + 
                                                     e.getMessage());
 
             sendResponse(HttpURLConnection.HTTP_BAD_REQUEST, 
+                         ObjectEncoder.serialize(result), exchange);
+        } catch (Exception e) {
+            LOG.log(Level.SEVERE, "Failed to handle request.", e);
+            ApiResult result = new ApiResult(false, "Request failed: " + 
+                                                    e.getMessage());
+            sendResponse(HttpURLConnection.HTTP_INTERNAL_ERROR, 
                          ObjectEncoder.serialize(result), exchange);
         }
     }   

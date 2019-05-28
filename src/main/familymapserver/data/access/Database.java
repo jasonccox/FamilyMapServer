@@ -14,18 +14,6 @@ import java.util.logging.Logger;
 public class Database implements Closeable {
 
     private static final Logger LOG = Logger.getLogger("fms");
-
-    /**
-     * Creates a new database (if needed) and adds any necessary tables.
-     * 
-     * @throws DBException if a database error occurs
-     */
-    public static void init() throws DBException {
-        try (Database db = new Database()) {
-            db.createTablesIfMissing();
-            db.commit();
-        }
-    }
     
     /**
      * The path to the database, relative to the project's top directory
@@ -33,6 +21,12 @@ public class Database implements Closeable {
     private static final String DB_PATH = "db/db.sqlite";
 
     private static final String DRIVER = "org.sqlite.JDBC";
+
+    /**
+     * If this is set to something besides null, it will be used as the path to
+     * the database.
+     */
+    public static String testDBPath = null;
 
     private Connection connection;
 
@@ -42,16 +36,8 @@ public class Database implements Closeable {
      * @throws DBException if a database error occurs 
      */
     public Database() throws DBException {
-        this(DB_PATH);
-    }
+        String dbPath = (testDBPath == null) ? DB_PATH : testDBPath;
 
-    /**
-     * Creates and opens a new Database object. 
-     * 
-     * @param dbPath the path to the database
-     * @throws DBException if a database error occurs
-     */
-    protected Database(String dbPath) throws DBException {
         try {
             Class.forName(DRIVER);
             open(dbPath);
@@ -61,6 +47,16 @@ public class Database implements Closeable {
             LOG.throwing("Database", "constructor", dbe);
             throw dbe;
         } 
+    }
+
+    /**
+     * Creates a new database (if needed) and adds any necessary tables.
+     * 
+     * @throws DBException if a database error occurs
+     */
+    public void init() throws DBException {
+       createTablesIfMissing();
+       commit();
     }
 
     /**

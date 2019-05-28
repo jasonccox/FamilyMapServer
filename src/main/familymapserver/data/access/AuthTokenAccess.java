@@ -16,7 +16,7 @@ public class AuthTokenAccess extends Access {
     private static final Logger LOG = Logger.getLogger("fms");
 
     private static final String CREATE_STMT = 
-        "CREATE TABLE auth_token (" +
+        "CREATE TABLE IF NOT EXISTS auth_token (" +
             "token      VARCHAR(255) NOT NULL PRIMARY KEY, " +
             "username   VARCHAR(255) NOT NULL, " +
             "FOREIGN KEY (username) REFERENCES user(username)" +

@@ -22,7 +22,7 @@ import familymapserver.data.model.User;
 
 public class DatabaseTest {
 
-    protected static final String TEST_DB = "db/test.sqlite";
+    public static final String TEST_DB = "db/test.sqlite";
 
     private Database db;
 
@@ -33,7 +33,8 @@ public class DatabaseTest {
             dbFile.delete();
         }
 
-        db = new Database(TEST_DB);
+        Database.testDBPath = TEST_DB;
+        db = new Database();
     }
 
     @After
@@ -79,7 +80,7 @@ public class DatabaseTest {
 
         db.close();
 
-        db = new Database(TEST_DB);
+        db = new Database();
 
         c = db.getSQLConnection();
         ps = c.prepareStatement("SELECT count(*) FROM sqlite_master WHERE type = 'table'");
@@ -101,7 +102,7 @@ public class DatabaseTest {
         db.commit();
         db.close();
 
-        db = new Database(TEST_DB);
+        db = new Database();
 
         c = db.getSQLConnection();
         ps = c.prepareStatement("SELECT count(*) FROM sqlite_master WHERE type = 'table'");
@@ -129,7 +130,7 @@ public class DatabaseTest {
         db.rollback();
         db.close();
 
-        db = new Database(TEST_DB);
+        db = new Database();
 
         c = db.getSQLConnection();
         ps = c.prepareStatement("SELECT count(*) FROM sqlite_master WHERE type = 'table'");

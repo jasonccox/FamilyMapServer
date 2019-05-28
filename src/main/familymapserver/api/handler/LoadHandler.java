@@ -32,7 +32,6 @@ public class LoadHandler extends ApiHandler {
             return;
         }
 
-
         LoadRequest req = (LoadRequest) ObjectEncoder.deserialize(exchange.getRequestBody(), 
                                                                   LoadRequest.class);
 

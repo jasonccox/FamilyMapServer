@@ -32,11 +32,17 @@ public class LoadService {
      * @return the result of the operation
      */
     public static LoadResult load(LoadRequest request) {
+        Collection<User> users = request.getUsers();
+        Collection<Person> persons = request.getPersons();
+        Collection<Event> events = request.getEvents();
+
+        int numUsersAdded, numPersonsAdded, numEventsAdded;
+
         try (Database db = new Database()) {
 
-            loadUsers(request.getUsers(), db);
-            loadPersons(request.getPersons(), db);
-            loadEvents(request.getEvents(), db);
+            numUsersAdded = loadUsers(users, db);
+            numPersonsAdded = loadPersons(persons, db);
+            numEventsAdded = loadEvents(events, db);
 
             db.commit();
 
@@ -48,9 +54,7 @@ public class LoadService {
                                   " No data was loaded into the database.");
         }
 
-        return new LoadResult(request.getUsers().size(), 
-                              request.getPersons().size(), 
-                              request.getEvents().size());
+        return new LoadResult(numUsersAdded, numPersonsAdded, numEventsAdded);
     }
 
     /**
@@ -58,16 +62,23 @@ public class LoadService {
      * 
      * @param users the users to be added
      * @param db the database to which to add the users
-     * @throws DBException if a daortabase error occurs
+     * @throws DBException if a database error occurs
+     * @return the number of users successfully added to the database
      */
-    private static void loadUsers(Collection<User> users, Database db) 
+    private static int loadUsers(Collection<User> users, Database db) 
         throws DBException {
+        
+        if (users == null) {
+            return 0;
+        }
 
         UserAccess userAccess = new UserAccess(db);
 
         for (User u : users) {
             userAccess.add(u);
         }
+
+        return users.size();
     }
 
     /**
@@ -75,16 +86,23 @@ public class LoadService {
      * 
      * @param persons the persons to be added
      * @param db the database to which to add the persons
-     * @throws DBException if a daortabase error occurs
+     * @throws DBException if a database error occurs
+     * @return the number of persons successfully added to the database
      */
-    private static void loadPersons(Collection<Person> persons, Database db) 
+    private static int loadPersons(Collection<Person> persons, Database db) 
         throws DBException {
+        
+        if (persons == null) {
+            return 0;
+        }
 
         PersonAccess personAccess = new PersonAccess(db);
 
         for (Person p : persons) {
             personAccess.add(p);
         }
+
+        return persons.size();
     }
 
     /**
@@ -92,16 +110,23 @@ public class LoadService {
      * 
      * @param events the events to be added
      * @param db the database to which to add the events
-     * @throws DBException if a daortabase error occurs
+     * @throws DBException if a database error occurs
+     * @return the number of events successfully added to the database
      */
-    private static void loadEvents(Collection<Event> events, Database db) 
+    private static int loadEvents(Collection<Event> events, Database db) 
         throws DBException {
+
+        if (events == null) {
+            return 0;
+        }
 
         EventAccess eventAccess = new EventAccess(db);
 
         for (Event e : events) {
             eventAccess.add(e);
         }
+
+        return events.size();
     }
 
 }

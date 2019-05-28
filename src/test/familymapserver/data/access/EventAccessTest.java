@@ -31,7 +31,8 @@ public class EventAccessTest {
             testDB.delete();
         }
         
-        db = new Database(DatabaseTest.TEST_DB);
+        Database.testDBPath = DatabaseTest.TEST_DB;
+        db = new Database();
 
         eventAccess = new EventAccess(db);
 

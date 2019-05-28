@@ -51,6 +51,9 @@ public class Server {
         } catch (NumberFormatException e) {
             printUsage();
             System.exit(1);
+        } catch (Exception e) {
+            LOG.log(Level.SEVERE, "Server failed.", e);
+            System.exit(1);
         }
     }
 
@@ -93,8 +96,8 @@ public class Server {
     private static void initDatabase() {
         LOG.info("Initializing database...");
 
-        try {
-            Database.init();
+        try (Database db = new Database()) {
+            db.init();
         } catch (DBException e) {
             LOG.log(Level.SEVERE, "Failed to initialize database.", e);
         }
