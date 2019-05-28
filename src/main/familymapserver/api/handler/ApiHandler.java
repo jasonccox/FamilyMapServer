@@ -23,6 +23,8 @@ public abstract class ApiHandler implements HttpHandler {
 
     private static final Logger LOG = Logger.getLogger("fms");
 
+    protected static final String AUTH_HEADER = "Authorization";
+
     /**
      * Creates a string representing an HTTP request
      * 
@@ -74,8 +76,9 @@ public abstract class ApiHandler implements HttpHandler {
      * Receives a request and returns a response
      * @param exchange the HttpExchange object for the request
      * @throws IOException if an I/O error occurs
+     * @throws JsonParseException if the request body contains invalid JSON
      */
-    public abstract void handleRequest(HttpExchange exchange) 
+    protected abstract void handleRequest(HttpExchange exchange) 
         throws IOException, JsonParseException;
 
     /**

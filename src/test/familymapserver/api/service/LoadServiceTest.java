@@ -25,10 +25,10 @@ import familymapserver.data.model.User;
 
 public class LoadServiceTest {
 
-    Database db;
-    UserAccess userAccess;
-    PersonAccess personAccess;
-    EventAccess eventAccess;
+    private Database db;
+    private UserAccess userAccess;
+    private PersonAccess personAccess;
+    private EventAccess eventAccess;
 
     @Before
     public void setup() throws DBException {

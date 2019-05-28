@@ -86,12 +86,4 @@ public class LoginResult extends ApiResult {
         this.personID = personID;
     }
 
-     /**
-     * @return whether the request was successfully fulfilled
-     */
-    @Override
-    public boolean isSuccess() {
-        return false;
-    }
-
 }

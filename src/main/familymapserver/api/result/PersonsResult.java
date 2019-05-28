@@ -49,12 +49,4 @@ public class PersonsResult extends ApiResult {
         this.data = data;
     }
 
-    /**
-     * @return whether the request was successfully fulfilled
-     */
-    @Override
-    public boolean isSuccess() {
-        return false;
-    }
-
 }

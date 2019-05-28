@@ -35,12 +35,4 @@ public class FillResult extends ApiResult {
         super(false, error);
     }
 
-    /**
-     * @return whether the request was successfully fulfilled
-     */
-    @Override
-    public boolean isSuccess() {
-        return false;
-    }
-
 }

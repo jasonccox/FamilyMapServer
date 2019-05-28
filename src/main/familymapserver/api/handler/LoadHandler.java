@@ -22,9 +22,10 @@ public class LoadHandler extends ApiHandler {
      * 
      * @param exchange the HttpExchange object for the request
      * @throws IOException if an I/O error occurs
+     * @throws JsonParseException if the request body contains invalid JSON
      */
     @Override
-    public void handleRequest(HttpExchange exchange) 
+    protected void handleRequest(HttpExchange exchange) 
         throws IOException, JsonParseException {
 
         if (!exchange.getRequestMethod().equalsIgnoreCase("POST")) {

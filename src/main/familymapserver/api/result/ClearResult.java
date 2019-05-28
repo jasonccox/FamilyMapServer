@@ -26,13 +26,5 @@ public class ClearResult extends ApiResult {
     public ClearResult(){
         super(true, SUCCESS_MSG);
     }
-
-    /**
-     * @return whether the request was successfully fulfilled
-     */
-    @Override
-    public boolean isSuccess() {
-        return false;
-    }
-
+    
 }

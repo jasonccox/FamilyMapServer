@@ -12,8 +12,10 @@ import java.util.logging.SimpleFormatter;
 
 import com.sun.net.httpserver.HttpServer;
 
+import familymapserver.api.handler.ClearHandler;
 import familymapserver.api.handler.DefaultHandler;
 import familymapserver.api.handler.LoadHandler;
+import familymapserver.api.handler.PersonHandler;
 import familymapserver.data.access.DBException;
 import familymapserver.data.access.Database;
 
@@ -132,6 +134,8 @@ public class Server {
 
         server.createContext("/", new DefaultHandler());
         server.createContext("/load", new LoadHandler());
+        server.createContext("/clear", new ClearHandler());
+        server.createContext("/person", new PersonHandler());
 
         LOG.info("Finished creating contexts.");
 

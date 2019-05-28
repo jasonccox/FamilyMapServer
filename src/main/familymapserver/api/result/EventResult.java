@@ -184,12 +184,4 @@ public class EventResult extends ApiResult {
         this.year = year;
     }
 
-    /**
-     * @return whether the request was successfully fulfilled
-     */
-    @Override
-    public boolean isSuccess() {
-        return false;
-    }
-
 }

@@ -15,6 +15,12 @@ public class PersonResult extends ApiResult {
     public static final String NOT_USERS_PERSON_ERROR = 
         "The requested person belongs to a different user";
 
+    /**
+     * The error message used when the requested person isn't found.
+     */
+    public static final String PERSON_NOT_FOUND_ERROR = 
+        "The requested person could not be found";
+
     private String personID;
     private String associatedUsername;
     private String firstName;
@@ -161,14 +167,6 @@ public class PersonResult extends ApiResult {
      */
     public void setSpouse(String spouse) {
         this.spouse = spouse;
-    }
-
-    /**
-     * @return whether the request was successfully fulfilled
-     */
-    @Override
-    public boolean isSuccess() {
-        return false;
     }
     
 }
