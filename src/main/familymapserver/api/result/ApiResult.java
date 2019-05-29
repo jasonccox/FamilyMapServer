@@ -22,6 +22,12 @@ public class ApiResult {
      */
     public static final String INTERNAL_SERVER_ERROR = "Internal server error";
 
+    /**
+     * The error message used when no user has the provided username.
+     */
+    public static final String USER_NOT_FOUND = 
+        "No user exists with that username";
+
     private String message;
 
     private transient boolean success;

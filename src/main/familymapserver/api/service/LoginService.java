@@ -41,6 +41,10 @@ public class LoginService {
                                    ": " + e.getMessage());
         }
 
+        if (storedUser == null) {
+            return new LoginResult(LoginResult.USER_NOT_FOUND);
+        }
+
         if (!request.getPassword().equals(storedUser.getPassword())) {
             return new LoginResult(LoginResult.WRONG_PASSWORD_ERROR);
         }

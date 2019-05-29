@@ -173,7 +173,8 @@ public abstract class ApiHandler implements HttpHandler {
             status = HttpURLConnection.HTTP_UNAUTHORIZED;
 
         } else if (message.startsWith(PersonResult.PERSON_NOT_FOUND_ERROR) ||
-                   message.startsWith(EventResult.EVENT_NOT_FOUND_ERROR)) {
+                   message.startsWith(EventResult.EVENT_NOT_FOUND_ERROR) ||
+                   message.startsWith(ApiResult.USER_NOT_FOUND)) {
 
             status = HttpURLConnection.HTTP_NOT_FOUND;
 

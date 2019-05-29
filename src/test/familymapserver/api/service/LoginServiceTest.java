@@ -64,6 +64,15 @@ public class LoginServiceTest {
     }
 
     @Test
+    public void loginFailsIfUserNotFound() {
+        LoginRequest request = new LoginRequest("doesntexist", 
+                                                user.getPassword());
+        LoginResult result = LoginService.login(request);
+
+        assertFalse(result.isSuccess());
+    }
+
+    @Test
     public void loginFailsIfPasswordNotMatches() {
         LoginRequest request = new LoginRequest(user.getUsername(), 
                                                 "wrongpassword");

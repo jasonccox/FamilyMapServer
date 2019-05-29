@@ -8,6 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import familymapserver.api.request.FillRequest;
+import familymapserver.api.result.ApiResult;
 import familymapserver.api.result.FillResult;
 import familymapserver.data.access.DBException;
 import familymapserver.data.access.Database;
@@ -57,13 +58,14 @@ public class FillService {
         }
 
         if (user == null) {
-            return new FillResult("The specified user could not be found.");
+            return new FillResult(ApiResult.USER_NOT_FOUND);
         }
 
         // only accept non-negative numbers of generations 
 
         if (request.getGenerations() < 0) {
-            return new FillResult("The number of generations must be non-negative.");
+            return new FillResult(ApiResult.INVALID_REQUEST_DATA_ERROR + 
+                                  ": The number of generations must be non-negative.");
         }
 
         // create a person representing the user
