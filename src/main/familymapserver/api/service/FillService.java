@@ -68,10 +68,18 @@ public class FillService {
                                   ": The number of generations must be non-negative.");
         }
 
-        // create a person representing the user
+        // get the user's person, or create one if it doesn't exist
+        Person userPerson;
+        try (Database db = new Database()) {
+            userPerson = getUserPerson(user);
+        } catch (DBException e) {
+            LOG.log(Level.SEVERE, "Getting user's person failed.", e);
+            
+            return new FillResult(FillResult.INTERNAL_SERVER_ERROR + 
+                                   ": " + e.getMessage());
+        }
 
-        Person userPerson = new Person(user);
-        user.setPersonId(userPerson.getId());
+        // create events for the user
 
         int maxBirthYear = CURRENT_YEAR - random.nextInt(MAX_AGE - ADULT_AGE);
         Event userBirth = generateBirth(userPerson, maxBirthYear);
@@ -97,10 +105,12 @@ public class FillService {
             personAccess.clearAll(request.getUsername());
             eventAccess.clearAll(request.getUsername());
 
-            // update the user to have the new personId
-            new UserAccess(db).updatePersonId(user);
-
+            // re-add the user person with the new mother and father
             personAccess.add(userPerson);
+
+            // update the user's personId - it shouldn't have changed unless the user didn't
+            // have a person to start with
+            new UserAccess(db).updatePersonId(user);
 
             for (Event e : userEvents) {
                 eventAccess.add(e);
@@ -138,6 +148,27 @@ public class FillService {
      */
     private static int calcBirthYear(int marriageYear) {
         return marriageYear - ADULT_AGE - random.nextInt(10);
+    }
+
+    /**
+     * Creates a person for the specified user and updates the user's person id,
+     * but does not add the person to the database.
+     * 
+     * @param user the user whom the person represents
+     * @return a person representing the user
+     */
+    private static Person getUserPerson(User user) throws DBException {
+        Person userPerson = null;
+        try (Database db = new Database()) {
+            userPerson = new PersonAccess(db).get(user.getPersonId());
+        } 
+
+        if (userPerson == null) {
+            userPerson = new Person(user);
+            user.setPersonId(userPerson.getId());
+        }
+
+        return userPerson;
     }
 
     /**

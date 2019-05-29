@@ -10,7 +10,9 @@ import familymapserver.api.result.FillResult;
 import familymapserver.api.result.LoginResult;
 import familymapserver.data.access.DBException;
 import familymapserver.data.access.Database;
+import familymapserver.data.access.PersonAccess;
 import familymapserver.data.access.UserAccess;
+import familymapserver.data.model.Person;
 import familymapserver.data.model.User;
 
 /**
@@ -30,16 +32,15 @@ public class RegisterService {
      */
     public static LoginResult register(RegisterRequest request) {
         
-        // insert user into database
+        // insert user and user's person into database
 
         User newUser = request.getUser();
-        
-        // set the person id to something so that the user can be added to the
-        // database -  this will be overridden by FillService
-        newUser.setPersonId("filler");
+        Person userPerson = new Person(newUser);
+        newUser.setPersonId(userPerson.getId());
 
         try (Database db = new Database()) {
             new UserAccess(db).add(newUser);
+            new PersonAccess(db).add(userPerson);
             db.commit();
         } catch (DBException e) {
             LOG.log(Level.WARNING, "Adding user failed.", e);
