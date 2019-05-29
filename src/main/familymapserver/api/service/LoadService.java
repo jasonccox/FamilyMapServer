@@ -40,6 +40,8 @@ public class LoadService {
 
         try (Database db = new Database()) {
 
+            db.clear();
+
             numUsersAdded = loadUsers(users, db);
             numPersonsAdded = loadPersons(persons, db);
             numEventsAdded = loadEvents(events, db);
