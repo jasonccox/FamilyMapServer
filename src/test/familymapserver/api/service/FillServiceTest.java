@@ -137,11 +137,13 @@ public class FillServiceTest {
     }
 
     @Test
-    public void fillOverwritesPreviousData() throws DBException {
+    public void fillOverwritesPreviousDataExceptUsersPersonId() throws DBException {
         // generate data
 
         FillResult result = FillService.fill(new FillRequest(user.getUsername(), 2));
         assertTrue(result.getMessage(), result.isSuccess());
+
+        String oldPersonId = userAccess.get(user.getUsername()).getPersonId();
 
         Collection<Person> persons = personAccess.getAll(user.getUsername());
         Set<String> personIds = new HashSet<>();
@@ -162,8 +164,16 @@ public class FillServiceTest {
         result = FillService.fill(new FillRequest(user.getUsername(), 2));
         assertTrue(result.getMessage(), result.isSuccess());
 
+        String newPersonId = userAccess.get(user.getUsername()).getPersonId();
+
+        assertEquals(oldPersonId, newPersonId);
+
         Collection<Person> newPersons = personAccess.getAll(user.getUsername());
         for (Person p : newPersons) {
+            if (oldPersonId.equals(p.getId())) { // skip the person representing the user
+                continue;
+            }
+
             assertFalse(personIds.contains(p.getId()));
         }
 
