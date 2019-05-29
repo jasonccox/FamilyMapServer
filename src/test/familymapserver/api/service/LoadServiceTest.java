@@ -241,6 +241,66 @@ public class LoadServiceTest {
     }
 
     @Test
+    public void loadClearsExistingData() throws DBException {
+        ArrayList<User> validUsers = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            User u = new User("uname" + i, "password");
+            u.setEmail("email@email.com");
+            u.setFirstName("fu.getUsername()");
+            u.setLastName("l");
+            u.setGender("m");
+            u.setPersonId("pid"  + i);
+
+            validUsers.add(u);
+        }
+
+        ArrayList<Person> validPersons = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            Person p = new Person("pid" + i, "uname" + i);
+            p.setFirstName("f");
+            p.setLastName("l");
+            p.setGender("m");
+            p.setFather("fid" + i);
+            p.setMother("mid" + i);
+            p.setSpouse("sid" + i);
+
+            validPersons.add(p);
+        }
+
+        ArrayList<Event> validEvents = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            Event e = new Event("eid" + i, "uname" + i);
+            e.setPersonId("pid"  + i);
+            e.setLatitude(i);
+            e.setLongitude(i + 1);
+            e.setCountry("country");
+            e.setCity("city");
+            e.setType("type");
+            e.setYear(2000 + i);
+
+            validEvents.add(e);
+        }
+
+        LoadService.load(new LoadRequest(validUsers, validPersons, validEvents));
+
+        LoadResult result = LoadService.load(new LoadRequest(null, null, null));
+
+        assertTrue(result.isSuccess());
+        
+        for (User u : validUsers) {
+            assertNull(userAccess.get(u.getUsername()));
+        }
+
+        for (Person p : validPersons) {
+            assertNull(personAccess.get(p.getId()));
+        }
+
+        for (Event e : validEvents) {
+            assertNull(eventAccess.get(e.getId()));
+        }
+    }
+
+    @Test
     public void loadFailsAndAddsNoDataIfUsernameNotUnique() throws DBException {
         User u1 = new User("uname", "password");
         u1.setEmail("email");
