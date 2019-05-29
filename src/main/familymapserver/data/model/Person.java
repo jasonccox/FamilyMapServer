@@ -1,5 +1,7 @@
 package familymapserver.data.model;
 
+import java.util.UUID;
+
 /**
  * Represents a person and his/her relationships in the family map.
  */
@@ -32,8 +34,20 @@ public class Person {
      *                           this person is found
      */
     public Person(String associatedUsername) {
-        this.personID = "PLACEHOLDER"; // TODO: change this!
+        this.personID = UUID.randomUUID().toString();
         setAssociatedUsername(associatedUsername);
+    }
+
+    /**
+     * Creates a new Person representing a user.
+     * 
+     * @param user the user to represent
+     */
+    public Person(User user) {
+        this(user.getUsername());
+        setFirstName(user.getFirstName());
+        setLastName(user.getLastName());
+        setGender(user.getGender());
     }
 
     /**

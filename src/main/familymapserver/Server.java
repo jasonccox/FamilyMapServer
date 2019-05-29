@@ -14,8 +14,12 @@ import com.sun.net.httpserver.HttpServer;
 
 import familymapserver.api.handler.ClearHandler;
 import familymapserver.api.handler.DefaultHandler;
+import familymapserver.api.handler.EventHandler;
+import familymapserver.api.handler.FillHandler;
 import familymapserver.api.handler.LoadHandler;
+import familymapserver.api.handler.LoginHandler;
 import familymapserver.api.handler.PersonHandler;
+import familymapserver.api.handler.RegisterHandler;
 import familymapserver.data.access.DBException;
 import familymapserver.data.access.Database;
 
@@ -68,6 +72,7 @@ public class Server {
 
     /**
      * Sets up the logger.
+     * @throws IOException if an I/O error occurs
      */
     private static void initLog() throws IOException {
         LOG.setLevel(LOG_LEVEL);
@@ -84,8 +89,11 @@ public class Server {
         LOG.addHandler(fileHandler);
     }
 
+    /**
+     * @return the path to the log file
+     */
     private static String getLogFilePath() {
-        StringBuilder sb = new StringBuilder("logs/");
+        StringBuilder sb = new StringBuilder("log/");
         sb.append("log_");
         sb.append(new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss").format(new Date()));
         sb.append(".txt");
@@ -136,6 +144,10 @@ public class Server {
         server.createContext("/load", new LoadHandler());
         server.createContext("/clear", new ClearHandler());
         server.createContext("/person", new PersonHandler());
+        server.createContext("/event", new EventHandler());
+        server.createContext("/user/register", new RegisterHandler());
+        server.createContext("/user/login", new LoginHandler());
+        server.createContext("/fill", new FillHandler());
 
         LOG.info("Finished creating contexts.");
 

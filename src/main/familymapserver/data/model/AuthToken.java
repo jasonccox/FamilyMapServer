@@ -1,5 +1,7 @@
 package familymapserver.data.model;
 
+import java.util.UUID;
+
 /**
  * Represents an authorization token assigned to a user of the family map.
  */
@@ -25,7 +27,7 @@ public class AuthToken {
      * @param username the username of the user to whom this token is assigned
      */
     public AuthToken(String username) {
-        this.token = "PLACEHOLDER"; // TODO: change this!
+        this.token = UUID.randomUUID().toString();
         this.username = username;
     }
 

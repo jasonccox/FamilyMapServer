@@ -119,7 +119,7 @@ public class LoadServiceTest {
         ArrayList<Event> validEvents = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             Event e = new Event("eid" + i, "uname" + i);
-            e.setPersonId("pid"  + i);
+            e.setPersonId("pid" + i);
             e.setLatitude(i);
             e.setLongitude(i + 1);
             e.setCountry("country");

@@ -210,6 +210,29 @@ public class UserAccessTest {
     }
 
     @Test
+    public void updatePersonIdUpdatesId() throws DBException {
+        userAccess.createTableIfMissing();
+        userAccess.add(user);
+
+        user.setPersonId("newID");
+        userAccess.updatePersonId(user);
+
+        User storedUser = userAccess.get(user.getUsername());
+
+        assertEquals(user.getPersonId(), storedUser.getPersonId());
+    }
+
+    @Test (expected = DBException.class) 
+    public void updatePersonIdThrowsExceptionIfDBClosed() throws DBException {
+        userAccess.createTableIfMissing();
+        db.commit();
+        db.close();
+
+        user.setPersonId("newID");
+        userAccess.updatePersonId(user);
+    }
+
+    @Test
     public void getReturnsUserIfInDB() throws DBException {
         userAccess.createTableIfMissing();
         

@@ -8,7 +8,12 @@ import familymapserver.data.model.User;
  */
 public class RegisterRequest extends ApiRequest {
 
-    private User user;
+    private String userName;
+    private String password;
+    private String email;
+    private String firstName;
+    private String lastName;
+    private String gender;
 
     /**
      * Creates a new RegisterRequest.
@@ -25,14 +30,25 @@ public class RegisterRequest extends ApiRequest {
      * @return the new user - note that the personId field will be blank
      */
     public User getUser() {
-        return user;
+        User u = new User(userName, password);
+        u.setEmail(email);
+        u.setFirstName(firstName);
+        u.setLastName(lastName);
+        u.setGender(gender);
+        
+        return u;
     }
 
     /**
      * @param user the new user - note that the personId field will be blank
      */
     public void setUser(User user) {
-        this.user = user;
+        this.userName = user.getUsername();
+        this.password = user.getPassword();
+        this.email = user.getEmail();
+        this.firstName = user.getFirstName();
+        this.lastName = user.getLastName();
+        this.gender = user.getGender();
     }
 
 }

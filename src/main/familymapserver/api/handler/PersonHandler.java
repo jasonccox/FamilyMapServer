@@ -1,8 +1,6 @@
 package familymapserver.api.handler;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.util.List;
 
 import com.sun.net.httpserver.HttpExchange;
 
@@ -10,7 +8,6 @@ import familymapserver.api.request.ApiRequest;
 import familymapserver.api.request.PersonRequest;
 import familymapserver.api.result.ApiResult;
 import familymapserver.api.service.PersonService;
-import familymapserver.util.ObjectEncoder;
 
 /**
  * Handler used to receive GET requests to get Person data from the database.
@@ -22,64 +19,76 @@ public class PersonHandler extends ApiHandler {
      * 
      * @param exchange the HttpExchange object for the request
      * @throws IOException if an I/O error occurs
+     * @return the result of the request, or null if a response was already sent
      */
     @Override
-    protected void handleRequest(HttpExchange exchange) throws IOException {
+    protected ApiResult handleRequest(HttpExchange exchange) throws IOException {
 
-        if (!exchange.getRequestMethod().equalsIgnoreCase("GET")) {
-            sendResponse(HttpURLConnection.HTTP_BAD_REQUEST, exchange);
-            return;
-        }
+        String reqURI = exchange.getRequestURI().toString();
+        String authToken = getAuthToken(exchange);
 
-        if (!isValidURI(exchange.getRequestURI().toString())) {
-            sendResponse(HttpURLConnection.HTTP_NOT_FOUND, exchange);
-            return;
-        }
-
-        ApiResult res = getResult(exchange);
-
-        String resBody = ObjectEncoder.serialize(res);
-
-        if (res.isSuccess()) {
-            sendResponse(HttpURLConnection.HTTP_OK, resBody, exchange);
+        if (shouldFetchAllPersons(reqURI)) {
+            // get all persons
+            ApiRequest req = new ApiRequest(authToken);
+            return PersonService.getPersons(req);
         } else {
-
-            if (ApiResult.INVALID_AUTH_TOKEN_ERROR.equals(res.getMessage())) {
-                sendResponse(HttpURLConnection.HTTP_UNAUTHORIZED, resBody, exchange);
-            } else {
-                sendResponse(HttpURLConnection.HTTP_BAD_REQUEST, resBody, exchange);
-            }
-            
+            // get single person
+            PersonRequest req = new PersonRequest(authToken,
+                                                  parsePersonId(reqURI));
+            return PersonService.getPerson(req);
         }
     }
 
-    private boolean isValidURI(String uri) {
+    /**
+     * Determines if the request method is valid.
+     * 
+     * @param requestMethod the request method, in all caps
+     * @return whether the request method is valid
+     */
+    @Override
+    protected boolean isValidMethod(String requestMethod) {
+        return "GET".equals(requestMethod);
+    }
+
+    /**
+     * Determines if the request URI is valid.
+     * 
+     * @param uri the request URI
+     * @return whether the URI is valid
+     */
+    @Override
+    protected boolean isValidURI(String uri) {
         String[] uriPieces = uri.split("/");
 
-        return uriPieces.length > 0 && 
+        return uriPieces.length > 1 && 
                uriPieces.length <= 3 &&
                "person".equals(uriPieces[1]);
     }
 
-    private ApiResult getResult(HttpExchange exchange) {
-        List<String> authHeaders = exchange.getResponseHeaders().get(AUTH_HEADER);
+    /**
+     * Determines if the request requires an auth token.
+     * 
+     * @return whether the request requires an auth token
+     */
+    @Override
+    protected boolean requiresAuthToken() {
+        return true;
+    }
 
-        if (authHeaders == null || authHeaders.size() < 1) {
-            return new ApiResult(false, ApiResult.INVALID_AUTH_TOKEN_ERROR);
-        } 
-        
-        String reqURI = exchange.getRequestURI().toString();
+    /**
+     * @param uri the request URI
+     * @return whether to fetch all the user's persons
+     */
+    private static boolean shouldFetchAllPersons(String uri) {
+        return "/person".equals(uri);
+    }
 
-        if ("/person".equals(reqURI)) {
-            // get all persons
-            ApiRequest req = new ApiRequest(authHeaders.get(0));
-            return PersonService.getPersons(req);
-        } 
-
-        // get single person
-        String personId = reqURI.substring(reqURI.lastIndexOf("/") + 1);
-        return PersonService.getPerson(new PersonRequest(authHeaders.get(0),
-                                                         personId));
+    /**
+     * @param uri the request URI
+     * @return the id of the person to fetch
+     */
+    private static String parsePersonId(String uri) {
+        return uri.substring(uri.lastIndexOf("/") + 1);
     }
     
 }

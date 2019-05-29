@@ -193,6 +193,29 @@ public class PersonAccess extends Access {
     }
 
     /**
+     * Removes all persons associated with a given user.
+     * 
+     * @param username the user's username
+     * @throws DBException if the database is not open, or if another database 
+     *                     error occurs
+     */
+    public void clearAll(String username) throws DBException {
+        Connection conn = getOpenConnection();
+
+        String sql = "DELETE FROM person WHERE assoc_username = ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) { 
+            ps.setString(1, username);
+            ps.executeUpdate();
+        } catch (SQLException sqle) {
+            DBException dbe = new DBException(sqle);
+            LOG.throwing("PersonAccess", "clearAll", dbe);
+            throw dbe;
+        }
+
+    }
+
+    /**
      * Creates a new table to hold persons if it doesn't already exist in the 
      * database.
      * 

@@ -15,6 +15,12 @@ public class EventResult extends ApiResult {
     public static final String NOT_USERS_EVENT_ERROR = 
         "The requested event belongs to a different user";
 
+    /**
+     * The error message used when the requested event isn't found.
+     */
+    public static final String EVENT_NOT_FOUND_ERROR = 
+        "The requested event could not be found";
+
     private String eventID;
     private String associatedUsername;
     private String personID;

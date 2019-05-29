@@ -1,10 +1,13 @@
 package familymapserver.api.handler;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -14,6 +17,9 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
 import familymapserver.api.result.ApiResult;
+import familymapserver.api.result.EventResult;
+import familymapserver.api.result.LoginResult;
+import familymapserver.api.result.PersonResult;
 import familymapserver.util.ObjectEncoder;
 
 /**
@@ -23,7 +29,10 @@ public abstract class ApiHandler implements HttpHandler {
 
     private static final Logger LOG = Logger.getLogger("fms");
 
+    private static final String NOT_FOUND_HTML_PATH = "web/HTML/404.html";
+
     protected static final String AUTH_HEADER = "Authorization";
+
 
     /**
      * Creates a string representing an HTTP request
@@ -54,22 +63,41 @@ public abstract class ApiHandler implements HttpHandler {
      */
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        try {
-            LOG.info(ApiHandler.requestToString(exchange));
-            handleRequest(exchange);
-        } catch (JsonParseException e) {
-            ApiResult result = new ApiResult(false, "Incorrectly formatted request body: " + 
-                                                    e.getMessage());
+        LOG.info(ApiHandler.requestToString(exchange));
 
-            sendResponse(HttpURLConnection.HTTP_BAD_REQUEST, 
+        if (!isValidURI(exchange.getRequestURI().toString())) {
+            sendResponse(HttpURLConnection.HTTP_NOT_FOUND, 
+                         new FileInputStream(new File(NOT_FOUND_HTML_PATH)), 
+                         exchange);
+            return;
+        }
+
+        if (!isValidMethod(exchange.getRequestMethod().toUpperCase())) {
+            sendResponse(HttpURLConnection.HTTP_BAD_REQUEST, exchange);
+            return;
+        }
+
+        if (!hasRequiredAuthToken(exchange)) {
+            ApiResult result = new ApiResult(false, ApiResult.INVALID_AUTH_TOKEN_ERROR);
+            sendResponse(HttpURLConnection.HTTP_UNAUTHORIZED,
                          ObjectEncoder.serialize(result), exchange);
+            return;
+        }
+        
+        ApiResult result = null; 
+        
+        try {
+            result = handleRequest(exchange);
+        } catch (JsonParseException e) {
+            result = new ApiResult(false, ApiResult.INVALID_REQUEST_DATA_ERROR+ 
+                                          ": " + e.getMessage());
         } catch (Exception e) {
             LOG.log(Level.SEVERE, "Failed to handle request.", e);
-            ApiResult result = new ApiResult(false, "Request failed: " + 
-                                                    e.getMessage());
-            sendResponse(HttpURLConnection.HTTP_INTERNAL_ERROR, 
-                         ObjectEncoder.serialize(result), exchange);
+            result = new ApiResult(false, ApiResult.INTERNAL_SERVER_ERROR + 
+                                          ": " + e.getMessage());
         }
+
+        sendResponse(result, exchange);
     }   
 
     /**
@@ -77,9 +105,82 @@ public abstract class ApiHandler implements HttpHandler {
      * @param exchange the HttpExchange object for the request
      * @throws IOException if an I/O error occurs
      * @throws JsonParseException if the request body contains invalid JSON
+     * @return the result of the request, or null if a response was already sent
      */
-    protected abstract void handleRequest(HttpExchange exchange) 
+    protected abstract ApiResult handleRequest(HttpExchange exchange) 
         throws IOException, JsonParseException;
+
+    /**
+     * Determines if the request method is valid.
+     * 
+     * @param requestMethod the request method, in all caps
+     * @return whether the request method is valid
+     */
+    protected abstract boolean isValidMethod(String requestMethod);
+
+    /**
+     * Determines if the request URI is valid.
+     * 
+     * @param uri the request URI
+     * @return whether the URI is valid
+     */
+    protected abstract boolean isValidURI(String uri);
+
+    /**
+     * Determines if the request requires an auth token.
+     * 
+     * @return whether the request requires an auth token
+     */
+    protected abstract boolean requiresAuthToken();
+
+    /**
+     * Sends a response based on an ApiResult.
+     * 
+     * @param result the result of the request, or null if a response was
+     *               already sent
+     * @param exchange the HttpExchange object for this request
+     * @throws IOException if an I/O error occurs
+     */
+    private void sendResponse(ApiResult result, HttpExchange exchange) 
+        throws IOException {
+            
+        if (result == null) { // response already sent
+            return;
+        }
+        
+        String message = result.getMessage();
+
+        int status = HttpURLConnection.HTTP_INTERNAL_ERROR;
+
+        if (result.isSuccess()) {
+
+            status = HttpURLConnection.HTTP_OK;
+
+        } else if (message.startsWith(ApiResult.INVALID_REQUEST_DATA_ERROR) ||
+                   message.startsWith(PersonResult.NOT_USERS_PERSON_ERROR) ||
+                   message.startsWith(EventResult.NOT_USERS_EVENT_ERROR) ||
+                   message.startsWith(LoginResult.USERNAME_TAKEN_ERROR)) {
+
+            status = HttpURLConnection.HTTP_BAD_REQUEST;
+
+        } else if (message.startsWith(ApiResult.INTERNAL_SERVER_ERROR)) {
+
+            status = HttpURLConnection.HTTP_INTERNAL_ERROR;
+
+        } else if (message.startsWith(ApiResult.INVALID_AUTH_TOKEN_ERROR) || 
+                   message.startsWith(LoginResult.WRONG_PASSWORD_ERROR)) {
+            
+            status = HttpURLConnection.HTTP_UNAUTHORIZED;
+
+        } else if (message.startsWith(PersonResult.PERSON_NOT_FOUND_ERROR) ||
+                   message.startsWith(EventResult.EVENT_NOT_FOUND_ERROR)) {
+
+            status = HttpURLConnection.HTTP_NOT_FOUND;
+
+        }
+
+        sendResponse(status, ObjectEncoder.serialize(result), exchange);
+    }
 
     /**
      * Sends a response.
@@ -151,5 +252,30 @@ public abstract class ApiHandler implements HttpHandler {
         writer.write(string);
         writer.flush();
     }
-    
+
+    /**
+     * Determines if the request is authorized.
+     * 
+     * @param exchange the HttpExchange object for the request
+     * @return whether the request is authorized
+     */
+    protected boolean hasRequiredAuthToken(HttpExchange exchange) {
+        return !requiresAuthToken() || getAuthToken(exchange) != null;
+    }
+
+    /**
+     * Gets the auth token sent with the request.
+     * 
+     * @param exchange the HttpExchange object for the request
+     * @return the auth token
+     */
+    protected String getAuthToken(HttpExchange exchange) {
+        List<String> authHeaders = exchange.getRequestHeaders().get(AUTH_HEADER);
+
+        if (authHeaders == null || authHeaders.isEmpty()) {
+            return null;
+        }
+
+        return authHeaders.get(0);
+    }
 }

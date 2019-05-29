@@ -14,6 +14,11 @@ public abstract class Access {
 
     private Database db;
 
+    /**
+     * Creates a new Access object.
+     * 
+     * @param db the database to be accessed
+     */
     protected Access(Database db) {
         assert db != null;
 

@@ -274,6 +274,53 @@ public class DatabaseTest {
         db.createTablesIfMissing();
     }
 
-    // TODO: test Database.init()
+    @Test
+    public void initCreatesTablesIfMissingAndCommits() throws DBException, SQLException {
+        db.init();
+        db.close();
+
+        db = new Database();
+
+        Connection c = db.getSQLConnection();
+        PreparedStatement ps = c.prepareStatement("SELECT count(*) FROM sqlite_master " +
+                                                  "WHERE type = 'table' AND name = 'user'");
+        ResultSet rs = ps.executeQuery();
+        assertEquals(1, rs.getInt(1));
+        rs.close();
+        ps.close();
+
+        ps = c.prepareStatement("SELECT count(*) FROM sqlite_master " +
+                                "WHERE type = 'table' AND name = 'auth_token'");
+        rs = ps.executeQuery();
+        assertEquals(1, rs.getInt(1));
+        rs.close();
+        ps.close();
+
+        ps = c.prepareStatement("SELECT count(*) FROM sqlite_master " +
+                                "WHERE type = 'table' AND name = 'person'");
+        rs = ps.executeQuery();
+        assertEquals(1, rs.getInt(1));
+        rs.close();
+        ps.close();
+
+        ps = c.prepareStatement("SELECT count(*) FROM sqlite_master " +
+                                "WHERE type = 'table' AND name = 'event'");
+        rs = ps.executeQuery();
+        assertEquals(1, rs.getInt(1));
+        rs.close();
+        ps.close();
+    }
+
+    @Test
+    public void initThrowsNoExceptionIfTablesExist() throws DBException {
+        db.createTablesIfMissing();
+        db.init();
+    }
+
+    @Test (expected = DBException.class)
+    public void initThrowsExceptionIfDBClosed() throws DBException {
+        db.close();
+        db.init();
+    }
 
 }

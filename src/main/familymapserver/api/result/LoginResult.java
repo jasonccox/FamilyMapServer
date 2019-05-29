@@ -14,6 +14,12 @@ public class LoginResult extends ApiResult {
     public static final String USERNAME_TAKEN_ERROR = 
         "Username already taken by another user";
 
+    /**
+     * The error message used when a password is incorrect for the given user.
+     */
+    public static final String WRONG_PASSWORD_ERROR = 
+        "Incorrect password for the given user";
+
     private String authToken;
     private String userName;
     private String personID;

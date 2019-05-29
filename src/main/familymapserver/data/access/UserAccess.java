@@ -80,6 +80,32 @@ public class UserAccess extends Access {
     }
 
     /**
+     * Updates the person id for a user.
+     * 
+     * @param user the user to update, with the person id set to the new value
+     * @throws DBException if the database is not open, or if another database
+     *                     error occurs
+     */
+    public void updatePersonId(User user) throws DBException {
+        Connection conn = getOpenConnection();
+
+        String sql = "UPDATE user " +
+                     "SET person_id = ? " +
+                     "WHERE username = ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, user.getPersonId());
+            ps.setString(2, user.getUsername());
+
+            ps.executeUpdate();
+        } catch (SQLException sqle) {
+            DBException dbe = new DBException(sqle);
+            LOG.throwing("UserAccess", "updatePersonId", dbe);
+            throw dbe;
+        } 
+    }
+
+    /**
      * Gets a user from the database.
      * 
      * @param username the username of the user to be found

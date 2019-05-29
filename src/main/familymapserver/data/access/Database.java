@@ -15,9 +15,6 @@ public class Database implements Closeable {
 
     private static final Logger LOG = Logger.getLogger("fms");
     
-    /**
-     * The path to the database, relative to the project's top directory
-     */
     private static final String DB_PATH = "db/db.sqlite";
 
     private static final String DRIVER = "org.sqlite.JDBC";

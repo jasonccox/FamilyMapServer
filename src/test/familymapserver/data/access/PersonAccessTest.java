@@ -379,6 +379,27 @@ public class PersonAccessTest {
     }
 
     @Test
+    public void clearAllRemovesAllUsersPersons() throws DBException {
+        personAccess.createTableIfMissing();
+
+        personAccess.add(person);
+        personAccess.clearAll(person.getAssociatedUsername());
+
+        assertNull(personAccess.get(person.getId()));
+        assertEquals(0, personAccess.getAll(person.getAssociatedUsername()).size());
+    }
+
+    @Test (expected = DBException.class)
+    public void clearAllThrowsExceptionIfDBClosed() throws DBException {
+        personAccess.createTableIfMissing();
+        personAccess.add(person);
+        
+        db.close();
+
+        personAccess.clearAll(person.getAssociatedUsername());
+    }
+
+    @Test
     public void createTableCreatesPersonTable() throws DBException, SQLException {
         personAccess.createTableIfMissing();
 

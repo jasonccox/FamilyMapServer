@@ -1,5 +1,7 @@
 package familymapserver.data.model;
 
+import java.util.UUID;
+
 /**
  * Represents an event occurring in one person's life.
  */
@@ -34,7 +36,7 @@ public class Event {
      *                           this event is found
      */
     public Event(String associatedUsername) {
-        this.eventID = "PLACEHOLDER"; // TODO: change this!
+        this.eventID = UUID.randomUUID().toString();
         setAssociatedUsername(associatedUsername);
     }
 
@@ -156,6 +158,23 @@ public class Event {
      */
     public void setYear(int year) {
         this.year = year;
+    }
+
+    /**
+     * Creates a copy of this event with a different id.
+     * 
+     * @return the copy
+     */
+    public Event duplicate() {
+        Event copy = new Event(associatedUsername);
+        copy.setLatitude(latitude);
+        copy.setLongitude(longitude);
+        copy.setCountry(country);
+        copy.setCity(city);
+        copy.setType(eventType);
+        copy.setYear(year);
+
+        return copy;
     }
 
 }

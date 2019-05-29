@@ -370,6 +370,27 @@ public class EventAccessTest {
     }
 
     @Test
+    public void clearAllRemovesAllUsersEvents() throws DBException {
+        eventAccess.createTableIfMissing();
+
+        eventAccess.add(event);
+        eventAccess.clearAll(event.getAssociatedUsername());
+
+        assertNull(eventAccess.get(event.getId()));
+        assertEquals(0, eventAccess.getAll(event.getAssociatedUsername()).size());
+    }
+
+    @Test (expected = DBException.class)
+    public void clearAllThrowsExceptionIfDBClosed() throws DBException {
+        eventAccess.createTableIfMissing();
+        eventAccess.add(event);
+        
+        db.close();
+
+        eventAccess.clearAll(event.getAssociatedUsername());
+    }
+
+    @Test
     public void createTableCreatesEventTable() throws DBException, SQLException {
         eventAccess.createTableIfMissing();
 
