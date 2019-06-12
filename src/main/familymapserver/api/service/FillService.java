@@ -33,8 +33,7 @@ public class FillService {
     private static final Random random = new Random();
     private static final int ADULT_AGE = 18;
     private static final int MAX_AGE = 100;
-    private static final int CURRENT_YEAR = 
-        Calendar.getInstance().get(Calendar.YEAR) - 1900;
+    private static final int CURRENT_YEAR = Calendar.getInstance().get(Calendar.YEAR);
 
     /**
      * Populates the server's database with generated data for a user.
