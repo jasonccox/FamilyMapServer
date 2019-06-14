@@ -26,9 +26,9 @@ public class PersonResult extends ApiResult {
     private String firstName;
     private String lastName;
     private String gender;
-    private String father;
-    private String mother;
-    private String spouse;
+    private String fatherID;
+    private String motherID;
+    private String spouseID;
 
     /**
      * Creates a new error PersonResult.
@@ -131,42 +131,42 @@ public class PersonResult extends ApiResult {
      * @return the Pid of the person representing this person's father
      */
     public String getFather() {
-        return father;
+        return fatherID;
     }
 
     /**
      * @param father the id of the person representing this person's father
      */
     public void setFather(String father) {
-        this.father = father;
+        this.fatherID = father;
     }
 
     /**
      * @return the id of the person representing this person's mother
      */
     public String getMother() {
-        return mother;
+        return motherID;
     }
 
     /**
      * @param mother the id of the person representing this person's mother
      */
     public void setMother(String mother) {
-        this.mother = mother;
+        this.motherID = mother;
     }
 
     /**
      * @return the id of the person representing this person's spouse
      */
     public String getSpouse() {
-        return spouse;
+        return spouseID;
     }
 
     /**
      * @param spouse the id of the person representing this person's spouse
      */
     public void setSpouse(String spouse) {
-        this.spouse = spouse;
+        this.spouseID = spouse;
     }
     
 }
