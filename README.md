@@ -1,0 +1,14 @@
+# Family Map Server
+
+The Family Map Server is a server I created to be used as the server for the Family Map Android app. I created this server for a university course project.
+
+**Note to future students:** Don't look through, or especially copy, my code if you're working on the same assignment. That would be cheating. I've made this code public in order to include it in a portfolio, not to provide you with a way to cheat.
+
+## Installation
+
+1. Make sure you have the Java Runtime Environment installed. I created the application with `openjdk-12`, so I can only be sure that it works with that version.
+2. Download and extract the `release.tar.gz` file.
+
+## Usage
+
+From within the directory containing the `FamilyMapServer.jar` file, run the command `java -jar FamilyMapServer.jar [port]`, where the port is the port number on which the server should run.
