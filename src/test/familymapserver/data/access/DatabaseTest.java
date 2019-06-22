@@ -1,4 +1,4 @@
-package familymapserver.data.access;
+package com.jasoncarloscox.familymapserver.data.access;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -11,14 +11,19 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import com.jasoncarloscox.familymapserver.data.access.AuthTokenAccess;
+import com.jasoncarloscox.familymapserver.data.access.DBException;
+import com.jasoncarloscox.familymapserver.data.access.Database;
+import com.jasoncarloscox.familymapserver.data.access.EventAccess;
+import com.jasoncarloscox.familymapserver.data.access.PersonAccess;
+import com.jasoncarloscox.familymapserver.data.access.UserAccess;
+import com.jasoncarloscox.familymapserver.data.model.AuthToken;
+import com.jasoncarloscox.familymapserver.data.model.Person;
+import com.jasoncarloscox.familymapserver.data.model.User;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import familymapserver.data.model.AuthToken;
-import familymapserver.data.model.Event;
-import familymapserver.data.model.Person;
-import familymapserver.data.model.User;
 
 public class DatabaseTest {
 

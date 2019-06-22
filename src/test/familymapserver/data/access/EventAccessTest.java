@@ -1,4 +1,4 @@
-package familymapserver.data.access;
+package com.jasoncarloscox.familymapserver.data.access;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -12,11 +12,13 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Iterator;
 
+import com.jasoncarloscox.familymapserver.data.access.DBException;
+import com.jasoncarloscox.familymapserver.data.access.Database;
+import com.jasoncarloscox.familymapserver.data.access.EventAccess;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import familymapserver.data.model.Event;
 
 public class EventAccessTest {
 

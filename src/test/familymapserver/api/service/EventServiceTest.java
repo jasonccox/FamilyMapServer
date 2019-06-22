@@ -1,4 +1,4 @@
-package familymapserver.api.service;
+package com.jasoncarloscox.familymapserver.api.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -6,22 +6,22 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 
+import com.jasoncarloscox.familymapserver.api.request.ApiRequest;
+import com.jasoncarloscox.familymapserver.api.result.ApiResult;
+import com.jasoncarloscox.familymapserver.api.result.EventResult;
+import com.jasoncarloscox.familymapserver.api.result.EventsResult;
+import com.jasoncarloscox.familymapserver.api.service.EventService;
+import com.jasoncarloscox.familymapserver.data.access.AuthTokenAccess;
+import com.jasoncarloscox.familymapserver.data.access.DBException;
+import com.jasoncarloscox.familymapserver.data.access.Database;
+import com.jasoncarloscox.familymapserver.data.access.EventAccess;
+import com.jasoncarloscox.familymapserver.data.model.AuthToken;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import familymapserver.api.request.ApiRequest;
-import familymapserver.api.request.EventRequest;
-import familymapserver.api.result.ApiResult;
-import familymapserver.api.result.EventResult;
-import familymapserver.api.result.EventsResult;
-import familymapserver.data.access.AuthTokenAccess;
-import familymapserver.data.access.DBException;
-import familymapserver.data.access.Database;
-import familymapserver.data.access.DatabaseTest;
-import familymapserver.data.access.EventAccess;
-import familymapserver.data.model.AuthToken;
-import familymapserver.data.model.Event;
+import com.jasoncarloscox.familymapserver.data.access.DatabaseTest;
 
 public class EventServiceTest {
 

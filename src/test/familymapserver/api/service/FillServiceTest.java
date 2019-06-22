@@ -1,4 +1,4 @@
-package familymapserver.api.service;
+package com.jasoncarloscox.familymapserver.api.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -13,21 +13,22 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import com.jasoncarloscox.familymapserver.api.request.FillRequest;
+import com.jasoncarloscox.familymapserver.api.result.FillResult;
+import com.jasoncarloscox.familymapserver.api.service.FillService;
+import com.jasoncarloscox.familymapserver.data.access.DBException;
+import com.jasoncarloscox.familymapserver.data.access.Database;
+import com.jasoncarloscox.familymapserver.data.access.EventAccess;
+import com.jasoncarloscox.familymapserver.data.access.PersonAccess;
+import com.jasoncarloscox.familymapserver.data.access.UserAccess;
+import com.jasoncarloscox.familymapserver.data.model.Person;
+import com.jasoncarloscox.familymapserver.data.model.User;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import familymapserver.api.request.FillRequest;
-import familymapserver.api.result.FillResult;
-import familymapserver.data.access.DBException;
-import familymapserver.data.access.Database;
-import familymapserver.data.access.DatabaseTest;
-import familymapserver.data.access.EventAccess;
-import familymapserver.data.access.PersonAccess;
-import familymapserver.data.access.UserAccess;
-import familymapserver.data.model.Event;
-import familymapserver.data.model.Person;
-import familymapserver.data.model.User;
+import com.jasoncarloscox.familymapserver.data.access.DatabaseTest;
 
 public class FillServiceTest {
 
