@@ -14,6 +14,7 @@ import com.jasoncarloscox.familymapserver.data.access.EventAccess;
 import com.jasoncarloscox.familymapserver.data.access.PersonAccess;
 import com.jasoncarloscox.familymapserver.data.access.UserAccess;
 import com.jasoncarloscox.familymapserver.data.model.AuthToken;
+import com.jasoncarloscox.familymapserver.data.model.Event;
 import com.jasoncarloscox.familymapserver.data.model.Person;
 import com.jasoncarloscox.familymapserver.data.model.User;
 

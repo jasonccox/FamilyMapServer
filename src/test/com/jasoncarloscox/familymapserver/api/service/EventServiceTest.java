@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 
 import com.jasoncarloscox.familymapserver.api.request.ApiRequest;
+import com.jasoncarloscox.familymapserver.api.request.EventRequest;
 import com.jasoncarloscox.familymapserver.api.result.ApiResult;
 import com.jasoncarloscox.familymapserver.api.result.EventResult;
 import com.jasoncarloscox.familymapserver.api.result.EventsResult;
@@ -16,6 +17,7 @@ import com.jasoncarloscox.familymapserver.data.access.DBException;
 import com.jasoncarloscox.familymapserver.data.access.Database;
 import com.jasoncarloscox.familymapserver.data.access.EventAccess;
 import com.jasoncarloscox.familymapserver.data.model.AuthToken;
+import com.jasoncarloscox.familymapserver.data.model.Event;
 
 import org.junit.After;
 import org.junit.Before;

@@ -15,6 +15,7 @@ import java.util.Iterator;
 import com.jasoncarloscox.familymapserver.data.access.DBException;
 import com.jasoncarloscox.familymapserver.data.access.Database;
 import com.jasoncarloscox.familymapserver.data.access.EventAccess;
+import com.jasoncarloscox.familymapserver.data.model.Event;
 
 import org.junit.After;
 import org.junit.Before;
