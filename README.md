@@ -12,3 +12,5 @@ The Family Map Server is a server I created to be used as the server for the Fam
 ## Usage
 
 From within the directory containing the `FamilyMapServer.jar` file, run the command `java -jar FamilyMapServer.jar [port]`, where the port is the port number on which the server should run.
+
+You can interact with the server via the Family Map Android app or via a web portal included with the server that can be accessed at http://localhost:[port].
