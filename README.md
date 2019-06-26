@@ -1,6 +1,8 @@
 # Family Map Server
 
-The Family Map Server is a server I created to be used as the server for the Family Map Android app. I created this server for a university course project.
+The Family Map Server is a Java server I created to be used as the server for the Family Map Android app. I created this server for a university course project.
+
+Check out the [specification](https://github.com/jasonccox/FamilyMapServer/blob/master/FamilyMapServerSpecification.pdf) for more information about how the server works.
 
 **Note to future students:** Don't look through, or especially copy, my code if you're working on the same assignment. That would be cheating. I've made this code public in order to include it in a portfolio, not to provide you with a way to cheat.
 
